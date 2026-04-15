@@ -1,6 +1,7 @@
 import pygame
 import sys
-import maps
+import player
+from mapping import maps
 
 running = True
 
@@ -13,7 +14,10 @@ fullScreen = False
 
 pygame.init()
 
+player = player.player(screen)
+
 while running:
+    deltaTime = clock.tick(60)/1000
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -25,12 +29,8 @@ while running:
                 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
             else:
                 screen = pygame.display.set_mode(defaultSize,pygame.RESIZABLE)
-
-    maps.drawMap(1,screen)
-
-
-    clock.tick(frameRate)
-    print(clock)
+    player.update(deltaTime)
+    maps.drawMap(1, screen)
     pygame.display.flip()
 
 
