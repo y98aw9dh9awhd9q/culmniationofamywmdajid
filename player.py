@@ -1,49 +1,75 @@
-from const import playerDir
 import pygame
+from mapping.maps import getExitTiles, getWallRects
 
 class player:
     immuFrameTime = 0.5
-    def __init__(self,screen):
-        self.screen = screen
-        self.hp = 3
-        self.image = pygame.image.load(playerDir)
-        self.image = pygame.transform.scale(self.image, (100, 100))
-        self.rect = self.image.get_rect()
-        self.speed = 200
-        self.invincibilityTimer = 0
-        self.dx, self.dy = 0, 0
-        screen.blit(self.image, (self.rect.x, self.rect.y))
+    size          = (60, 60)
+    speed         = 220
+
+    def __init__(self, screenW, screenH):
+        self.screenW = screenW
+        self.screenH = screenH
+        self.hp      = 6
+        self.maxHp   = 6
+        self.image   = None
+        self.rect    = pygame.Rect(0, 0, self.size[0], self.size[1])
+        self.respawn(screenW, screenH)
+        self.invincibilityTimer = 0.0
+        self.isAlive            = True
+
+    def respawn(self, screenW, screenH):
+        self.screenW      = screenW
+        self.screenH      = screenH
+        self.rect.center  = (screenW // 2, screenH // 2)
 
     def takeDamage(self):
         if self.invincibilityTimer > 0:
             return
-        self.hp -= 1
+        self.hp                -= 1
         self.invincibilityTimer = self.immuFrameTime
+        if self.hp <= 0:
+            self.isAlive = False
 
-    def update(self, deltaTime):
+    def isFlickering(self):
+        return self.invincibilityTimer > 0 and int(self.invincibilityTimer * 10) % 2 == 0
 
+    def update(self, deltaTime, currentRoomId):
         if self.invincibilityTimer > 0:
             self.invincibilityTimer -= deltaTime
 
+        keyState = pygame.key.get_pressed()
+        dx, dy = 0, 0
+        if keyState[pygame.K_a] or keyState[pygame.K_LEFT]:  dx -= 1
+        if keyState[pygame.K_d] or keyState[pygame.K_RIGHT]: dx += 1
+        if keyState[pygame.K_w] or keyState[pygame.K_UP]:    dy -= 1
+        if keyState[pygame.K_s] or keyState[pygame.K_DOWN]:  dy += 1
 
-        key = pygame.key.get_pressed()
-        if pygame.event == pygame.KEYDOWN:
-            if key[pygame.K_a]:
-                self.dx -= 4
-            if key[pygame.K_d]:
-                self.dx += 4
-            if key[pygame.K_w]:
-                self.dy -= 4
-            if key[pygame.K_s]:
-                self.dy += 4
+        moveVec = pygame.Vector2(dx, dy)
+        if moveVec.length() > 0:
+            moveVec = moveVec.normalize() * self.speed * deltaTime
 
-        velocity = pygame.Vector2(self.dx, self.dy)
-        if velocity.length() > 0:
-            velocity = velocity.normalize() * self.speed * deltaTime
+        self.moveAndCollide(moveVec, currentRoomId)
+        return self.touchingExit(currentRoomId)
 
-        self.rect.x += velocity.x
-        self.rect.y += velocity.y
-        print(velocity.x)
-        self.screen.blit(self.image, self.rect)
-        pygame.display.flip()
+    def moveAndCollide(self, moveVec, roomId):
+        wallRects = getWallRects(roomId, self.screenW, self.screenH)
 
+        self.rect.x += moveVec.x
+        for wallRect in wallRects:
+            if self.rect.colliderect(wallRect):
+                if moveVec.x > 0: self.rect.right = wallRect.left
+                else:             self.rect.left  = wallRect.right
+
+        self.rect.y += moveVec.y
+        for wallRect in wallRects:
+            if self.rect.colliderect(wallRect):
+                if moveVec.y > 0: self.rect.bottom = wallRect.top
+                else:             self.rect.top    = wallRect.bottom
+
+        self.rect.clamp_ip(pygame.Rect(0, 0, self.screenW, self.screenH))
+
+    def touchingExit(self, roomId):
+        for exitRect in getExitTiles(roomId, self.screenW, self.screenH):
+            if self.rect.colliderect(exitRect):
+                return True
+        return False
