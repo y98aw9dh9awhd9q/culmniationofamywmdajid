@@ -717,12 +717,30 @@ def getExitTiles(roomId, screenW, screenH):
     colCount = len(layout[0])
     blockW   = screenW / colCount
     blockH   = screenH / rowCount
-    return [
-        pygame.Rect(colIdx * blockW, rowIdx * blockH, blockW, blockH)
-        for rowIdx, rowData in enumerate(layout)
-        for colIdx, tileVal in enumerate(rowData)
-        if tileVal in exitTiles
-    ]
+    exits    = []
+
+    for rowIdx, rowData in enumerate(layout):
+        for colIdx, tileVal in enumerate(rowData):
+            if tileVal not in exitTiles:
+                continue
+            rect = pygame.Rect(
+                colIdx * blockW,
+                rowIdx * blockH,
+                blockW,
+                blockH
+            )
+            direction = None
+
+            if rowIdx == 0:
+                direction = 0 #top
+            elif rowIdx == rowCount - 1:
+                direction = 1 #bottom
+            elif colIdx == 0:
+                direction = 2 #;eft
+            elif colIdx == colCount - 1:
+                direction = 3 #right
+            exits.append((rect, direction))
+    return exits
 
 def getWallRects(roomId, screenW, screenH):
     layout   = roomRegistery[roomId].layout

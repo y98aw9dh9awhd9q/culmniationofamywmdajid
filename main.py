@@ -9,10 +9,13 @@ screen              = pygame.display.set_mode((900, 600))
 clock               = pygame.time.Clock()
 font                = pygame.font.SysFont(None, 28)
 winW, winH          = screen.get_size()
-p                   = player(winW, winH)
+playerObj           = player(winW, winH)
 pendingRoomIndex    = None
 mapGen = mapGenerator.mapGenerator()
 generatedMap = None
+
+currentRoomX = 0
+currentRoomY = 0
 
 #main loop
 running = True
@@ -28,8 +31,24 @@ while running:
         mapGen.generateMap()
         generatedMap = mapGen.printMap()
 
-    display.drawRoom(screen, generatedMap[1][1])
-    pygame.display.update()
+    """            if rowIdx == 0:
+                direction = 0 #top
+            elif rowIdx == rowCount - 1:
+                direction = 1 #bottom
+            elif colIdx == 0:
+                direction = 2 #;eft
+            elif colIdx == colCount - 1:
+                direction = 3 #right
+            exits.append((rect, direction))"""
+    if playerObj.touchingExit(generatedMap[currentRoomX][currentRoomY]):
+        print(playerObj.touchingExit(generatedMap[currentRoomX][currentRoomY]))
+
+    screen.fill((0, 0, 0))
+
+    display.drawRoom(screen, generatedMap[currentRoomX][currentRoomY])
+    playerObj.update(deltaTime,generatedMap[currentRoomX][currentRoomY])
+    display.drawPlayer(screen, playerObj)
+    pygame.display.flip()
 
 
 pygame.quit()

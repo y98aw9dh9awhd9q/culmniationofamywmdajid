@@ -70,6 +70,7 @@ class player:
 
     def touchingExit(self, roomId):
         for exitRect in getExitTiles(roomId, self.screenW, self.screenH):
-            if self.rect.colliderect(exitRect):
-                return True
-        return False
+            rect, direction = exitRect
+            if self.rect.colliderect(rect):
+                return direction
+        return None
