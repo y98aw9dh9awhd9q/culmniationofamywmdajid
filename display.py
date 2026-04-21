@@ -1,10 +1,10 @@
 import pygame
 import const
-from mapping.maps import rooms, tileColors
+from mapping.maps import roomRegistery, tileColors
 
 #tile renderer
 def drawRoom(screen, roomId):
-    layout     = rooms[roomId].layout
+    layout     = roomRegistery[roomId].layout
     rowCount   = len(layout)
     colCount   = len(layout[0])
     winW, winH = screen.get_size()
@@ -15,7 +15,6 @@ def drawRoom(screen, roomId):
         for colIdx, tileVal in enumerate(rowData):
             tileRect  = pygame.Rect(colIdx * blockW, rowIdx * blockH, blockW, blockH)
             colorName = tileColors.get(tileVal)
-            print(tileRect)
             if colorName == "purple":
                 screen.blit(pygame.transform.scale(pygame.image.load(const.chest).convert_alpha(),(blockH,blockW)),tileRect)
             elif colorName:

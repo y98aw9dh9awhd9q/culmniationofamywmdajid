@@ -119,7 +119,7 @@ def runAttempt(size, bossPos, maxShop, maxChest, maxDoubleChest, seed):
     return ok, grid
 
 #finally the meat and potatoes
-class MapGenerator:
+class mapGenerator:
     def __init__(self):
         self.sizeLim        = 9
         self.size           = 3
@@ -188,8 +188,6 @@ class MapGenerator:
                     if self.map[r][c] == 0:
                         self.map[r][c] = -10
 
-        self.printMap()
-
     def printMap(self):
         print(numpy.array(self.map))
         return self.map
@@ -198,9 +196,10 @@ class MapGenerator:
         self.threadPool.shutdown(wait=False)
 
 
+"""
 #testing purpose
 import time
-mapGen = MapGenerator()
+mapGen = mapGenerator()
 for i in range(10):
     mapGen.increaseMapSize()
     mapGen.setupMap(boss=(i % 2 == 1))
@@ -208,3 +207,4 @@ for i in range(10):
     mapGen.generateMap()
     print(f"{(time.perf_counter() - t) * 1000:.1f} ms\n") #used to take 1000000 years
 mapGen.shutdown()
+"""
