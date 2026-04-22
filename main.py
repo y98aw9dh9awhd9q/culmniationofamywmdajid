@@ -41,7 +41,9 @@ while running:
             elif colIdx == colCount - 1:
                 direction = 3 #right
             exits.append((rect, direction))"""
+
     roomID = generatedMap[currentRoomPosY][currentRoomPosX]
+    tileRectList = []
     if playerObj.touchingExit(roomID):
         print(playerObj.rect.center)
         layout, rowCount, colCount, blockW, blockH = display.spaceCalculator(screen, roomID)
@@ -50,7 +52,10 @@ while running:
                 tileRect = pygame.Rect(colIdx * blockW, rowIdx * blockH, blockW, blockH)
                 colorName = tileColors.get(tileVal)
                 if colorName == "orange":
-                    print(tileRect)
+                    tileRectList.append((f"{tileRect[0]}X",f"{tileRect[1]}Y"))
+
+
+        print(tileRectList)
         try:
             match playerObj.touchingExit(roomID):
                 case 0:
