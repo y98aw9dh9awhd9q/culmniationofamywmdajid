@@ -2,20 +2,28 @@ import pygame
 import const
 from mapping.maps import roomRegistery, tileColors
 
-#tile renderer
-def drawRoom(screen, roomId):
+def spaceCalculator(screen, roomId):
     layout     = roomRegistery[roomId].layout
     rowCount   = len(layout)
     colCount   = len(layout[0])
     winW, winH = screen.get_size()
     blockW     = winW / colCount
     blockH     = winH / rowCount
+    return (layout,  #layout     0
+            rowCount,#row count  1
+            colCount,#col count  2
+            blockW,  #blockW     3
+            blockH)  #blockH     4
 
+#tile renderer
+def drawRoom(screen, roomId):
+    layout, rowCount, colCount, blockW, blockH = spaceCalculator(screen, roomId)
     for rowIdx, rowData in enumerate(layout):
         for colIdx, tileVal in enumerate(rowData):
             tileRect  = pygame.Rect(colIdx * blockW, rowIdx * blockH, blockW, blockH)
             colorName = tileColors.get(tileVal)
             if colorName == "purple":
+                #elevator
                 screen.blit(pygame.transform.scale(pygame.image.load(const.chest).convert_alpha(),(blockH,blockW)),tileRect)
             elif colorName:
                 pygame.draw.rect(screen, getattr(const, colorName), tileRect)

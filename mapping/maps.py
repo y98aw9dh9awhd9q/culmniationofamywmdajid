@@ -690,15 +690,15 @@ normalPool = [roomId for roomId in roomRegistery if roomId > 0]
 #helper func
 tileColors = {
     0: None,
-    1: "white",
-    2: "brown",
-    3: "orange",
-    4: "yellow",
-    5: "cyan",
-    6: "purple",
-    7: "orange",
-    8: "orange",
-    9: "orange",
+    1: "white",    #wall
+    2: "brown",    #breakble
+    3: "orange",   #exit
+    4: "yellow",   #i forgot
+    5: "cyan",     #i forgot
+    6: "purple",   #elevator
+    7: "orange",   #exit
+    8: "orange",   #exit
+    9: "orange",   #exit
 }
 
 exitTiles = {3, 7, 8, 9}

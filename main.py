@@ -3,6 +3,7 @@ import const
 import mapping.mapGenerator as mapGenerator
 import display
 from player import player
+from mapping.maps import tileColors
 
 pygame.init()
 screen              = pygame.display.set_mode((900, 600))
@@ -14,8 +15,8 @@ pendingRoomIndex    = None
 mapGen = mapGenerator.mapGenerator()
 generatedMap = None
 
-currentRoomX = 0
-currentRoomY = 0
+currentRoomPosY = 0
+currentRoomPosX = 0
 
 #main loop
 running = True
@@ -40,13 +41,38 @@ while running:
             elif colIdx == colCount - 1:
                 direction = 3 #right
             exits.append((rect, direction))"""
-    if playerObj.touchingExit(generatedMap[currentRoomX][currentRoomY]):
-        print(playerObj.touchingExit(generatedMap[currentRoomX][currentRoomY]))
+    roomID = generatedMap[currentRoomPosY][currentRoomPosX]
+    if playerObj.touchingExit(roomID):
+        print(playerObj.rect.center)
+        layout, rowCount, colCount, blockW, blockH = display.spaceCalculator(screen, roomID)
+        for rowIdx, rowData in enumerate(layout):
+            for colIdx, tileVal in enumerate(rowData):
+                tileRect = pygame.Rect(colIdx * blockW, rowIdx * blockH, blockW, blockH)
+                colorName = tileColors.get(tileVal)
+                if colorName == "orange":
+                    print(tileRect)
+        try:
+            match playerObj.touchingExit(roomID):
+                case 0:
+                    currentRoomPosY += 1
+                    playerObj.rect.center = (playerObj.rect.centerx,playerObj.rect.centery-50)
+                case 1:
+                    currentRoomPosY -= 1
+                    playerObj.rect.center = (playerObj.rect.centerx, playerObj.rect.centery +50)
+                case 2:
+
+                    currentRoomPosX -= 1
+                    playerObj.rect.center = (blockW*2, playerObj.rect.centery)
+                case 3:
+                    currentRoomPosX += 1
+                    playerObj.rect.center = (display.spaceCalculator(screen, roomID)[3]*2, playerObj.rect.centery )
+        except:
+            print("Index Error")
 
     screen.fill((0, 0, 0))
 
-    display.drawRoom(screen, generatedMap[currentRoomX][currentRoomY])
-    playerObj.update(deltaTime,generatedMap[currentRoomX][currentRoomY])
+    display.drawRoom(screen, generatedMap[currentRoomPosY][currentRoomPosX])
+    playerObj.update(deltaTime,generatedMap[currentRoomPosY][currentRoomPosX])
     display.drawPlayer(screen, playerObj)
     pygame.display.flip()
 
