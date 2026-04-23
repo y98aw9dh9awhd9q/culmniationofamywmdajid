@@ -69,26 +69,6 @@ def drawHud(screen, playerObj, roomInfo, font):
 
 #transition
 
-def drawLayerTitle(screen, layerNum, font):
-    winW, winH = screen.get_size()
-    bigFont    = pygame.font.SysFont(None, 80)
-    title      = bigFont.render(f"LAYER  {layerNum}", True, const.white)
-    sub        = font.render("press any key to continue", True, (180, 180, 180))
-    screen.fill(const.black)
-    screen.blit(title, title.get_rect(center=(winW // 2, winH // 2 - 30)))
-    screen.blit(sub,   sub.get_rect(center=(winW // 2, winH // 2 + 40)))
-    pygame.display.flip()
-
-def drawBossWarning(screen, layerNum, font):
-    winW, winH = screen.get_size()
-    bigFont    = pygame.font.SysFont(None, 72)
-    title      = bigFont.render(f"boss  {layerNum}-4", True, (220, 40, 40))
-    sub        = font.render("press any key to enter", True, (180, 180, 180))
-    screen.fill(const.black)
-    screen.blit(title, title.get_rect(center=(winW // 2, winH // 2 - 30)))
-    screen.blit(sub,   sub.get_rect(center=(winW // 2, winH // 2 + 40)))
-    pygame.display.flip()
-
 def drawGameOver(screen, font):
     winW, winH = screen.get_size()
     bigFont    = pygame.font.SysFont(None, 90)
@@ -97,19 +77,4 @@ def drawGameOver(screen, font):
     screen.fill(const.black)
     screen.blit(title, title.get_rect(center=(winW // 2, winH // 2 - 30)))
     screen.blit(sub,   sub.get_rect(center=(winW // 2, winH // 2 + 50)))
-    pygame.display.flip()
-
-def drawEnding(screen, font):
-    winW, winH = screen.get_size()
-    bigFont    = pygame.font.SysFont(None, 72)
-    subFont    = pygame.font.SysFont(None, 36)
-    title      = bigFont.render("you escaped epstein island", True, (255, 220, 60))
-    line1      = subFont.render("all 9 layers of epstein", True, (200, 200, 200))
-    line2      = subFont.render("you will not get diddled", True, (200, 200, 200))
-    restart    = font.render("r to restart esc to quit", True, (140, 140, 140))
-    screen.fill(const.black)
-    screen.blit(title,   title.get_rect(center=(winW // 2, winH // 2 - 70)))
-    screen.blit(line1,   line1.get_rect(center=(winW // 2, winH // 2)))
-    screen.blit(line2,   line2.get_rect(center=(winW // 2, winH // 2 + 36)))
-    screen.blit(restart, restart.get_rect(center=(winW // 2, winH // 2 + 90)))
     pygame.display.flip()

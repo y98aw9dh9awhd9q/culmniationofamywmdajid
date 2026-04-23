@@ -1,10 +1,11 @@
-#ben nethaeyahoo and keyahhno acarkey
+#ben nethaeyahoo and keyahhno acarkey and emotional support horp
 #2026-06-07
 #dungeon crawller
 
 import pygame
 import mapping.mapLogic.mapGenerator as mapGenerator
 import display
+import data.dataSaving
 from player import player
 from mapping.maps import getExitTiles
 
@@ -15,12 +16,12 @@ font               = pygame.font.SysFont(None, 28)
 winW, winH         = screen.get_size()
 playerObj          = player(winW, winH)
 mapGen             = mapGenerator.mapGenerator()
-generatedMap       = None
+generatedMap       = False
 currentRoomPosY    = 0
 currentRoomPosX    = 0
 transitionCooldown = 0.0
-generatedMap       = False
 currentLayerID     = [1,4]
+playerSavePrep     = None
 
 #exit dir index
 mapDelta = {
@@ -30,16 +31,17 @@ mapDelta = {
     3: ( 0,  1),
 }
 
-# 1 - epstein island
-# 2 - epstein temple
-# 3 - epistein dungeon
-# 4 - epstein idk
-# 5 - spstein something
-# 6 - epstein something
-# 7 - epstein lower layer
-# 8 - epstein vault
-# 9 - epsteins layer
-
+#layer name
+# 1 - epstein's island
+# 2 - epstein's temple
+# 3 - epstein's dungeon
+# 4 - epstein's cellar
+# 5 - epstein's tunnel
+# 6 - epstein's upper layer
+# 7 - epstein's lower layer
+# 8 - epstein's vault
+# 9 - epstein's throne room
+# 10- Emmanuel's goon cave
 
 #what dir for new room
 oppositeSide = {0: 1, 1: 0, 2: 3, 3: 2}
@@ -94,6 +96,18 @@ def generateMap():
     currentLayerID[1] = currentLayerID[1] + 1
     return generatedMap
 
+#prestart data check
+saveDataRead = data.dataSaving.readSave()
+if saveDataRead:
+    print(saveDataRead)
+    generatedMap = saveDataRead[1]
+    currentRoomPosX = saveDataRead[0][1]
+    currentRoomPosY = saveDataRead[0][2]
+    playerObj.rect.center = saveDataRead[0][-1]
+    currentLayerID = saveDataRead[2]
+
+
+
 running = True
 while running:
     deltaTime = clock.tick(60) / 1000.0
@@ -101,6 +115,11 @@ while running:
 
     for event in events:
         if event.type == pygame.QUIT:
+            try:
+                saveDat = (playerSavePrep, generatedMap,currentLayerID)
+                data.dataSaving.saveData(saveDat)
+            except:
+                print("save error")
             running = False
 
     if not generatedMap:
@@ -141,6 +160,13 @@ while running:
                 placePlayerAtDoor(playerObj, doorRect, exitDir)
 
             transitionCooldown = 0.25 #prevent seizure or something idk
+            playerSavePrep = (newRoomID      ,  #0 - room ID the player enters
+                               currentRoomPosX,  #1 - posX of the room in the grid
+                               currentRoomPosY,  #2 - posY of the room in the grid
+                               playerObj.rect.center # 3 - player rect
+                               )
+            print(playerSavePrep)
+
 
     screen.fill((0, 0, 0))
     display.drawRoom(screen, generatedMap[currentRoomPosY][currentRoomPosX])
