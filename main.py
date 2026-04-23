@@ -2,10 +2,8 @@
 #2026-06-07
 #dungeon crawller
 
-
-
 import pygame
-import mapping.mapGenerator as mapGenerator
+import mapping.mapLogic.mapGenerator as mapGenerator
 import display
 from player import player
 from mapping.maps import getExitTiles
@@ -21,6 +19,8 @@ generatedMap       = None
 currentRoomPosY    = 0
 currentRoomPosX    = 0
 transitionCooldown = 0.0
+generatedMap       = False
+currentLayerID     = [1,4]
 
 #exit dir index
 mapDelta = {
@@ -29,6 +29,17 @@ mapDelta = {
     2: ( 0, -1),
     3: ( 0,  1),
 }
+
+# 1 - epstein island
+# 2 - epstein temple
+# 3 - epistein dungeon
+# 4 - epstein idk
+# 5 - spstein something
+# 6 - epstein something
+# 7 - epstein lower layer
+# 8 - epstein vault
+# 9 - epsteins layer
+
 
 #what dir for new room
 oppositeSide = {0: 1, 1: 0, 2: 3, 3: 2}
@@ -63,6 +74,25 @@ def placePlayerAtDoor(playerObj, doorRect, comingFromDir):
         playerObj.rect.centery = py
         playerObj.rect.left    = doorRect.right + 1
 
+mapSize = 3
+def generateMap():
+    global mapSize, currentLayerID
+    print(currentLayerID[1])
+    if currentLayerID[1] ==  5:
+        mapSize += 1
+        mapGen.increaseMapSize()
+        currentLayerID[0] = currentLayerID[0] + 1
+        currentLayerID[1] = 1
+    if currentLayerID[1] == 4:
+        mapGen.setupMap(boss=True)
+        mapGen.generateMap()
+        generatedMap = mapGen.printMap()
+    else:
+        mapGen.setupMap()
+        mapGen.generateMap()
+        generatedMap = mapGen.printMap()
+    currentLayerID[1] = currentLayerID[1] + 1
+    return generatedMap
 
 running = True
 while running:
@@ -74,9 +104,7 @@ while running:
             running = False
 
     if not generatedMap:
-        mapGen.setupMap()
-        mapGen.generateMap()
-        generatedMap = mapGen.printMap()
+        generatedMap = generateMap()
 
     if transitionCooldown > 0:
         transitionCooldown -= deltaTime
@@ -84,7 +112,15 @@ while running:
     currentRoomID = generatedMap[currentRoomPosY][currentRoomPosX]
     exitDir       = playerObj.touchingExit(currentRoomID)
 
+    if playerObj.touchingElevator(currentRoomID):
+        currentRoomID = -1 #-1 is the entrance always
+        currentRoomPosX = 0
+        currentRoomPosY = 0
+        generatedMap = generateMap()
+
+
     if exitDir is not None and transitionCooldown <= 0:
+
         prevCenter = playerObj.rect.center
 
         dy, dx = mapDelta[exitDir]

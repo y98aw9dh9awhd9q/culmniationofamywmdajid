@@ -196,6 +196,7 @@ class mapGenerator:
         self.map[0][0]                             = -1
         self.map[self.size - 1][self.size - 1]     = -2
         if boss:
+            print("boss")
             self.map[self.size - 1][self.size - 2] = -3
 
     def increaseMapSize(self):

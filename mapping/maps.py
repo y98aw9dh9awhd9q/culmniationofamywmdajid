@@ -59,7 +59,7 @@ roomExit = Room([
 ], type=4, exits=(False, False, True, False))
 
 roomBoss = Room([
-    [1,1,1,1,1,1,3,3,3,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
     [9,0,0,0,0,0,0,0,0,0,0,0,0,0,8],
@@ -68,7 +68,7 @@ roomBoss = Room([
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-], type=2, exits=(True, False, True, True))
+], type=2, exits=(False, False, True, True))
 
 roomShop = Room([
     [1,1,1,1,1,1,7,7,7,1,1,1,1,1,1],
@@ -702,6 +702,7 @@ tileColors = {
 }
 
 exitTiles = {3, 7, 8, 9}
+elevatorTiles = 6
 wallTiles  = {1, 2}
 
 
@@ -754,3 +755,21 @@ def getWallRects(roomId, screenW, screenH):
         for colIdx, tileVal in enumerate(rowData)
         if tileVal in wallTiles
     ]
+
+def getElevatorTiles(roomId,screenW,screenH):
+    layout   = roomRegistery[roomId].layout
+    rowCount = len(layout)
+    colCount = len(layout[0])
+    blockW   = screenW / colCount
+    blockH   = screenH / rowCount
+    for rowIdx, rowData in enumerate(layout):
+        for colIdx, tileVal in enumerate(rowData):
+            if tileVal != elevatorTiles:
+                continue
+            rectOfElevator = pygame.Rect(
+                colIdx * blockW,
+                rowIdx * blockH,
+                blockW,
+                blockH
+            )
+    return rectOfElevator

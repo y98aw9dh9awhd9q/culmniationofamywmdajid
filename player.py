@@ -1,5 +1,5 @@
 import pygame
-from mapping.maps import getExitTiles, getWallRects
+from mapping.maps import getExitTiles, getWallRects, getElevatorTiles
 
 class player:
     immuFrameTime = 0.5
@@ -49,7 +49,10 @@ class player:
             moveVec = moveVec.normalize() * self.speed * deltaTime
 
         self.moveAndCollide(moveVec, currentRoomId)
-        return self.touchingExit(currentRoomId)
+        if self.touchingExit(currentRoomId):
+            return self.touchingExit(currentRoomId)
+        elif self.touchingElevator(currentRoomId):
+            return self.touchingElevator(currentRoomId)
 
     def moveAndCollide(self, moveVec, roomId):
         wallRects = getWallRects(roomId, self.screenW, self.screenH)
@@ -74,3 +77,9 @@ class player:
             if self.rect.colliderect(rect):
                 return direction
         return None
+
+    def touchingElevator(self, roomID):
+        if roomID == -1:
+            return None
+        elif roomID == -2 and self.rect.colliderect(getElevatorTiles(roomID, self.screenW, self.screenH)):
+            return True
