@@ -14,8 +14,8 @@ blockSize = 20
 
 
 baseDir   = os.path.dirname(os.path.abspath(__file__))
-playerDir = os.path.join(baseDir, "assets","pictures", "player.png")
-
+playerDir = os.path.join(baseDir, "assets", "pictures", "entities", "player.png")
+bulletDir = os.path.join(baseDir, "assets", "pictures", "entities", "bullet.png")
 
 mapDirs  = os.path.join(baseDir, "assets","maps")
 chest    = os.path.join(mapDirs, "cat.png")

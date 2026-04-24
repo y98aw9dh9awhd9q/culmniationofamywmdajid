@@ -1,12 +1,13 @@
 import pygame
 from mapping.maps import getExitTiles, getWallRects, getElevatorTiles
 
-class player:
+class player(pygame.sprite.Sprite):
     immuFrameTime = 0.5
     size          = (60, 60)
     speed         = 220
 
     def __init__(self, screenW, screenH):
+        super().__init__()
         self.screenW = screenW
         self.screenH = screenH
         self.hp      = 6

@@ -1,12 +1,15 @@
 #ben nethaeyahoo and keyahhno acarkey and emotional support horp
 #2026-06-07
-#dungeon crawller
+#dungeon crawller whjere you go through epstein stuff and then fight the scret boss
+#the secret boss is emmanuel and he is the ultimate gooner
+
 
 import pygame
 import mapping.mapLogic.mapGenerator as mapGenerator
 import display
 import data.dataSaving
-from player import player
+from entitity.player import player
+from entitity.bullet import bullet as firingBullet
 from mapping.maps import getExitTiles
 
 pygame.init()
@@ -32,16 +35,35 @@ mapDelta = {
 }
 
 #layer name
-# 1 - epstein's island
-# 2 - epstein's temple
-# 3 - epstein's dungeon
-# 4 - epstein's cellar
-# 5 - epstein's tunnel
-# 6 - epstein's upper layer
-# 7 - epstein's lower layer
-# 8 - epstein's vault
-# 9 - epstein's throne room
-# 10- Emmanuel's goon cave
+# 1  - epstein 's island
+# 2  - epstein 's temple
+# 3  - epstein 's dungeon
+# 4  - epstein 's cellar
+# 5  - epstein 's tunnel
+# 6  - epstein 's upper layer
+# 7  - epstein 's lower layer
+# 8  - epstein 's vault
+# 9  - epstein 's throne room
+# 10 - Emmanuel's goon cave
+
+#sprite classes
+playerSpriteGroup = pygame.sprite.Group()
+playerSpriteGroup.add(playerObj)
+bulletSpriteGroup = pygame.sprite.Group()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #what dir for new room
 oppositeSide = {0: 1, 1: 0, 2: 3, 3: 2}
@@ -76,6 +98,7 @@ def placePlayerAtDoor(playerObj, doorRect, comingFromDir):
         playerObj.rect.centery = py
         playerObj.rect.left    = doorRect.right + 1
 
+
 mapSize = 3
 def generateMap():
     global mapSize, currentLayerID
@@ -101,15 +124,24 @@ saveDataRead = data.dataSaving.readSave()
 if saveDataRead:
     print(saveDataRead)
     generatedMap = saveDataRead[1]
-    currentRoomPosX = saveDataRead[0][1]
-    currentRoomPosY = saveDataRead[0][2]
-    playerObj.rect.center = saveDataRead[0][-1]
+    try:
+        currentRoomPosX = saveDataRead[0][1]
+        currentRoomPosY = saveDataRead[0][2]
+        playerObj.rect.center = saveDataRead[0][-1]
+    except:
+        currentRoomPosX,currentRoomPosY = 0,0
+        playerObj.rect.center = (
+            screen.get_size()[0]/2,
+            screen.get_size()[1]/2
+        )
+
     currentLayerID = saveDataRead[2]
 
 
 
 running = True
 while running:
+
     deltaTime = clock.tick(60) / 1000.0
     events    = pygame.event.get()
 
@@ -172,6 +204,13 @@ while running:
     display.drawRoom(screen, generatedMap[currentRoomPosY][currentRoomPosX])
     playerObj.update(deltaTime, generatedMap[currentRoomPosY][currentRoomPosX])
     display.drawPlayer(screen, playerObj)
+
+
+    bulletObj = firingBullet((400,450),67)
+    bulletObj.update()
+    display.drawBullet(screen,bulletObj)
+
+
     pygame.display.flip()
 
 pygame.quit()

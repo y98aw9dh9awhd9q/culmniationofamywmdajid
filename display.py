@@ -40,6 +40,23 @@ def loadPlayerImage(size):
         surf.fill((0, 200, 255))
         return surf
 
+def loadBulletImg(size = (50,50)):
+    try:
+        from const import bulletDir
+        img = pygame.image.load(bulletDir)
+        return pygame.transform.scale(img, size)
+    except Exception:
+        #noimage error handing
+        surf = pygame.Surface(size)
+        surf.fill((0, 200, 255))
+        return surf
+
+def drawBullet(screen,bulletObj):
+    if bulletObj.image is None:
+        bulletObj.image = loadBulletImg(bulletObj.size)
+    screen.blit(bulletObj.image, bulletObj.rect)
+
+
 def drawPlayer(screen, playerObj):
     if playerObj.image is None:
         playerObj.image = loadPlayerImage(playerObj.size)

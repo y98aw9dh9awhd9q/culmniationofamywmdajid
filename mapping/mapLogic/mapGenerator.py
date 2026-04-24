@@ -189,7 +189,7 @@ class mapGenerator:
         self.maxShop        = 1
         self.maxDoubleChest = 1
         self.maxChest       = 1
-        self.threadPool     = ThreadPoolExecutor(max_workers=5, thread_name_prefix="mapGen")
+        self.threadPool     = ThreadPoolExecutor(max_workers=67, thread_name_prefix="mapGen")
 
     def setupMap(self, boss=False):
         self.map                                   = [[0] * self.size for _ in range(self.size)]
