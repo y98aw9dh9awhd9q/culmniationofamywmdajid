@@ -1,9 +1,9 @@
-
 #this might be the most bs code ever but whatever by power of nagra it shall work
 
 import random
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from collections import deque
 from mapping.maps import roomRegistery
 import numpy
 
@@ -70,8 +70,8 @@ def buildSpanningTree(size, prePlaced, rng):
 
     allCells = size * size
     while frontier and len(inTree) < allCells:
-        idx                          = rng.randrange(len(frontier))
-        nr, nc, fromR, fromC, fromD  = frontier[idx]
+        idx                         = rng.randrange(len(frontier))
+        nr, nc, fromR, fromC, fromD = frontier[idx]
         #this looks so weird  but in the name of boris we must do it
         frontier.pop(idx)
         if (nr, nc) in inTree:
@@ -98,14 +98,60 @@ def buildSpanningTree(size, prePlaced, rng):
             requiredExits.discard((pr, pc, d))
             requiredExits.discard((nr, nc, oppositeDir[d]))
             for d2 in range(4):
-                dr2, dc2   = directions[d2]
-                nr2, nc2   = nr + dr2, nc + dc2
+                dr2, dc2 = directions[d2]
+                nr2, nc2 = nr + dr2, nc + dc2
                 if 0 <= nr2 < size and 0 <= nc2 < size and (nr2, nc2) != (pr, pc):
                     requiredExits.add((nr, nc, d2))
                     requiredExits.add((nr2, nc2, oppositeDir[d2]))
                     break
 
     return requiredExits
+
+def isFullyConnected(g, size):
+    #true if all cells are reachable
+    visited = set()
+    queue   = deque([(0, 0)])
+    visited.add((0, 0))
+    while queue:
+        r, c = queue.popleft()
+        for d in range(4):
+            dr, dc = directions[d]
+            nr, nc = r + dr, c + dc
+            if (nr, nc) in visited or not (0 <= nr < size and 0 <= nc < size):
+                continue
+            if (roomRegistery[g[r * size + c]].exits[d] and
+                    roomRegistery[g[nr * size + nc]].exits[oppositeDir[d]]):
+                visited.add((nr, nc))
+                queue.append((nr, nc))
+    return len(visited) == size * size
+
+def isCompletable(g, size):
+    """
+    completes two checks:
+    1 - every cell is reachable from the entrance
+    2 - a path exists from the entrance to the exit
+    """
+
+    if not isFullyConnected(g, size):
+        return False
+    exitPos = (size - 1, size - 1)
+    visited = set()
+    queue   = deque([(0, 0)])
+    visited.add((0, 0))
+    while queue:
+        r, c = queue.popleft()
+        if (r, c) == exitPos:
+            return True
+        for d in range(4):
+            dr, dc = directions[d]
+            nr, nc = r + dr, c + dc
+            if (nr, nc) in visited or not (0 <= nr < size and 0 <= nc < size):
+                continue
+            if (roomRegistery[g[r * size + c]].exits[d] and
+                    roomRegistery[g[nr * size + nc]].exits[oppositeDir[d]]):
+                visited.add((nr, nc))
+                queue.append((nr, nc))
+    return False
 
 def runAttempt(size, bossPos, maxShop, maxChest, maxDoubleChest, seed):
     rng   = random.Random(seed)
@@ -127,7 +173,7 @@ def runAttempt(size, bossPos, maxShop, maxChest, maxDoubleChest, seed):
 
     def fillCell(idx):
         if idx == len(order):
-            return True
+            return isCompletable(g, size)
 
         r, c     = order[idx]
         pos      = r * size + c
@@ -181,6 +227,7 @@ def runAttempt(size, bossPos, maxShop, maxChest, maxDoubleChest, seed):
     return ok, grid
 
 
+#finally the meat and potatoes
 class mapGenerator:
     def __init__(self):
         self.sizeLim        = 9
@@ -189,26 +236,27 @@ class mapGenerator:
         self.maxShop        = 1
         self.maxDoubleChest = 1
         self.maxChest       = 1
-        self.threadPool     = ThreadPoolExecutor(max_workers=67, thread_name_prefix="mapGen")
+        self.threadPool     = ThreadPoolExecutor(max_workers=5, thread_name_prefix="mapGen")
 
+    #init
     def setupMap(self, boss=False):
         self.map                                   = [[0] * self.size for _ in range(self.size)]
         self.map[0][0]                             = -1
         self.map[self.size - 1][self.size - 1]     = -2
         if boss:
-            print("boss")
             self.map[self.size - 1][self.size - 2] = -3
 
     def increaseMapSize(self):
         if self.size < self.sizeLim:
             self.size += 1
 
+    #starts 5 parallel attempts on first success stores and cancels failures
     def generateMap(self):
         bossPos = None
         if self.map[self.size - 1][self.size - 2] == -3:
             bossPos = (self.size - 1, self.size - 2)
 
-        baseSeed    = random.randint(0, 10_000_000)
+        baseSeed    = random.randint(0, 10_000_000) #seed to ensure no interferance
         futureToIdx = {
             self.threadPool.submit(
                 runAttempt,
@@ -223,10 +271,12 @@ class mapGenerator:
         }
 
         winnerGrid = None
-        for future in as_completed(futureToIdx):
+        for future in as_completed(futureToIdx): #required snake case because python named it that
             try:
                 ok, grid = future.result()
+                #fire name ik
             except Exception:
+                print(f"exception caught skipping")
                 continue
             if ok and winnerGrid is None:
                 winnerGrid = grid
@@ -236,9 +286,9 @@ class mapGenerator:
 
         if winnerGrid is not None:
             self.map = winnerGrid
-            print("successfully generated map")
+            print(f"successfully generated map")
         else:
-            print("failed all attempts")
+            print("failed all att ")
             for r in range(self.size):
                 for c in range(self.size):
                     if self.map[r][c] == 0:

@@ -9,7 +9,6 @@ import mapping.mapLogic.mapGenerator as mapGenerator
 import display
 import data.dataSaving
 from entitity.player import player
-from entitity.bullet import bullet as firingBullet
 from mapping.maps import getExitTiles
 
 pygame.init()
@@ -23,7 +22,7 @@ generatedMap       = False
 currentRoomPosY    = 0
 currentRoomPosX    = 0
 transitionCooldown = 0.0
-currentLayerID     = [1,4]
+currentLayerID     = [1, 4]
 playerSavePrep     = None
 
 #exit dir index
@@ -49,21 +48,6 @@ mapDelta = {
 #sprite classes
 playerSpriteGroup = pygame.sprite.Group()
 playerSpriteGroup.add(playerObj)
-bulletSpriteGroup = pygame.sprite.Group()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #what dir for new room
 oppositeSide = {0: 1, 1: 0, 2: 3, 3: 2}
@@ -103,7 +87,7 @@ mapSize = 3
 def generateMap():
     global mapSize, currentLayerID
     print(currentLayerID[1])
-    if currentLayerID[1] ==  5:
+    if currentLayerID[1] == 5:
         mapSize += 1
         mapGen.increaseMapSize()
         currentLayerID[0] = currentLayerID[0] + 1
@@ -129,14 +113,13 @@ if saveDataRead:
         currentRoomPosY = saveDataRead[0][2]
         playerObj.rect.center = saveDataRead[0][-1]
     except:
-        currentRoomPosX,currentRoomPosY = 0,0
+        currentRoomPosX, currentRoomPosY = 0, 0
         playerObj.rect.center = (
-            screen.get_size()[0]/2,
-            screen.get_size()[1]/2
+            screen.get_size()[0] / 2,
+            screen.get_size()[1] / 2
         )
 
     currentLayerID = saveDataRead[2]
-
 
 
 running = True
@@ -148,7 +131,7 @@ while running:
     for event in events:
         if event.type == pygame.QUIT:
             try:
-                saveDat = (playerSavePrep, generatedMap,currentLayerID)
+                saveDat = (playerSavePrep, generatedMap, currentLayerID)
                 data.dataSaving.saveData(saveDat)
             except:
                 print("save error")
@@ -164,11 +147,10 @@ while running:
     exitDir       = playerObj.touchingExit(currentRoomID)
 
     if playerObj.touchingElevator(currentRoomID):
-        currentRoomID = -1 #-1 is the entrance always
+        currentRoomID   = -1  #-1 is the entrance always
         currentRoomPosX = 0
         currentRoomPosY = 0
-        generatedMap = generateMap()
-
+        generatedMap    = generateMap()
 
     if exitDir is not None and transitionCooldown <= 0:
 
@@ -191,25 +173,19 @@ while running:
             if doorRect:
                 placePlayerAtDoor(playerObj, doorRect, exitDir)
 
-            transitionCooldown = 0.25 #prevent seizure or something idk
-            playerSavePrep = (newRoomID      ,  #0 - room ID the player enters
-                               currentRoomPosX,  #1 - posX of the room in the grid
-                               currentRoomPosY,  #2 - posY of the room in the grid
-                               playerObj.rect.center # 3 - player rect
-                               )
+            transitionCooldown = 0.25                #prevent seizure or something idk
+            playerSavePrep = (newRoomID,             #0 - room ID the player enters
+                              currentRoomPosX,       #1 - posX of the room in the grid
+                              currentRoomPosY,       #2 - posY of the room in the grid
+                              playerObj.rect.center  # 3 - player rect
+                              )
             print(playerSavePrep)
-
 
     screen.fill((0, 0, 0))
     display.drawRoom(screen, generatedMap[currentRoomPosY][currentRoomPosX])
     playerObj.update(deltaTime, generatedMap[currentRoomPosY][currentRoomPosX])
+    playerObj.bullets.draw(screen)  # draw all active player bullets
     display.drawPlayer(screen, playerObj)
-
-
-    bulletObj = firingBullet((400,450),67)
-    bulletObj.update()
-    display.drawBullet(screen,bulletObj)
-
 
     pygame.display.flip()
 

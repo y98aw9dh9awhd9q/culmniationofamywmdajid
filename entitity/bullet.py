@@ -1,18 +1,27 @@
 import pygame
-import math
 
 class bullet(pygame.sprite.Sprite):
-    def __init__(self,pos,facingDir, vel = 2):
+    def __init__(self, x, y, targetX, targetY, speed=500, size=(10, 10), color=(255, 220, 50), damage=1, owner=None):
         super().__init__()
-        self.pos       = pygame.math.Vector2(pos)
-        self.facingDir = math.radians(facingDir)
-        self.vel       = pygame.math.Vector2(1,0).rotate(-facingDir)*vel
-        self.image     = None
-        self.size      = (60,60)
-        self.rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
+        self.damage = damage
+        self.owner  = owner #hit filtering purpose
 
+        self.image = pygame.Surface(size, pygame.SRCALPHA)
+        self.image.fill(color)
+        self.rect       = self.image.get_rect(center=(x, y))
+        self.posX       = float(x)
+        self.posY       = float(y)
 
-    def update(self):
+        direction = pygame.Vector2(targetX - x, targetY - y)
+        if direction.length() > 0:
+            direction = direction.normalize()
+        self.velocity = direction * speed
 
-        self.pos += self.vel
-        print(self.vel)
+    def update(self, deltaTime, screenW, screenH):
+        self.posX      += self.velocity.x * deltaTime
+        self.posY      += self.velocity.y * deltaTime
+        self.rect.center = (self.posX, self.posY)
+
+        if (self.rect.right < 0 or self.rect.left > screenW or
+                self.rect.bottom < 0 or self.rect.top > screenH):
+            self.kill()
