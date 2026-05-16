@@ -1,20 +1,27 @@
 import json
 
 def saveData(dataToSave):
-    playerSavePrep, generatedMap, currentLayerID = dataToSave
-    print(playerSavePrep)
-    print(generatedMap)
-    print(currentLayerID)
-    dataToDump = {
-        "playerSaveData" : playerSavePrep,
-        "generatedMap" : generatedMap,
-        "currentLayerID" : currentLayerID
+        try:
+            playerSavePrep, generatedMap, currentLayerID = dataToSave
+            print(playerSavePrep)
+            print(generatedMap)
+            print(currentLayerID)
+            dataToDump = {
+                "playerSaveData" : playerSavePrep,
+                "generatedMap" : generatedMap,
+                "currentLayerID" : currentLayerID
+            }
+            with open("data/save.json","w") as file:
+                json.dump(dataToDump,file)
+        except:
 
-
-    }
-    with open("data/save.json","w") as file:
-        json.dump(dataToDump,file)
-
+            dataToDump = {
+                "playerSaveData" :   None,
+                "generatedMap"   :   None,
+                "currentLayerID" :   None
+            }
+            with open("data/save.json", "w") as file:
+                json.dump(dataToDump, file)
 """
 example saved data for ref
 {"playerSaveData": [33, 1, 0, [91, 300]],

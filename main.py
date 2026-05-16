@@ -10,13 +10,30 @@ import display
 import data.dataSaving
 from entitity.player import player
 from mapping.maps import getExitTiles
+import mainMenu.subMenu.settings as settings
+import mainMenu.menu as menu
 
 pygame.init()
 screen             = pygame.display.set_mode((900, 600))
 clock              = pygame.time.Clock()
 font               = pygame.font.SysFont(None, 28)
-winW, winH         = screen.get_size()
-playerObj          = player(winW, winH)
+
+
+cfg    = settings.loadSettings()
+screen = settings.applySettings(cfg)
+
+
+menuResult = menu.run(screen, clock, font)
+if menuResult == "quit":
+    pygame.quit()
+    raise SystemExit
+
+
+
+
+
+
+playerObj          = player(*screen.get_size())
 mapGen             = mapGenerator.mapGenerator()
 generatedMap       = False
 currentRoomPosY    = 0
@@ -86,7 +103,12 @@ def placePlayerAtDoor(playerObj, doorRect, comingFromDir):
 mapSize = 3
 def generateMap():
     global mapSize, currentLayerID
-    print(currentLayerID[1])
+    print(currentLayerID)
+    if currentLayerID is None:
+        currentLayerID = [1,1]
+
+
+
     if currentLayerID[1] == 5:
         mapSize += 1
         mapGen.increaseMapSize()
@@ -109,24 +131,23 @@ if saveDataRead:
     print(saveDataRead)
     generatedMap = saveDataRead[1]
     try:
-        currentRoomPosX = saveDataRead[0][1]
-        currentRoomPosY = saveDataRead[0][2]
+        currentRoomPosX       = saveDataRead[0][1]
+        currentRoomPosY       = saveDataRead[0][2]
         playerObj.rect.center = saveDataRead[0][-1]
     except:
         currentRoomPosX, currentRoomPosY = 0, 0
-        playerObj.rect.center = (
-            screen.get_size()[0] / 2,
-            screen.get_size()[1] / 2
-        )
-
+        playerObj.rect.center = screen.get_size()[0] / 2, screen.get_size()[1] / 2
     currentLayerID = saveDataRead[2]
-
 
 running = True
 while running:
 
-    deltaTime = clock.tick(60) / 1000.0
-    events    = pygame.event.get()
+    cfg               = settings.loadSettings()
+    deltaTime         = clock.tick(cfg["fpsCap"]) / 1000.0
+    events            = pygame.event.get()
+    winW, winH        = screen.get_size()
+    playerObj.screenW = winW
+    playerObj.screenH = winH
 
     for event in events:
         if event.type == pygame.QUIT:
@@ -155,10 +176,9 @@ while running:
     if exitDir is not None and transitionCooldown <= 0:
 
         prevCenter = playerObj.rect.center
-
-        dy, dx = mapDelta[exitDir]
-        newY   = currentRoomPosY + dy
-        newX   = currentRoomPosX + dx
+        dy, dx     = mapDelta[exitDir]
+        newY       = currentRoomPosY + dy
+        newX       = currentRoomPosX + dx
 
         #boundary guard
         mapH = len(generatedMap)
