@@ -22,11 +22,11 @@ font               = pygame.font.SysFont(None, 28)
 cfg    = settings.loadSettings()
 screen = settings.applySettings(cfg)
 
-
-menuResult = menu.run(screen, clock, font)
-if menuResult == "quit":
-    pygame.quit()
-    raise SystemExit
+def mainmenu():
+    menuResult = menu.run(screen, clock, font)
+    if menuResult[0] == "quit":
+        pygame.quit()
+        raise SystemExit
 
 
 
@@ -139,6 +139,12 @@ if saveDataRead:
         playerObj.rect.center = screen.get_size()[0] / 2, screen.get_size()[1] / 2
     currentLayerID = saveDataRead[2]
 
+
+mainmenu()
+
+
+
+
 running = True
 while running:
 
@@ -157,6 +163,11 @@ while running:
             except:
                 print("save error")
             running = False
+
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            mainmenu()
+
+
 
     if not generatedMap:
         generatedMap = generateMap()
