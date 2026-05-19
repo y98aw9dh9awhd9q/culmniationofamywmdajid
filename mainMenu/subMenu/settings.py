@@ -6,12 +6,15 @@ import mainMenu.theme as theme
 settingsFile = "data/settings.json"
 
 defaultSettings = {
-    "fpsCap":      60,
-    "displayMode": "windowed",        # "windowed" | "borderless" | "fullscreen"
-    "resolution":  [900, 600],
+    "fpsCap"      : 60         ,
+    "displayMode" : "windowed" ,
+    "resolution"  : [900, 600] ,
+    "tutorial"    : True       ,
 }
 
-fpsOptions        = [1, 30, 60, 120, 144, 240]
+tutorialEnabled = (True,False)
+
+fpsOptions        = (1, 30, 60, 120, 144, 240)
 resolutionOptions = [
     [67   , 67  ],
     [900  , 600 ],
@@ -67,9 +70,10 @@ def run(screen, clock, font):
     #rowType "cycle"  -> click left/right arrows to step through options list
     #rowType "toggle" -> click to flip bool
     rows = [
-        ("fps cap",      "fpsCap",      "cycle", fpsOptions),
-        ("resolution",   "resolution",  "cycle", resolutionOptions),
-        ("display mode", "displayMode", "cycle", displayModeOptions),
+        ("fps cap"      , "fpsCap"      , "cycle"  , fpsOptions         ),
+        ("resolution"   , "resolution"  , "cycle"  , resolutionOptions  ),
+        ("display mode" , "displayMode" , "cycle"  , displayModeOptions ),
+        ("tutorial"     , "tutorial"    , "cycle"  , tutorialEnabled    ),
     ]
 
     def drawArrowButton(surf, rect, direction, hovered):

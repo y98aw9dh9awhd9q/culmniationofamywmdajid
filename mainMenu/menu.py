@@ -76,10 +76,12 @@ def run(screen, clock, font):
 
                         if label == "new game":
                             #fix
-                            data.dataSaving.saveData("")
+                            data.dataSaving.deleteSave()
+                            print("menu: new game")
                             return "game", screen
 
                         if label == "continue":
+                            print("menu: continue")
                             return "game", screen
 
                         if label == "credits":

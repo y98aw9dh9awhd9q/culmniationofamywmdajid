@@ -12,23 +12,24 @@ from entitity.player import player
 from mapping.maps import getExitTiles
 import mainMenu.subMenu.settings as settings
 import mainMenu.menu as menu
+import mapping.mapLogic.tutorialGen as tutorial
 
 pygame.init()
 screen             = pygame.display.set_mode((900, 600))
 clock              = pygame.time.Clock()
 font               = pygame.font.SysFont(None, 28)
-
-
 cfg    = settings.loadSettings()
 screen = settings.applySettings(cfg)
+loadedSettings = settings.loadSettings()
 
-def mainmenu():
+def mainMenu():
     menuResult = menu.run(screen, clock, font)
+    print(menuResult)
     if menuResult[0] == "quit":
         pygame.quit()
         raise SystemExit
 
-
+mainMenu()
 
 
 
@@ -39,9 +40,14 @@ generatedMap       = False
 currentRoomPosY    = 0
 currentRoomPosX    = 0
 transitionCooldown = 0.0
-currentLayerID     = [1, 4]
-playerSavePrep     = None
 
+if loadedSettings["tutorial"]:
+    print("start tutorial")
+    currentLayerID     = [0,1]
+else:
+    currentLayerID     = [1, 0]
+playerSavePrep         = None
+print(currentLayerID)
 #exit dir index
 mapDelta = {
     0: (-1,  0),
@@ -103,7 +109,7 @@ def placePlayerAtDoor(playerObj, doorRect, comingFromDir):
 mapSize = 3
 def generateMap():
     global mapSize, currentLayerID
-    print(currentLayerID)
+    print(currentLayerID, "map gen called")
     if currentLayerID is None:
         currentLayerID = [1,1]
 
@@ -140,7 +146,6 @@ if saveDataRead:
     currentLayerID = saveDataRead[2]
 
 
-mainmenu()
 
 
 
@@ -165,24 +170,34 @@ while running:
             running = False
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            mainmenu()
+            mainMenu()
 
 
 
     if not generatedMap:
-        generatedMap = generateMap()
+        print(currentLayerID)
+        if currentLayerID[0] >= 1:
+            generatedMap = generateMap()
+        else:
+            print("tutorialMap")
+            generatedMap = tutorial.tutorialMatching[currentLayerID[1]]
 
     if transitionCooldown > 0:
         transitionCooldown -= deltaTime
 
+    #print(generatedMap, currentRoomPosY, currentRoomPosX)
     currentRoomID = generatedMap[currentRoomPosY][currentRoomPosX]
     exitDir       = playerObj.touchingExit(currentRoomID)
 
     if playerObj.touchingElevator(currentRoomID):
-        currentRoomID   = -1  #-1 is the entrance always
-        currentRoomPosX = 0
-        currentRoomPosY = 0
-        generatedMap    = generateMap()
+        currentRoomID         = -1  #-1 is the entrance always
+        currentRoomPosX       = 0
+        currentRoomPosY       = 0
+        if currentLayerID[0] >= 1:
+            generatedMap      = generateMap()
+        else:
+            currentLayerID[1]+= 1
+            generatedMap      = tutorial.tutorialMatching[currentLayerID[1]]
 
     if exitDir is not None and transitionCooldown <= 0:
 
@@ -210,7 +225,7 @@ while running:
                               currentRoomPosY,       #2 - posY of the room in the grid
                               playerObj.rect.center  # 3 - player rect
                               )
-            print(playerSavePrep)
+            print(currentLayerID)
 
     screen.fill((0, 0, 0))
     display.drawRoom(screen, generatedMap[currentRoomPosY][currentRoomPosX])

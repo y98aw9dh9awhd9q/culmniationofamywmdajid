@@ -1,4 +1,5 @@
 import json
+import os
 
 def saveData(dataToSave):
         try:
@@ -40,3 +41,9 @@ def readSave():
     currentLayerID = loadedData["currentLayerID"]
     return playerSaveData, generatedMap, currentLayerID
 
+def deleteSave():
+    try:
+        os.remove("data/save.json")
+        print("dataSaving: successfully deleted save")
+    except FileNotFoundError:
+        print("no save found, continuing")

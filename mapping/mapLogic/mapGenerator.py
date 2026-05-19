@@ -175,10 +175,10 @@ def runAttempt(size, bossPos, maxShop, maxChest, maxDoubleChest, seed):
         if idx == len(order):
             return isCompletable(g, size)
 
-        r, c     = order[idx]
-        pos      = r * size + c
-        pat      = [None, None, None, None]
-        conflict = False
+        r, c         = order[idx]
+        pos          = r * size + c
+        pat          = [None, None, None, None]
+        conflict     = False
         for d in range(4):
             dr, dc   = directions[d]
             nr, nc   = r + dr, c + dc
@@ -276,7 +276,7 @@ class mapGenerator:
                 ok, grid = future.result()
                 #fire name ik
             except Exception:
-                print(f"exception caught skipping")
+                print(f"map gen: exception caught skipping")
                 continue
             if ok and winnerGrid is None:
                 winnerGrid = grid
