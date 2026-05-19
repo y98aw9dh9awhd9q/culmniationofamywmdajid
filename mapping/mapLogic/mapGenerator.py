@@ -240,6 +240,7 @@ class mapGenerator:
 
     #init
     def setupMap(self, boss=False):
+        print("map gen: setupMap called")
         self.map                                   = [[0] * self.size for _ in range(self.size)]
         self.map[0][0]                             = -1
         self.map[self.size - 1][self.size - 1]     = -2
@@ -252,6 +253,7 @@ class mapGenerator:
 
     #starts 5 parallel attempts on first success stores and cancels failures
     def generateMap(self):
+        print("map gen: generateMap called")
         bossPos = None
         if self.map[self.size - 1][self.size - 2] == -3:
             bossPos = (self.size - 1, self.size - 2)
@@ -269,21 +271,24 @@ class mapGenerator:
             ): i
             for i in range(5)
         }
-
+        print("map gen: future IDX", futureToIdx )
         winnerGrid = None
         for future in as_completed(futureToIdx): #required snake case because python named it that
+            print("map gen: for loop started")
             try:
                 ok, grid = future.result()
+                print(f"map gen: {ok}, grid:{grid}")
                 #fire name ik
             except Exception:
                 print(f"map gen: exception caught skipping")
                 continue
             if ok and winnerGrid is None:
                 winnerGrid = grid
+                print(f"winnerGrid:{winnerGrid}")
                 for otherFuture in futureToIdx:
                     if otherFuture is not future:
                         otherFuture.cancel()
-
+        print("map gen: for loop finished")
         if winnerGrid is not None:
             self.map = winnerGrid
             print(f"successfully generated map")

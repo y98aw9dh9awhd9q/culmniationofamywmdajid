@@ -2,7 +2,9 @@ import pygame
 import mainMenu.theme as theme
 
 creditsText = [
-    ("Creation", ["yahu", "keys", "fih"])
+    ("Creation", ["yahu", "keys", "fih"]),
+    ("menus", ["keys"])
+
 ]
 
 def run(screen, clock):

@@ -1,11 +1,12 @@
 import pygame
 import const
 import mainMenu.theme as theme
+import os
 
 # entry guide:
 # each entry: {"name": str, "image": path or none, "description": str}
 # missing assets show a placeholder
-# example asset path "const.basedir/assets/enemies/goon.png"
+# ex asset pth "image": os.path.join(const.baseDir, "assets", "pictures", "cereal bowl"),
 
 enemies = [
     {
@@ -26,6 +27,12 @@ weapons = [
         "image":       None,
         "description": "g u n",
     },
+    {
+        "name" : "calamity",
+        "image": os.path.join(const.baseDir, "assets", "pictures", "cereal bowl.png"),
+        "description": "keyahno drivers lisenec revoked"
+    }
+
 ]
 
 utility = [

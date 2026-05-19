@@ -1,4 +1,4 @@
-#not apart of const.py because its only apropos of the menus
+# not apart of const.py because its only apropos of the menus
 
 
 accent          = (0x74, 0xd9, 0xf7)       # #74d9f7 color (fih's doing)

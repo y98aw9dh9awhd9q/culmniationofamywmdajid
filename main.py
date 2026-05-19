@@ -45,7 +45,8 @@ if loadedSettings["tutorial"]:
     print("start tutorial")
     currentLayerID     = [0,1]
 else:
-    currentLayerID     = [1, 0]
+    print("normal layer id")
+    currentLayerID     = [1, 1]
 playerSavePrep         = None
 print(currentLayerID)
 #exit dir index
@@ -113,8 +114,6 @@ def generateMap():
     if currentLayerID is None:
         currentLayerID = [1,1]
 
-
-
     if currentLayerID[1] == 5:
         mapSize += 1
         mapGen.increaseMapSize()
@@ -125,7 +124,8 @@ def generateMap():
         mapGen.generateMap()
         generatedMap = mapGen.printMap()
     else:
-        mapGen.setupMap()
+        print("main: map generated bossless")
+        mapGen.setupMap(boss = False)
         mapGen.generateMap()
         generatedMap = mapGen.printMap()
     currentLayerID[1] = currentLayerID[1] + 1
@@ -196,8 +196,14 @@ while running:
         if currentLayerID[0] >= 1:
             generatedMap      = generateMap()
         else:
-            currentLayerID[1]+= 1
-            generatedMap      = tutorial.tutorialMatching[currentLayerID[1]]
+            if currentLayerID[1] != 4:
+                currentLayerID[1]+= 1
+                generatedMap = tutorial.tutorialMatching[currentLayerID[1]]
+            else:
+                currentLayerID[0] +=1
+                currentLayerID[1] = 1
+                generatedMap = generateMap()
+
 
     if exitDir is not None and transitionCooldown <= 0:
 
