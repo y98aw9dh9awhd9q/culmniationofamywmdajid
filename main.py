@@ -14,13 +14,14 @@ import mainMenu.subMenu.settings as settings
 import mainMenu.menu as menu
 import mapping.mapLogic.tutorialGen as tutorial
 
+
+print(settings.loadSettings())
+#initialization settings
 pygame.init()
-screen             = pygame.display.set_mode((900, 600))
+screen             = pygame.display.set_mode(settings.loadSettings()["resolution"])
 clock              = pygame.time.Clock()
 font               = pygame.font.SysFont(None, 28)
-cfg    = settings.loadSettings()
-screen = settings.applySettings(cfg)
-loadedSettings = settings.loadSettings()
+#------------------------------------------------------
 
 def mainMenu():
     menuResult = menu.run(screen, clock, font)
@@ -31,7 +32,9 @@ def mainMenu():
 
 mainMenu()
 
-
+cfg    = settings.loadSettings()
+screen = settings.applySettings(cfg) #redefine screen incase new settings applied
+loadedSettings = settings.loadSettings()
 
 
 playerObj          = player(*screen.get_size())
@@ -40,6 +43,8 @@ generatedMap       = False
 currentRoomPosY    = 0
 currentRoomPosX    = 0
 transitionCooldown = 0.0
+
+print(f"main: loaded settings{loadedSettings}")
 
 if loadedSettings["tutorial"]:
     print("start tutorial")
@@ -170,8 +175,13 @@ while running:
             running = False
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            mainMenu()
-
+            saveData  = (playerSavePrep, generatedMap, currentLayerID)
+            menuResult = menu.run(screen, clock, font)
+            if menuResult[0] == "quit":
+                data.dataSaving.saveData(saveData)
+                running = False
+                pygame.quit()
+                raise SystemExit
 
 
     if not generatedMap:

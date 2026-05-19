@@ -31,6 +31,12 @@ weapons = [
         "name" : "calamity",
         "image": os.path.join(const.baseDir, "assets", "pictures", "cereal bowl.png"),
         "description": "keyahno drivers lisenec revoked"
+    },
+    {
+        "name": "xavier",
+        "image": None,
+        "description": "weapon good. 0.01 dmg, 1 volley, 50 second rechambering ",
+
     }
 
 ]

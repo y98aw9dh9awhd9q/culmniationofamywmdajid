@@ -3,7 +3,8 @@ import mainMenu.theme as theme
 
 creditsText = [
     ("Creation", ["yahu", "keys", "fih"]),
-    ("menus", ["keys"])
+    ("menus", ["keys"]),
+    ("Xavier", ["xavier "])
 
 ]
 
