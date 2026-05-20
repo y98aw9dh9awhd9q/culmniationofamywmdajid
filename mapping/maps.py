@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import pygame
 
 @dataclass(frozen=True)
@@ -717,8 +717,8 @@ tileColors = {
     1: "white",    #wall
     2: "brown",    #breakble
     3: "orange",   #exit
-    4: "yellow",   #i forgot
-    5: "cyan",     #i forgot
+    4: "yellow",   #chest
+    5: "cyan",     #shop
     6: "purple",   #elevator
     7: "orange",   #exit
     8: "orange",   #exit
@@ -797,3 +797,26 @@ def getElevatorTiles(roomId,screenW,screenH):
                 blockH
             )
     return rectOfElevator
+
+breakableTiles = {2}
+def getBreakableRectsWithCoords(roomId, screenW, screenH):
+    layout = roomRegistery[roomId].layout
+    rowCount = len(layout)
+    colCount = len(layout[0])
+    blockW = screenW / colCount
+    blockH = screenH / rowCount
+    result = []
+    for rowIdx, rowData in enumerate(layout):
+        for colIdx, tileVal in enumerate(rowData):
+            if tileVal in breakableTiles:
+                rect = pygame.Rect(colIdx * blockW, rowIdx * blockH, blockW, blockH)
+                result.append((rect, rowIdx, colIdx))
+    return result
+
+def breakTile(roomId, rowIdx, colIdx):
+    print("breaktile")
+    layout = [list(row) for row in roomRegistery[roomId].layout]
+    if layout[rowIdx][colIdx] in breakableTiles:
+        layout[rowIdx][colIdx] = 0
+
+    roomRegistery[roomId] = replace(roomRegistery[roomId], layout=layout)

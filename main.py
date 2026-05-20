@@ -12,6 +12,7 @@ from mapping.maps import getExitTiles
 import mainMenu.subMenu.settings as settings
 import mainMenu.menu as menu
 import mapping.tutorial.tutorialGen as tutorial
+import mainMenu.subMenu.pauseMenu as pauseMenu
 
 #============= pre boot ================================
 print(settings.loadSettings())
@@ -21,20 +22,18 @@ screen             = pygame.display.set_mode(settings.loadSettings()["resolution
 clock              = pygame.time.Clock()
 font               = pygame.font.SysFont(None, 28)
 
-
-
 def mainMenu():
-    menuResult = menu.run(screen, clock, font)
+    global screen
+    menuResult, screen = menu.run(screen, clock, font)
     print(menuResult)
-    if menuResult[0] == "quit":
+    if menuResult == "quit":
         pygame.quit()
         raise SystemExit
 
 mainMenu()
-cfg    = settings.loadSettings()
-screen = settings.applySettings(cfg) #redefine screen incase new settings applied
+cfg            = settings.loadSettings()
+screen         = settings.applySettings(cfg) #redefine screen incase new settings applied
 loadedSettings = settings.loadSettings()
-
 
 #================================================================
 
@@ -49,12 +48,13 @@ print(f"main: loaded settings{loadedSettings}")
 
 if loadedSettings["tutorial"]:
     print("start tutorial")
-    currentLayerID     = [0,1]
+    currentLayerID = [0, 1]
 else:
     print("normal layer id")
-    currentLayerID     = [1, 1]
-playerSavePrep         = None
+    currentLayerID = [1, 1]
+playerSavePrep     = None
 print(currentLayerID)
+
 #exit dir index
 mapDelta = {
     0: (-1,  0),
@@ -112,13 +112,20 @@ def placePlayerAtDoor(playerObj, doorRect, comingFromDir):
         playerObj.rect.centery = py
         playerObj.rect.left    = doorRect.right + 1
 
+def saveGameCall():
+    try:
+        saveDat = (playerSavePrep, generatedMap, currentLayerID)
+        data.gameSaveData.dataSaving.saveData(saveDat)
+        print("saved")
+    except Exception as e:
+        print(f"save error: {e}")
 
 mapSize = 3
 def generateMap():
     global mapSize, currentLayerID
     print(currentLayerID, "map gen called")
     if currentLayerID is None:
-        currentLayerID = [1,1]
+        currentLayerID = [1, 1]
 
     if currentLayerID[1] == 5:
         mapSize += 1
@@ -131,7 +138,7 @@ def generateMap():
         generatedMap = mapGen.printMap()
     else:
         print("main: map generated bossless")
-        mapGen.setupMap(boss = False)
+        mapGen.setupMap(boss=False)
         mapGen.generateMap()
         generatedMap = mapGen.printMap()
     currentLayerID[1] = currentLayerID[1] + 1
@@ -152,10 +159,6 @@ if saveDataRead:
     currentLayerID = saveDataRead[2]
 
 
-
-
-
-
 running = True
 while running:
 
@@ -165,25 +168,30 @@ while running:
     winW, winH        = screen.get_size()
     playerObj.screenW = winW
     playerObj.screenH = winH
+    keybinds          = cfg.get("keybinds", settings.defaultSettings["keybinds"])
 
     for event in events:
         if event.type == pygame.QUIT:
-            try:
-                saveDat = (playerSavePrep, generatedMap, currentLayerID)
-                data.gameSaveData.dataSaving.saveData(saveDat)
-            except:
-                print("save error")
+            saveGameCall()
             running = False
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            saveData  = (playerSavePrep, generatedMap, currentLayerID)
-            menuResult = menu.run(screen, clock, font)
-            if menuResult[0] == "quit":
-                data.gameSaveData.dataSaving.saveData(saveData)
+            pauseResult = pauseMenu.run(screen, clock)
+            if pauseResult == "save":
+                saveGameCall()
+            elif pauseResult == "menu":
+                saveGameCall()
+                menuResult, screen = menu.run(screen, clock, font)
+                if menuResult == "quit":
+                    running = False
+            elif pauseResult == "settings":
+                saveGameCall()
+                result, screen = settings.run(screen, clock, font)
+                if result == "quit":
+                    running = False
+            elif pauseResult == "quit":
+                saveGameCall()
                 running = False
-                pygame.quit()
-                raise SystemExit
-
 
     if not generatedMap:
         print(currentLayerID)
@@ -201,20 +209,19 @@ while running:
     exitDir       = playerObj.touchingExit(currentRoomID)
 
     if playerObj.touchingElevator(currentRoomID):
-        currentRoomID         = -1  #-1 is the entrance always
-        currentRoomPosX       = 0
-        currentRoomPosY       = 0
+        currentRoomID   = -1  #-1 is the entrance always
+        currentRoomPosX = 0
+        currentRoomPosY = 0
         if currentLayerID[0] >= 1:
-            generatedMap      = generateMap()
+            generatedMap = generateMap()
         else:
             if currentLayerID[1] != 4:
-                currentLayerID[1]+= 1
+                currentLayerID[1] += 1
                 generatedMap = tutorial.tutorialMatching[currentLayerID[1]]
             else:
-                currentLayerID[0] +=1
-                currentLayerID[1] = 1
+                currentLayerID[0] += 1
+                currentLayerID[1]  = 1
                 generatedMap = generateMap()
-
 
     if exitDir is not None and transitionCooldown <= 0:
 
@@ -246,8 +253,8 @@ while running:
 
     screen.fill((0, 0, 0))
     display.drawRoom(screen, generatedMap[currentRoomPosY][currentRoomPosX])
-    playerObj.update(deltaTime, generatedMap[currentRoomPosY][currentRoomPosX])
-    playerObj.bullets.draw(screen)  # draw all active player bullets
+    playerObj.update(deltaTime, generatedMap[currentRoomPosY][currentRoomPosX], keybinds)
+    playerObj.bullets.draw(screen)
     display.drawPlayer(screen, playerObj)
 
     pygame.display.flip()

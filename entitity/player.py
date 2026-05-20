@@ -1,5 +1,5 @@
 import pygame
-from mapping.maps import getExitTiles, getWallRects, getElevatorTiles
+from mapping.maps import getExitTiles, getWallRects, getElevatorTiles, getBreakableRectsWithCoords, breakTile
 from entitity.bullet import bullet
 
 class player(pygame.sprite.Sprite):
@@ -44,23 +44,32 @@ class player(pygame.sprite.Sprite):
         self.bullets.add(newBullet)
         self.shootTimer = self.shootCooldown
 
-    def update(self, deltaTime, currentRoomId):
+    def update(self, deltaTime, currentRoomId, keybinds=None):
         if self.invincibilityTimer > 0:
             self.invincibilityTimer -= deltaTime
 
         if self.shootTimer > 0:
             self.shootTimer -= deltaTime
 
-        #shoots bullet on left click
-        if pygame.mouse.get_pressed()[0] and self.shootTimer <= 0:
+        shootBtn = keybinds["shoot"] if keybinds else 1
+        if pygame.mouse.get_pressed()[shootBtn - 1] and self.shootTimer <= 0:
             self.shoot()
 
         keyState = pygame.key.get_pressed()
+
+        if keybinds:
+            upKey    = keybinds["up"]
+            downKey  = keybinds["down"]
+            leftKey  = keybinds["left"]
+            rightKey = keybinds["right"]
+        else:
+            upKey, downKey, leftKey, rightKey = pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d
+
         dx, dy = 0, 0
-        if keyState[pygame.K_a] or keyState[pygame.K_LEFT]:  dx -= 1
-        if keyState[pygame.K_d] or keyState[pygame.K_RIGHT]: dx += 1
-        if keyState[pygame.K_w] or keyState[pygame.K_UP]:    dy -= 1
-        if keyState[pygame.K_s] or keyState[pygame.K_DOWN]:  dy += 1
+        if keyState[leftKey]  or keyState[pygame.K_LEFT]:  dx -= 1
+        if keyState[rightKey] or keyState[pygame.K_RIGHT]: dx += 1
+        if keyState[upKey]    or keyState[pygame.K_UP]:    dy -= 1
+        if keyState[downKey]  or keyState[pygame.K_DOWN]:  dy += 1
 
         moveVec = pygame.Vector2(dx, dy)
         if moveVec.length() > 0:
@@ -68,7 +77,15 @@ class player(pygame.sprite.Sprite):
 
         self.moveAndCollide(moveVec, currentRoomId)
 
-        self.bullets.update(deltaTime, self.screenW, self.screenH)
+        wallRects      = getWallRects(currentRoomId, self.screenW, self.screenH)
+        breakableData  = getBreakableRectsWithCoords(currentRoomId, self.screenW, self.screenH)
+
+        def onBreak(rowIdx, colIdx):
+            breakTile(currentRoomId, rowIdx, colIdx)
+
+        for b in list(self.bullets):
+            b.update(deltaTime, self.screenW, self.screenH,
+                     wallRects=wallRects, breakableData=breakableData, onBreak=onBreak)
 
         if self.touchingExit(currentRoomId):
             return self.touchingExit(currentRoomId)
@@ -104,7 +121,3 @@ class player(pygame.sprite.Sprite):
             return None
         elif roomID == -2 and self.rect.colliderect(getElevatorTiles(roomID, self.screenW, self.screenH)):
             return True
-
-    def getBulletPos(self):
-        for sprite in self.bullets:
-            print(sprite.rect)

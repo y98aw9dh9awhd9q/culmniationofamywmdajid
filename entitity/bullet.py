@@ -3,10 +3,10 @@ import pygame
 class bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, targetX, targetY, speed=500, size=(10, 10), color=(255, 220, 50), damage=1, owner=None):
         super().__init__()
-        self.damage = damage
-        self.owner  = owner #hit filtering purpose
+        self.damage     = damage
+        self.owner      = owner #hit filtering purpose
 
-        self.image = pygame.Surface(size, pygame.SRCALPHA)
+        self.image      = pygame.Surface(size, pygame.SRCALPHA)
         self.image.fill(color)
         self.rect       = self.image.get_rect(center=(x, y))
         self.posX       = float(x)
@@ -17,11 +17,27 @@ class bullet(pygame.sprite.Sprite):
             direction = direction.normalize()
         self.velocity = direction * speed
 
-    def update(self, deltaTime, screenW, screenH):
-        self.posX      += self.velocity.x * deltaTime
-        self.posY      += self.velocity.y * deltaTime
+    def update(self, deltaTime, screenW, screenH, wallRects=None, breakableData=None, onBreak=None):
+        self.posX += self.velocity.x * deltaTime
+        self.posY += self.velocity.y * deltaTime
         self.rect.center = (self.posX, self.posY)
 
         if (self.rect.right < 0 or self.rect.left > screenW or
                 self.rect.bottom < 0 or self.rect.top > screenH):
             self.kill()
+            return
+
+        #ensure breakables get checked and intercepts if walltiles = {1,2}
+        if breakableData:
+            for rect, rowIdx, colIdx in breakableData:
+                if self.rect.colliderect(rect):
+                    if onBreak:
+                        onBreak(rowIdx, colIdx)
+                    self.kill()
+                    return
+
+        if wallRects:
+            for wallRect in wallRects:
+                if self.rect.colliderect(wallRect):
+                    self.kill()
+                    return
