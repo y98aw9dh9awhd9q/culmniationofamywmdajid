@@ -18,6 +18,7 @@ imageSize        = (67, 67) #make this unified across enemies.json based on wind
 
 def loadImage(path: str) -> Surface | None:
     if path is None:
+        print("compendium: no image")
         return None
     try:
         img = pygame.image.load(path).convert_alpha()

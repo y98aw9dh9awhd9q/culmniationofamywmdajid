@@ -40,9 +40,14 @@ def readJsonPlayerDat() -> dict:
 
 def checkCompendiumEntries():
     readData = readJsonPlayerDat()["unlockedCompendiumEntries"]
+    dataDict = {}
     for key, value in readData.items():
-        print(key, value)
-        if len(readData[key]) == 0:
-            print(f"playerDataManager: {key} is empty")
+        #print(key, value)
+        if len(readData[key]) != 0 and readData[key] is not None:
+            dataDict.update({key:value})
+    return dataDict
 
-print(checkCompendiumEntries())
+
+
+
+
