@@ -3,7 +3,7 @@ import json
 import os
 import mainMenu.theme as theme
 
-settingsFile = "data/settings.json"
+settingsFile = "data/settings/settings.json"
 
 defaultSettings = {
     "fpsCap"      : 60         ,

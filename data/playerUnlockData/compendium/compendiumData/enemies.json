@@ -1,0 +1,15 @@
+{
+  "nagra": {
+        "name":        "nagra",
+        "image":       "none",
+        "description": "nagra",
+        "unlockReq"  : 15
+    },
+  "emmanuel":     {
+        "name":        "emmanuel",
+        "image":       "None",
+        "description": "gooner",
+        "unlockReq"  : 15
+    }
+}
+

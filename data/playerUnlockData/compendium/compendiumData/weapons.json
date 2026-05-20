@@ -1,0 +1,17 @@
+{
+  "gun": {
+    "name": "gun",
+    "image": "None",
+    "description": "g u n"
+  },
+    "calamity":{
+      "name": "calamity",
+      "image": "None",
+      "description": "keyahno drivers lisenec revoked"
+  },
+  "xavier":{
+      "name": "xavier",
+      "image": "None",
+      "description": "weapon good. 0.01 dmg, 1 volley, 50 second rechambering "
+  }
+}

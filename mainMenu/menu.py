@@ -1,6 +1,6 @@
 import pygame
 import random
-import data.dataSaving
+import data.gameSaveData.dataSaving
 import mainMenu.subMenu.credits as credits
 import mainMenu.subMenu.compendium as compendium
 import mainMenu.subMenu.settings as settings
@@ -21,7 +21,7 @@ def run(screen, clock, font):
     #BG cycling
     bgRoomId = getRandomRoomId()
     bgTimer  = 0.0
-    hasSave  = bool(data.dataSaving.readSave())
+    hasSave  = bool(data.gameSaveData.dataSaving.readSave())
 
     def buildButtons():
         winW, winH = screen.get_size()
@@ -76,7 +76,7 @@ def run(screen, clock, font):
 
                         if label == "new game":
                             #fix
-                            data.dataSaving.deleteSave()
+                            data.gameSaveData.dataSaving.deleteSave()
                             print("menu: new game")
                             return "game", screen
 

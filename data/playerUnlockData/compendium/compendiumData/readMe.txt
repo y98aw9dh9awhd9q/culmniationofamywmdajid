@@ -1,0 +1,1 @@
+this folder contains everything that is displayed in the compendium

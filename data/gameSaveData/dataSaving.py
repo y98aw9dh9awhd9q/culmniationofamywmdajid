@@ -21,7 +21,7 @@ def saveData(dataToSave):
                 "generatedMap"   :   None,
                 "currentLayerID" :   None
             }
-            with open("data/save.json", "w") as file:
+            with open("data/gameSaveData/save.json", "w") as file:
                 json.dump(dataToDump, file)
 """
 example saved data for ref

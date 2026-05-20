@@ -7,7 +7,7 @@
 import pygame
 import mapping.mapLogic.mapGenerator as mapGenerator
 import display
-import data.dataSaving
+import data.gameSaveData.dataSaving
 from entitity.player import player
 from mapping.maps import getExitTiles
 import mainMenu.subMenu.settings as settings
@@ -137,7 +137,7 @@ def generateMap():
     return generatedMap
 
 #prestart data check
-saveDataRead = data.dataSaving.readSave()
+saveDataRead = data.gameSaveData.dataSaving.readSave()
 if saveDataRead:
     print(saveDataRead)
     generatedMap = saveDataRead[1]
@@ -169,7 +169,7 @@ while running:
         if event.type == pygame.QUIT:
             try:
                 saveDat = (playerSavePrep, generatedMap, currentLayerID)
-                data.dataSaving.saveData(saveDat)
+                data.gameSaveData.dataSaving.saveData(saveDat)
             except:
                 print("save error")
             running = False
@@ -178,7 +178,7 @@ while running:
             saveData  = (playerSavePrep, generatedMap, currentLayerID)
             menuResult = menu.run(screen, clock, font)
             if menuResult[0] == "quit":
-                data.dataSaving.saveData(saveData)
+                data.gameSaveData.dataSaving.saveData(saveData)
                 running = False
                 pygame.quit()
                 raise SystemExit

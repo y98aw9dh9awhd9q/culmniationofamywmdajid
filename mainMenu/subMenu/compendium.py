@@ -1,70 +1,29 @@
 import pygame
+from pygame import Surface
+
 import const
 import mainMenu.theme as theme
-import os
+import data.playerUnlockData.compendium.compendiumManager
 
 # entry guide:
 # each entry: {"name": str, "image": path or none, "description": str}
 # missing assets show a placeholder
 # ex asset pth "image": os.path.join(const.baseDir, "assets", "pictures", "cereal bowl"),
 
-enemies = [
-    {
-        "name":        "nagra",
-        "image":       None,
-        "description": "nagra",
-    },
-    {
-        "name":        "emmanuel",
-        "image":       None,
-        "description": "gooner",
-    },
-]
 
-weapons = [
-    {
-        "name":        "gun",
-        "image":       None,
-        "description": "g u n",
-    },
-    {
-        "name" : "calamity",
-        "image": os.path.join(const.baseDir, "assets", "pictures", "cereal bowl.png"),
-        "description": "keyahno drivers lisenec revoked"
-    },
-    {
-        "name": "xavier",
-        "image": None,
-        "description": "weapon good. 0.01 dmg, 1 volley, 50 second rechambering ",
-
-    }
-
-]
-
-utility = [
-    {
-        "name":        "healing potion",
-        "image":       None,
-        "description": "drink",
-    },
-]
-
-tabs = [
-    ("enemies", enemies),
-    ("weapons", weapons),
-    ("utility", utility),
-]
+tabs = data.playerUnlockData.compendium.compendiumManager.tabs
 
 placeholderColor = const.red
-imageSize        = (67, 67) #make this unified across enemies based on window scale
+imageSize        = (67, 67) #make this unified across enemies.json based on window scale
 
-def loadImage(path):
+def loadImage(path: str) -> Surface | None:
     if path is None:
         return None
     try:
         img = pygame.image.load(path).convert_alpha()
         return pygame.transform.scale(img, imageSize)
-    except Exception:
+    except Exception as e:
+        print(f"compendium: exception caught {e}")
         return None
 
 def run(screen, clock):
