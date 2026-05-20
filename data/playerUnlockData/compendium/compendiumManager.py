@@ -24,18 +24,25 @@ tabs = [
     ("utility", list(readJsonCompendium("utility").values())),
 ]"""
 
-playerData = playerDataManager.checkCompendiumEntries()
 
-tabs = []
 
-for key in playerData:
-    tabTemp = []
-    for item in playerData[key]:
-        #print("t" , readJsonCompendium(key)[item])
-        tabTemp.append(readJsonCompendium(key)[item])
-    tabs.append((key, tabTemp))
 
-if len(tabs) == 0:
-    tabs = [('compendium', [{'name': 'nothing here', 'image': 'None', 'description': "kill enemies or obtain items to fill in the compendium"}])]
+def updateCompendiumEntries():
+    print("compendium manager: called updateCompendiumEntries")
+    playerData = playerDataManager.checkCompendiumEntries()
+    tabs = []
+    for key in playerData:
+        tabTemp = []
+        for item in playerData[key]:
+            #print("t" , readJsonCompendium(key)[item])
+            tabTemp.append(readJsonCompendium(key)[item])
+        tabs.append((key, tabTemp))
+    for item in tabs:
+        if "compendium" in item[0] and len(tabs) > 1:
+            tabs.remove(item)
+    if len(tabs) == 0:
+        print(len(tabs))
+        tabs = [('compendium', [{'name': 'nothing here', 'image': 'None',
+                                 'description': "kill enemies or obtain items to fill in the compendium"}])]
+    return tabs
 
-print(tabs)

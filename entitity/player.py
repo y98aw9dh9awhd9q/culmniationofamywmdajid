@@ -104,3 +104,7 @@ class player(pygame.sprite.Sprite):
             return None
         elif roomID == -2 and self.rect.colliderect(getElevatorTiles(roomID, self.screenW, self.screenH)):
             return True
+
+    def getBulletPos(self):
+        for sprite in self.bullets:
+            print(sprite.rect)

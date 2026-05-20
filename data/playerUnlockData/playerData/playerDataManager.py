@@ -45,8 +45,8 @@ def checkCompendiumEntries():
         #print(key, value)
         if len(readData[key]) != 0 and readData[key] is not None:
             dataDict.update({key:value})
+    print("datadict ", dataDict)
     return dataDict
-
 
 
 

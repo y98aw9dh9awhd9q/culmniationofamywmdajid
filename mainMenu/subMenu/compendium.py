@@ -4,6 +4,7 @@ from pygame import Surface
 import const
 import mainMenu.theme as theme
 import data.playerUnlockData.compendium.compendiumManager
+from mainMenu.subMenu.settings import loadSettings
 
 # entry guide:
 # each entry: {"name": str, "image": path or none, "description": str}
@@ -11,7 +12,7 @@ import data.playerUnlockData.compendium.compendiumManager
 # ex asset pth "image": os.path.join(const.baseDir, "assets", "pictures", "cereal bowl"),
 
 
-tabs = data.playerUnlockData.compendium.compendiumManager.tabs
+
 
 placeholderColor = const.red
 imageSize        = (67, 67) #make this unified across enemies.json based on window scale
@@ -28,6 +29,8 @@ def loadImage(path: str) -> Surface | None:
         return None
 
 def run(screen, clock):
+    tabs = data.playerUnlockData.compendium.compendiumManager.updateCompendiumEntries()
+    print(f"compendium: tabs: {tabs}")
     titleFont  = pygame.font.SysFont(None, 48)
     tabFont    = pygame.font.SysFont(None, 32)
     nameFont   = pygame.font.SysFont(None, 30)
@@ -53,7 +56,7 @@ def run(screen, clock):
     running = True
 
     while running:
-        clock.tick(60)
+        clock.tick(loadSettings()["fpsCap"])
         mx, my = pygame.mouse.get_pos()
 
         for event in pygame.event.get():

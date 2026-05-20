@@ -3,7 +3,6 @@
 #dungeon crawller whjere you go through epstein stuff and then fight the scret boss
 #the secret boss is emmanuel and he is the ultimate gooner
 
-
 import pygame
 import mapping.mapLogic.mapGenerator as mapGenerator
 import display
@@ -12,16 +11,17 @@ from entitity.player import player
 from mapping.maps import getExitTiles
 import mainMenu.subMenu.settings as settings
 import mainMenu.menu as menu
-import mapping.mapLogic.tutorialGen as tutorial
+import mapping.tutorial.tutorialGen as tutorial
 
-
+#============= pre boot ================================
 print(settings.loadSettings())
 #initialization settings
 pygame.init()
 screen             = pygame.display.set_mode(settings.loadSettings()["resolution"])
 clock              = pygame.time.Clock()
 font               = pygame.font.SysFont(None, 28)
-#------------------------------------------------------
+
+
 
 def mainMenu():
     menuResult = menu.run(screen, clock, font)
@@ -31,11 +31,12 @@ def mainMenu():
         raise SystemExit
 
 mainMenu()
-
 cfg    = settings.loadSettings()
 screen = settings.applySettings(cfg) #redefine screen incase new settings applied
 loadedSettings = settings.loadSettings()
 
+
+#================================================================
 
 playerObj          = player(*screen.get_size())
 mapGen             = mapGenerator.mapGenerator()

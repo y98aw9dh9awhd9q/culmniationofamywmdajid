@@ -5,6 +5,7 @@ import mainMenu.subMenu.credits as credits
 import mainMenu.subMenu.compendium as compendium
 import mainMenu.subMenu.settings as settings
 import mainMenu.theme as theme
+import data.playerUnlockData.compendium.compendiumManager as compendiumManager
 
 from mapping.maps import roomRegistery
 

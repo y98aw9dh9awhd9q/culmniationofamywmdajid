@@ -118,7 +118,17 @@ roomChest = Room([
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ], type=5, exits=(False, False, True, False))
 
-
+roomTutorialBreakables = Room([
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,0,0,0,0,0,0,2,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,2,0,0,0,0,0,0,1],
+    [9,0,0,0,0,0,0,2,0,0,0,0,0,0,8],
+    [9,0,0,0,0,0,0,2,0,0,0,0,0,0,8],
+    [9,0,0,0,0,0,0,2,0,0,0,0,0,0,8],
+    [1,0,0,0,0,0,0,2,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,2,0,0,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+], type=5, exits=(False, False, True, False))
 #regular
 
 #top T
@@ -626,6 +636,7 @@ roomRegistery = {
     -5: roomChest,
     -6: roomDoubleChest,
     -7: roomTutorialChest,
+    -8: roomTutorialBreakables,
 
     #T type
     1:  roomTopA,
