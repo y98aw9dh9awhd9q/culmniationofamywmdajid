@@ -740,7 +740,7 @@ tileColors = {
 
 exitTiles = {3, 7, 8, 9}
 elevatorTiles = 6
-wallTiles  = {1, 2}
+wallTiles  = {1, 2,4, 5}
 
 
 def getLayout(roomId):
@@ -825,6 +825,26 @@ def getBreakableRectsWithCoords(roomId, screenW, screenH):
                 rect = pygame.Rect(colIdx * blockW, rowIdx * blockH, blockW, blockH)
                 result.append((rect, rowIdx, colIdx))
     return result
+
+chestTiles = {4}
+def getChestRectsWithCoords(roomId, screenW, screenH):
+    """
+    returns the rect, rowIDX, colIDx to be able to ID and identify chests
+    """
+    layout = roomRegistery[roomId].layout
+    rowCount = len(layout)
+    colCount = len(layout[0])
+    blockW = screenW / colCount
+    blockH = screenH / rowCount
+    result = []
+    for rowIdx, rowData in enumerate(layout):
+        for colIdx, tileVal in enumerate(rowData):
+            if tileVal in chestTiles:
+                rect = pygame.Rect(colIdx * blockW, rowIdx * blockH, blockW, blockH)
+                result.append(
+                    {"rect": rect, "col":(rowIdx, colIdx)})
+    return result
+
 
 def breakTile(roomId, rowIdx, colIdx):
     print("breaktile")

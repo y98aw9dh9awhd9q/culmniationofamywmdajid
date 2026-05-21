@@ -162,9 +162,6 @@ if saveDataRead:
 running = True
 while running:
 
-    if currentLayerID[1] == 2:
-        playerObj.getWeapon("pistol#1")
-
     cfg               = settings.loadSettings()
     deltaTime         = clock.tick(cfg["fpsCap"]) / 1000.0
     events            = pygame.event.get()

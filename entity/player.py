@@ -1,5 +1,5 @@
 import pygame
-from mapping.maps import getExitTiles, getWallRects, getElevatorTiles, getBreakableRectsWithCoords, breakTile
+from mapping.maps import getExitTiles, getWallRects, getElevatorTiles, getBreakableRectsWithCoords, breakTile, getChestRectsWithCoords
 from entity.weapons.bullet import bullet
 from entity.weapons.weaponReader import weapon
 
@@ -55,7 +55,19 @@ class player(pygame.sprite.Sprite):
             self.bullets.add(newBullet)
             self.shootTimer = self.shootCooldown
 
+    def playerToucherHelper(self, otherRect):
+        sides1 = [self.rect.right, self.rect.left, self.rect.bottom, self.rect.top]
+        sides2 = [otherRect.left, otherRect.right, otherRect.top, otherRect.bottom]
+        return any(s1 == s2 for s1, s2 in zip(sides1, sides2))
+
     def update(self, deltaTime, currentRoomId, keybinds=None):
+
+
+
+
+
+
+
         if self.invincibilityTimer > 0:
             self.invincibilityTimer -= deltaTime
 
@@ -78,14 +90,25 @@ class player(pygame.sprite.Sprite):
             downKey  = keybinds["down"]
             leftKey  = keybinds["left"]
             rightKey = keybinds["right"]
+            interact = keybinds["interact"]
         else:
-            upKey, downKey, leftKey, rightKey = pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d
+            upKey, downKey, leftKey, rightKey, interact = pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_RETURN
 
         dx, dy = 0, 0
         if keyState[leftKey]  or keyState[pygame.K_LEFT]:  dx -= 1
         if keyState[rightKey] or keyState[pygame.K_RIGHT]: dx += 1
         if keyState[upKey]    or keyState[pygame.K_UP]:    dy -= 1
         if keyState[downKey]  or keyState[pygame.K_DOWN]:  dy += 1
+
+
+        #chest logic
+        chestRectStuff = getChestRectsWithCoords(currentRoomId, self.screenW, self.screenH)
+        if len(chestRectStuff) > 0:
+            for item in chestRectStuff:
+                if self.playerToucherHelper(item["rect"]) and keyState[interact]:
+                    self.getWeapon("pistol#1")
+
+
 
         moveVec = pygame.Vector2(dx, dy)
         if moveVec.length() > 0:
