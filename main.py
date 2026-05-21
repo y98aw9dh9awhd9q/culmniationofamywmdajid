@@ -7,8 +7,8 @@ import pygame
 import mapping.mapLogic.mapGenerator as mapGenerator
 import display
 import data.gameSaveData.dataSaving
-from entitity.player import player
-from mapping.maps import getExitTiles
+from   entity.player import player
+from   mapping.maps import getExitTiles
 import mainMenu.subMenu.settings as settings
 import mainMenu.menu as menu
 import mapping.tutorial.tutorialGen as tutorial
@@ -161,6 +161,9 @@ if saveDataRead:
 
 running = True
 while running:
+
+    if currentLayerID[1] == 2:
+        playerObj.getWeapon("pistol#1")
 
     cfg               = settings.loadSettings()
     deltaTime         = clock.tick(cfg["fpsCap"]) / 1000.0

@@ -1,14 +1,14 @@
 import pygame
 from mapping.maps import getExitTiles, getWallRects, getElevatorTiles, getBreakableRectsWithCoords, breakTile
-from entitity.bullet import bullet
+from entity.weapons.bullet import bullet
+from entity.weapons.weaponReader import weapon
 
 class player(pygame.sprite.Sprite):
     immuFrameTime = 0.5
     size          = (60, 60)
     speed         = 220
-    shootCooldown = 0.25
 
-    def __init__(self, screenW, screenH):
+    def __init__(self, screenW, screenH, gun = None):
         super().__init__()
         self.screenW = screenW
         self.screenH = screenH
@@ -21,6 +21,16 @@ class player(pygame.sprite.Sprite):
         self.isAlive            = True
         self.shootTimer         = 0.0
         self.bullets            = pygame.sprite.Group()
+
+        if gun is None:
+            self.allowShoot = False
+
+    def getWeapon(self, obtained):
+        self.allowShoot = True
+        self.gun = weapon(obtained)
+        self.gun.readWeaponSheet()
+        self.shootCooldown = float(self.gun.cooldown)
+
 
     def respawn(self, screenW, screenH):
         self.screenW     = screenW
@@ -39,10 +49,11 @@ class player(pygame.sprite.Sprite):
         return self.invincibilityTimer > 0 and int(self.invincibilityTimer * 10) % 2 == 0
 
     def shoot(self):
-        mouseX, mouseY = pygame.mouse.get_pos()
-        newBullet = bullet(self.rect.centerx, self.rect.centery, mouseX, mouseY, owner="player")
-        self.bullets.add(newBullet)
-        self.shootTimer = self.shootCooldown
+        if self.allowShoot:
+            mouseX, mouseY = pygame.mouse.get_pos()
+            newBullet = bullet(self.rect.centerx, self.rect.centery, mouseX, mouseY, owner="player")
+            self.bullets.add(newBullet)
+            self.shootTimer = self.shootCooldown
 
     def update(self, deltaTime, currentRoomId, keybinds=None):
         if self.invincibilityTimer > 0:
@@ -52,8 +63,13 @@ class player(pygame.sprite.Sprite):
             self.shootTimer -= deltaTime
 
         shootBtn = keybinds["shoot"] if keybinds else 1
-        if pygame.mouse.get_pressed()[shootBtn - 1] and self.shootTimer <= 0:
+        if shootBtn <= 3:
+            if pygame.mouse.get_pressed()[shootBtn - 1] and self.shootTimer <= 0:
+                self.shoot()
+        elif pygame.key.get_pressed()[shootBtn] and self.shootTimer <= 0:
             self.shoot()
+
+
 
         keyState = pygame.key.get_pressed()
 
