@@ -3,23 +3,26 @@ import os
 
 def saveData(dataToSave):
         try:
-            playerSavePrep, generatedMap, currentLayerID = dataToSave
+            playerSavePrep, generatedMap, currentLayerID,weapon = dataToSave
             print(playerSavePrep)
             print(generatedMap)
             print(currentLayerID)
+            print(weapon)
             dataToDump = {
                 "playerSaveData" : playerSavePrep,
-                "generatedMap" : generatedMap,
-                "currentLayerID" : currentLayerID
+                "generatedMap"   : generatedMap,
+                "currentLayerID" : currentLayerID,
+                "weapon"         : weapon
             }
             with open("data/save.json","w") as file:
                 json.dump(dataToDump,file)
-        except:
-
+        except Exception as e:
+            print(f"dataSaving: {e}")
             dataToDump = {
                 "playerSaveData" :   None,
                 "generatedMap"   :   None,
-                "currentLayerID" :   None
+                "currentLayerID" :   None,
+                "weapon"         :   None
             }
             with open("data/gameSaveData/save.json", "w") as file:
                 json.dump(dataToDump, file)
@@ -27,7 +30,8 @@ def saveData(dataToSave):
 example saved data for ref
 {"playerSaveData": [33, 1, 0, [91, 300]],
   "generatedMap": [[-1, 33, 19], [3, 2, 1], [17, -3, -2]], 
-  "currentLayerID": [1, 5]}
+  "currentLayerID": [1, 5],
+  "weapon: "pistol#1""}
 """
 
 def readSave():
@@ -37,9 +41,10 @@ def readSave():
     except:
         return False
     playerSaveData = loadedData["playerSaveData"]
-    generatedMap = loadedData["generatedMap"]
+    generatedMap   = loadedData["generatedMap"]
     currentLayerID = loadedData["currentLayerID"]
-    return playerSaveData, generatedMap, currentLayerID
+    weapon         = loadedData["weapon"]
+    return playerSaveData, generatedMap, currentLayerID, weapon
 
 def deleteSave():
     try:

@@ -17,6 +17,7 @@ defaultSettings = {
         "right"   : pygame.K_d,
         "shoot"   : 1,
         "interact": pygame.K_RETURN,
+        "dodge"   : pygame.K_f,
     },
 }
 
@@ -98,7 +99,7 @@ def run(screen, clock, font):
     ]
 
     #shown keybind actions
-    keybindActions = ["up", "down", "left", "right", "shoot", "interact"]
+    keybindActions = ["up", "down", "left", "right", "shoot", "interact", "dodge"]
 
     currentSection  = generalSection
     rebindingAction = None    #holds for key press

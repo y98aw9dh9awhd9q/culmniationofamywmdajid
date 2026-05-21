@@ -114,11 +114,11 @@ def placePlayerAtDoor(playerObj, doorRect, comingFromDir):
 
 def saveGameCall():
     try:
-        saveDat = (playerSavePrep, generatedMap, currentLayerID)
+        saveDat = (playerSavePrep, generatedMap, currentLayerID, playerObj.obtainedGuns)
         data.gameSaveData.dataSaving.saveData(saveDat)
         print("saved")
     except Exception as e:
-        print(f"save error: {e}")
+        print(f"main.py: save error: {e}")
 
 mapSize = 3
 def generateMap():
@@ -147,12 +147,17 @@ def generateMap():
 #prestart data check
 saveDataRead = data.gameSaveData.dataSaving.readSave()
 if saveDataRead:
-    print(saveDataRead)
+    print("main: savedata", saveDataRead[3])
     generatedMap = saveDataRead[1]
+
     try:
-        currentRoomPosX       = saveDataRead[0][1]
-        currentRoomPosY       = saveDataRead[0][2]
-        playerObj.rect.center = saveDataRead[0][-1]
+        currentRoomPosX          = saveDataRead[0][1]
+        currentRoomPosY          = saveDataRead[0][2]
+        playerObj.rect.center    = saveDataRead[0][3]
+        if len(saveDataRead[3]) != 0:
+            print(saveDataRead[3][0])
+            playerObj.getWeapon(saveDataRead[3][0])
+
     except:
         currentRoomPosX, currentRoomPosY = 0, 0
         playerObj.rect.center = screen.get_size()[0] / 2, screen.get_size()[1] / 2
@@ -242,6 +247,7 @@ while running:
 
             if doorRect:
                 placePlayerAtDoor(playerObj, doorRect, exitDir)
+                playerObj.syncPos()
 
             transitionCooldown = 0.25                #prevent seizure or something idk
             playerSavePrep = (newRoomID,             #0 - room ID the player enters
@@ -253,7 +259,7 @@ while running:
 
     screen.fill((0, 0, 0))
     display.drawRoom(screen, generatedMap[currentRoomPosY][currentRoomPosX])
-    playerObj.update(deltaTime, generatedMap[currentRoomPosY][currentRoomPosX], currentLayerID, keybinds)
+    playerObj.update(deltaTime, generatedMap[currentRoomPosY][currentRoomPosX], currentLayerID, currentRoomPosX, currentRoomPosY, keybinds)
     playerObj.bullets.draw(screen)
     display.drawPlayer(screen, playerObj)
 

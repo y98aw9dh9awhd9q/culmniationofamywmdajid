@@ -5,40 +5,53 @@ from entity.weapons.weaponReader import weapon
 from mapping.mapLogic.chestLogic import chest
 
 class player(pygame.sprite.Sprite):
-    immuFrameTime = 0.5
-    size          = (60, 60)
-    speed         = 220
+    immuFrameTime  = 0.5
+    size           = (60, 60)
+    speed          = 220
+    dodgeKey       = pygame.K_f
+    dodgeSpeed     = 900
+    dodgeCooldown  = 0.5
+    roomCols       = 15
+    roomRows       = 9
 
-    def __init__(self, screenW, screenH, gun = None):
+    def __init__(self, screenW, screenH, gun=None):
         super().__init__()
-        self.screenW = screenW
-        self.screenH = screenH
-        self.hp      = 6
-        self.maxHp   = 6
-        self.image   = None
-        self.rect    = pygame.Rect(0, 0, self.size[0], self.size[1])
+        self.screenW            = screenW
+        self.screenH            = screenH
+        self.hp                 = 6
+        self.maxHp              = 6
+        self.image              = None
+        self.rect               = pygame.Rect(0, 0, self.size[0], self.size[1])
         self.respawn(screenW, screenH)
         self.invincibilityTimer = 0.0
         self.isAlive            = True
         self.shootTimer         = 0.0
         self.bullets            = pygame.sprite.Group()
-        self.roomIDofGenerated  = []
-        self.chestToOpen        = []
+        self.posX               = float(self.rect.x)
+        self.posY               = float(self.rect.y)
+        self.chestRegistry      = {}
+        self.dodging            = False
+        self.dodgeVec           = pygame.Vector2(0, 0)
+        self.dodgeRemaining     = 0.0
+        self.dodgeCooldownTimer = 0.0
+        self.obtainedGuns  = []
 
         if gun is None:
             self.allowShoot = False
 
     def getWeapon(self, obtained):
-        self.allowShoot = True
-        self.gun = weapon(obtained)
+        self.obtainedGuns.append(obtained)
+        self.allowShoot    = True
+        self.gun           = weapon(obtained)
         self.gun.readWeaponSheet()
         self.shootCooldown = float(self.gun.cooldown)
-
 
     def respawn(self, screenW, screenH):
         self.screenW     = screenW
         self.screenH     = screenH
         self.rect.center = (screenW // 2, screenH // 2)
+        self.posX        = float(self.rect.x)
+        self.posY        = float(self.rect.y)
 
     def takeDamage(self):
         if self.invincibilityTimer > 0:
@@ -63,7 +76,26 @@ class player(pygame.sprite.Sprite):
         sides2 = [otherRect.left, otherRect.right, otherRect.top, otherRect.bottom]
         return any(s1 == s2 for s1, s2 in zip(sides1, sides2))
 
-    def update(self, deltaTime, currentRoomId, currentLayerID, keybinds=None):
+    def syncPos(self):
+        self.posX = float(self.rect.x)
+        self.posY = float(self.rect.y)
+
+    def startDodge(self, dx, dy):
+        if self.dodging or self.dodgeCooldownTimer > 0:
+            return
+
+        if dx != 0 or dy != 0:
+            direction = pygame.Vector2(dx, dy).normalize()
+        else:
+            mx, my    = pygame.mouse.get_pos()
+            toMouse   = pygame.Vector2(mx - self.rect.centerx, my - self.rect.centery)
+            direction = toMouse.normalize() if toMouse.length() > 0 else pygame.Vector2(1, 0)
+
+
+
+
+        tileW             = self.screenW / self.roomCols
+        tileH             = self.screenH / self.roomRows
 
 
 
@@ -71,11 +103,28 @@ class player(pygame.sprite.Sprite):
 
 
 
+        dodgeDist         = 1.25 * min(tileW, tileH) #distance of dodge
+
+
+
+
+
+
+        self.dodging          = True
+        self.dodgeVec         = direction
+        self.dodgeRemaining   = dodgeDist
+        self.invincibilityTimer = max(self.invincibilityTimer,
+                                      dodgeDist / self.dodgeSpeed + 0.05)
+
+    def update(self, deltaTime, currentRoomId, currentLayerID, currentRoomPosX=0, currentRoomPosY=0, keybinds=None):
         if self.invincibilityTimer > 0:
             self.invincibilityTimer -= deltaTime
 
         if self.shootTimer > 0:
             self.shootTimer -= deltaTime
+
+        if self.dodgeCooldownTimer > 0:
+            self.dodgeCooldownTimer -= deltaTime
 
         shootBtn = keybinds["shoot"] if keybinds else 1
         if shootBtn <= 3:
@@ -83,8 +132,6 @@ class player(pygame.sprite.Sprite):
                 self.shoot()
         elif pygame.key.get_pressed()[shootBtn] and self.shootTimer <= 0:
             self.shoot()
-
-
 
         keyState = pygame.key.get_pressed()
 
@@ -94,8 +141,11 @@ class player(pygame.sprite.Sprite):
             leftKey  = keybinds["left"]
             rightKey = keybinds["right"]
             interact = keybinds["interact"]
+            dodgeKey = keybinds["dodge"]
         else:
-            upKey, downKey, leftKey, rightKey, interact = pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_RETURN
+            upKey, downKey, leftKey, rightKey, interact, dodgeKey = (
+                pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_RETURN, pygame.K_f
+            )
 
         dx, dy = 0, 0
         if keyState[leftKey]  or keyState[pygame.K_LEFT]:  dx -= 1
@@ -103,33 +153,67 @@ class player(pygame.sprite.Sprite):
         if keyState[upKey]    or keyState[pygame.K_UP]:    dy -= 1
         if keyState[downKey]  or keyState[pygame.K_DOWN]:  dy += 1
 
+        if keyState[dodgeKey] and not self.dodging and self.dodgeCooldownTimer <= 0:
+            self.startDodge(dx, dy)
 
-        #chest logic gives the chest locations
+
+
+
+
+        #chest lpogic=================================================
         chestRectStuff = getChestRectsWithCoords(currentRoomId, self.screenW, self.screenH)
 
-        if len(chestRectStuff) > 0 :
-            if currentRoomId not in self.roomIDofGenerated:
-                self.roomIDofGenerated.append(currentRoomId)
-                for i in range(len(chestRectStuff)):
-                    self.chestToOpen.append(chest([0,1]))
-                    print("player: generated chest loot", self.chestToOpen)
+        for chestData in chestRectStuff:
+            chestKey = (int(currentRoomPosX), int(currentRoomPosY),
+                        int(chestData["col"][0]), int(chestData["col"][1]))
 
-            for item in chestRectStuff:
-                if self.playerToucherHelper(item["rect"]) and keyState[interact]:
-                    weaponObtained = self.chestToOpen[0]
-                    temp = weaponObtained.openChest()
-                    if temp is not None:
-                        self.getWeapon(temp)
-                    print(f"player: player got {weaponObtained}")
+            if chestKey not in self.chestRegistry:
+                self.chestRegistry[chestKey] = chest(currentLayerID)
+                print(f"player: registered chest at {chestKey}")
 
-        moveVec = pygame.Vector2(dx, dy)
-        if moveVec.length() > 0:
-            moveVec = moveVec.normalize() * self.speed * deltaTime
+            if self.playerToucherHelper(chestData["rect"]) and keyState[interact]:
+                chestObj = self.chestRegistry[chestKey]
+                loot = chestObj.openChest()
+                if loot is not None:
+                    self.getWeapon(loot)
+                    print(f"player: got {loot} from chest {chestKey}")
 
-        self.moveAndCollide(moveVec, currentRoomId)
 
-        wallRects      = getWallRects(currentRoomId, self.screenW, self.screenH)
-        breakableData  = getBreakableRectsWithCoords(currentRoomId, self.screenW, self.screenH)
+
+
+
+        #dodge logic============================================================
+        if self.dodging:
+            #move at dodge speed
+            maxStep      = self.dodgeSpeed * deltaTime
+            step         = min(maxStep, self.dodgeRemaining)
+            dodgeMoveVec = self.dodgeVec * step
+
+            prevX, prevY = self.posX, self.posY
+            self.moveAndCollide(dodgeMoveVec, currentRoomId)
+
+            #ensure it stops at wall
+            actualDist = pygame.Vector2(self.posX - prevX, self.posY - prevY).length()
+            self.dodgeRemaining -= actualDist
+
+            #end
+            if self.dodgeRemaining <= 0 or actualDist < step * 0.5:
+                self.dodging            = False
+                self.dodgeRemaining     = 0.0
+                self.dodgeCooldownTimer = self.dodgeCooldown
+        else:
+            moveVec = pygame.Vector2(dx, dy)
+            if moveVec.length() > 0:
+                moveVec = moveVec.normalize() * self.speed * deltaTime
+            self.moveAndCollide(moveVec, currentRoomId)
+
+
+
+
+
+        #bullet deals================================================================
+        wallRects     = getWallRects(currentRoomId, self.screenW, self.screenH)
+        breakableData = getBreakableRectsWithCoords(currentRoomId, self.screenW, self.screenH)
 
         def onBreak(rowIdx, colIdx):
             breakTile(currentRoomId, rowIdx, colIdx)
@@ -146,19 +230,34 @@ class player(pygame.sprite.Sprite):
     def moveAndCollide(self, moveVec, roomId):
         wallRects = getWallRects(roomId, self.screenW, self.screenH)
 
-        self.rect.x += moveVec.x
+        self.posX   += moveVec.x
+        self.rect.x  = int(self.posX)
         for wallRect in wallRects:
             if self.rect.colliderect(wallRect):
-                if moveVec.x > 0: self.rect.right = wallRect.left
-                else:             self.rect.left  = wallRect.right
+                if moveVec.x > 0:
+                    self.rect.right = wallRect.left
+                else:
+                    self.rect.left  = wallRect.right
+                self.posX = float(self.rect.x)
 
-        self.rect.y += moveVec.y
+        self.posY   += moveVec.y
+        self.rect.y  = int(self.posY)
         for wallRect in wallRects:
             if self.rect.colliderect(wallRect):
-                if moveVec.y > 0: self.rect.bottom = wallRect.top
-                else:             self.rect.top    = wallRect.bottom
+                if moveVec.y > 0:
+                    self.rect.bottom = wallRect.top
+                else:
+                    self.rect.top    = wallRect.bottom
+                self.posY = float(self.rect.y)
 
         self.rect.clamp_ip(pygame.Rect(0, 0, self.screenW, self.screenH))
+
+        clampedX = float(self.rect.x)
+        clampedY = float(self.rect.y)
+        if clampedX != int(self.posX):
+            self.posX = clampedX
+        if clampedY != int(self.posY):
+            self.posY = clampedY
 
     def touchingExit(self, roomId):
         for exitRect in getExitTiles(roomId, self.screenW, self.screenH):
