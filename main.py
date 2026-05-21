@@ -253,7 +253,7 @@ while running:
 
     screen.fill((0, 0, 0))
     display.drawRoom(screen, generatedMap[currentRoomPosY][currentRoomPosX])
-    playerObj.update(deltaTime, generatedMap[currentRoomPosY][currentRoomPosX], keybinds)
+    playerObj.update(deltaTime, generatedMap[currentRoomPosY][currentRoomPosX], currentLayerID, keybinds)
     playerObj.bullets.draw(screen)
     display.drawPlayer(screen, playerObj)
 

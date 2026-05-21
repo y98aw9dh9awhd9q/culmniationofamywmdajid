@@ -2,6 +2,7 @@ import pygame
 from mapping.maps import getExitTiles, getWallRects, getElevatorTiles, getBreakableRectsWithCoords, breakTile, getChestRectsWithCoords
 from entity.weapons.bullet import bullet
 from entity.weapons.weaponReader import weapon
+from mapping.mapLogic.chestLogic import chest
 
 class player(pygame.sprite.Sprite):
     immuFrameTime = 0.5
@@ -21,6 +22,8 @@ class player(pygame.sprite.Sprite):
         self.isAlive            = True
         self.shootTimer         = 0.0
         self.bullets            = pygame.sprite.Group()
+        self.roomIDofGenerated  = []
+        self.chestToOpen        = []
 
         if gun is None:
             self.allowShoot = False
@@ -60,7 +63,7 @@ class player(pygame.sprite.Sprite):
         sides2 = [otherRect.left, otherRect.right, otherRect.top, otherRect.bottom]
         return any(s1 == s2 for s1, s2 in zip(sides1, sides2))
 
-    def update(self, deltaTime, currentRoomId, keybinds=None):
+    def update(self, deltaTime, currentRoomId, currentLayerID, keybinds=None):
 
 
 
@@ -101,14 +104,23 @@ class player(pygame.sprite.Sprite):
         if keyState[downKey]  or keyState[pygame.K_DOWN]:  dy += 1
 
 
-        #chest logic
+        #chest logic gives the chest locations
         chestRectStuff = getChestRectsWithCoords(currentRoomId, self.screenW, self.screenH)
-        if len(chestRectStuff) > 0:
+
+        if len(chestRectStuff) > 0 :
+            if currentRoomId not in self.roomIDofGenerated:
+                self.roomIDofGenerated.append(currentRoomId)
+                for i in range(len(chestRectStuff)):
+                    self.chestToOpen.append(chest([0,1]))
+                    print("player: generated chest loot", self.chestToOpen)
+
             for item in chestRectStuff:
                 if self.playerToucherHelper(item["rect"]) and keyState[interact]:
-                    self.getWeapon("pistol#1")
-
-
+                    weaponObtained = self.chestToOpen[0]
+                    temp = weaponObtained.openChest()
+                    if temp is not None:
+                        self.getWeapon(temp)
+                    print(f"player: player got {weaponObtained}")
 
         moveVec = pygame.Vector2(dx, dy)
         if moveVec.length() > 0:
