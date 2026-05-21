@@ -28,8 +28,8 @@ def loadImage(path: str) -> Surface | None:
         print(f"compendium: exception caught {e}")
         return None
 
-def run(screen, clock):
-    tabs = data.playerUnlockData.compendium.compendiumManager.updateCompendiumEntries()
+def run(screen, clock,codeEntered):
+    tabs = data.playerUnlockData.compendium.compendiumManager.updateCompendiumEntries(codeEntered)
     print(f"compendium: tabs: {tabs}")
     titleFont  = pygame.font.SysFont(None, 48)
     tabFont    = pygame.font.SysFont(None, 32)

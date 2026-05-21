@@ -13,9 +13,15 @@ def getRandomRoomId():
     normalIds = [rid for rid in roomRegistery if rid > 0]
     return random.choice(normalIds)
 
+
+
 def run(screen, clock, font):
     titleFont  = pygame.font.SysFont(None, 90)
     buttonFont = pygame.font.SysFont(None, 42)
+
+    #cheatcode vars
+    konamiEntered = False
+
 
     #BG cycling
     bgRoomId   = getRandomRoomId()
@@ -81,12 +87,16 @@ def run(screen, clock, font):
                             result = credits.run(screen, clock)
                             if result == "quit":
                                 return "quit", screen
+                            if result == "konami":
+
+                                konamiEntered = True
                             buttons = buildButtons()
 
                         if label == "compendium":
-                            result = compendium.run(screen, clock)
+                            result = compendium.run(screen, clock,konamiEntered)
                             if result == "quit":
                                 return "quit", screen
+
                             buttons = buildButtons()
 
                         if label == "settings":

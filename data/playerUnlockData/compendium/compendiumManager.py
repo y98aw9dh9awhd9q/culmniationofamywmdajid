@@ -27,7 +27,7 @@ tabs = [
 
 
 
-def updateCompendiumEntries():
+def updateCompendiumEntries(codeEntered = False):
     print("compendium manager: called updateCompendiumEntries")
     playerData = playerDataManager.checkCompendiumEntries()
     tabs = []
@@ -44,5 +44,15 @@ def updateCompendiumEntries():
         print(len(tabs))
         tabs = [('compendium', [{'name': 'nothing here', 'image': 'None',
                                  'description': "kill enemies or obtain items to fill in the compendium"}])]
+
+    if codeEntered:
+        tabs = [
+            ("enemies", list(readJsonCompendium("enemies").values())),
+            ("weapons", list(readJsonCompendium("weapons").values())),
+            ("utility", list(readJsonCompendium("utility").values())),
+            ('compendium', [{'name': 'nothing here', 'image': 'None',
+                             'description': "kill enemies or obtain items to fill in the compendium"}]),
+
+        ]
     return tabs
 

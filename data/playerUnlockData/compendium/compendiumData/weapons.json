@@ -13,5 +13,10 @@
       "name": "xavier",
       "image": "None",
       "description": "weapon good. 0.01 dmg, 1 volley, 50 second rechambering "
+  },
+  "basic Pistol": {
+    "name": "basic pistol",
+    "image": "None",
+    "description": "basic pistol from the tutorial, 1 DMG, 0.25 firing cooldown"
   }
 }

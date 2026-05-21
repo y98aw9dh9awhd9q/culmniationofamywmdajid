@@ -8,7 +8,19 @@ creditsText = [
 
 ]
 
+konamiCode = [
+    pygame.K_UP, pygame.K_UP,
+    pygame.K_DOWN, pygame.K_DOWN,
+    pygame.K_LEFT, pygame.K_RIGHT,
+    pygame.K_b, pygame.K_a,
+]
+
+
+
+
 def run(screen, clock):
+    global konamiCode
+    inputBuffer = []
     titleFont  = pygame.font.SysFont(None, 52)
     headerFont = pygame.font.SysFont(None, 34)
     nameFont   = pygame.font.SysFont(None, 28)
@@ -16,6 +28,10 @@ def run(screen, clock):
 
     running = True
     while running:
+        if inputBuffer == konamiCode:
+            inputBuffer.clear()
+            return "konami"
+
         clock.tick(60)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -23,8 +39,15 @@ def run(screen, clock):
             if event.type == pygame.KEYDOWN:
                 if event.key in (pygame.K_ESCAPE, pygame.K_BACKSPACE):
                     return "menu"
+
+                inputBuffer.append(event.key)
+                if len(inputBuffer) > len(konamiCode):
+                    inputBuffer.pop(0)
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 return "menu"
+
+
 
         screen.fill(theme.bgDark)
 
