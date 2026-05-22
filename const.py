@@ -18,5 +18,6 @@ playerDir = os.path.join(baseDir, "assets", "pictures", "entities", "player.png"
 bulletDir = os.path.join(baseDir, "assets", "pictures", "entities", "bullet.png")
 
 mapDirs  = os.path.join(baseDir, "assets","maps")
-chest    = os.path.join(mapDirs, "cat.png")
+chest    = os.path.join(mapDirs, "chest.png")
+elevator = os.path.join(mapDirs, "elevator.png")
 

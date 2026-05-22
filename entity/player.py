@@ -100,16 +100,7 @@ class player(pygame.sprite.Sprite):
 
 
 
-
-
-
-
         dodgeDist         = 1.25 * min(tileW, tileH) #distance of dodge
-
-
-
-
-
 
         self.dodging          = True
         self.dodgeVec         = direction

@@ -23,11 +23,33 @@ def drawRoom(screen, roomId):
             tileRect  = pygame.Rect(colIdx * blockW, rowIdx * blockH, blockW, blockH)
             colorName = tileColors.get(tileVal)
             if colorName == "purple":
-                #elevator
-                screen.blit(pygame.transform.scale(pygame.image.load(const.chest).convert_alpha(),(blockH,blockW)),tileRect)
+                # elevator
+                screen.blit(pygame.transform.scale(pygame.image.load(const.elevator).convert_alpha(), (blockH, blockW)),
+                            tileRect)
+            elif colorName == "yellow":
+                screen.blit(pygame.transform.scale(
+                    pygame.image.load(const.chest).convert_alpha(),
+                    (blockH, blockW)), tileRect)
             elif colorName:
                 pygame.draw.rect(screen, getattr(const, colorName), tileRect)
             pygame.draw.rect(screen, const.black, tileRect, 1)
+
+"""            if colorName is not None:
+                match colorName:
+                    case "purple":
+                            screen.blit(pygame.transform.scale(
+                                pygame.image.load(const.elevator).convert_alpha(),
+                                           (blockH, blockW)),
+                            tileRect)
+                    case "yellow":
+                        screen.blit(pygame.transform.scale(
+                            pygame.image.load(const.chest).convert_alpha(),
+                            (blockH, blockW)), tileRect)
+                    case _: pygame.draw.rect(screen, getattr(const, colorName), tileRect)
+            else:
+                pygame.draw.rect(screen, const.black, tileRect, 1)"""
+
+
 
 def loadPlayerImage(size):
     try:
