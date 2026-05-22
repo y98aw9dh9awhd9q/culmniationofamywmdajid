@@ -93,6 +93,27 @@ def getMatchingEntrance(roomID, comingFromDir, screenW, screenH, prevCenter):
                (r.centerx - prevCenter[0]) ** 2 +
                (r.centery - prevCenter[1]) ** 2)
 
+
+roomIDCompendium = [(0,0)]
+def roomIDer(roomX,roomY,reset = False):
+    global roomIDCompendium
+    if reset:
+        roomIDCompendium = [(0,0)]
+    tupleOfID = (roomX, roomY)
+    if not tupleOfID in roomIDCompendium:
+        roomIDCompendium.append(tupleOfID)
+        print(f"main: {roomIDCompendium} NEW ROOM")
+
+
+        return "NEW"
+
+
+    else:
+        print(f"main: {roomIDCompendium} OLD ROOM")
+        return "OLD"
+
+
+
 def placePlayerAtDoor(playerObj, doorRect, comingFromDir):
     px, py = playerObj.rect.centerx, playerObj.rect.centery
 
@@ -114,7 +135,7 @@ def placePlayerAtDoor(playerObj, doorRect, comingFromDir):
 
 def saveGameCall():
     try:
-        saveDat = (playerSavePrep, generatedMap, currentLayerID, playerObj.obtainedGuns)
+        saveDat = (playerSavePrep, generatedMap, currentLayerID, playerObj.obtainedGuns,roomIDCompendium)
         data.gameSaveData.dataSaving.saveData(saveDat)
         print("saved")
     except Exception as e:
@@ -157,10 +178,14 @@ if saveDataRead:
         if len(saveDataRead[3]) != 0:
             print(saveDataRead[3][0])
             playerObj.getWeapon(saveDataRead[3][0])
+        print("main", saveDataRead[4])
+        roomIDCompendium         = saveDataRead[4]
+        print("main: roomidccompendium", roomIDCompendium)
 
-    except:
+    except Exception as e:
         currentRoomPosX, currentRoomPosY = 0, 0
         playerObj.rect.center = screen.get_size()[0] / 2, screen.get_size()[1] / 2
+        print("main: save readerrror", e)
     currentLayerID = saveDataRead[2]
 
 
@@ -210,17 +235,20 @@ while running:
         transitionCooldown -= deltaTime
 
     #print(generatedMap, currentRoomPosY, currentRoomPosX)
-    currentRoomID = generatedMap[currentRoomPosY][currentRoomPosX]
-    exitDir       = playerObj.touchingExit(currentRoomID)
+    currentRoomID                  = generatedMap[currentRoomPosY][currentRoomPosX]
+    exitDir                        = playerObj.touchingExit(currentRoomID)
+
 
     if playerObj.touchingElevator(currentRoomID):
-        currentRoomID   = -1  #-1 is the entrance always
-        currentRoomPosX = 0
-        currentRoomPosY = 0
-        if currentLayerID[0] >= 1:
-            generatedMap = generateMap()
+        roomIDer(0,0,True)
+
+        currentRoomID              = -1  #-1 is the entrance always
+        currentRoomPosX            = 0
+        currentRoomPosY            = 0
+        if currentLayerID[0]      >= 1:
+            generatedMap           = generateMap()
         else:
-            if currentLayerID[1] != 4:
+            if currentLayerID[1]  != 4:
                 currentLayerID[1] += 1
                 generatedMap = tutorial.tutorialMatching[currentLayerID[1]]
             else:
@@ -244,9 +272,9 @@ while running:
 
             newRoomID = generatedMap[currentRoomPosY][currentRoomPosX]
             doorRect  = getMatchingEntrance(newRoomID, exitDir, winW, winH, prevCenter)
-
             if doorRect:
                 placePlayerAtDoor(playerObj, doorRect, exitDir)
+                roomIDResult = roomIDer(currentRoomPosX,currentRoomPosY)
                 playerObj.syncPos()
 
             transitionCooldown = 0.25                #prevent seizure or something idk
@@ -256,6 +284,32 @@ while running:
                               playerObj.rect.center  # 3 - player rect
                               )
             print(currentLayerID)
+
+
+
+
+        try:
+            print(f"main: new room id  {newRoomID}")
+            if roomIDResult == "NEW" and newRoomID > 0 :
+                playerObj.doorsLocked = True
+                print("room locked")
+        except Exception as e:
+            print("main:no room id", e)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     screen.fill((0, 0, 0))
     display.drawRoom(screen, generatedMap[currentRoomPosY][currentRoomPosX])

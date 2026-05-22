@@ -34,7 +34,8 @@ class player(pygame.sprite.Sprite):
         self.dodgeVec           = pygame.Vector2(0, 0)
         self.dodgeRemaining     = 0.0
         self.dodgeCooldownTimer = 0.0
-        self.obtainedGuns  = []
+        self.obtainedGuns       = []
+        self.doorsLocked        = False
 
         if gun is None:
             self.allowShoot = False
@@ -132,6 +133,17 @@ class player(pygame.sprite.Sprite):
                 self.shoot()
         elif pygame.key.get_pressed()[shootBtn] and self.shootTimer <= 0:
             self.shoot()
+
+
+
+            #TEMP CODE
+            self.doorsLocked = False
+            #====================
+
+
+
+
+
 
         keyState = pygame.key.get_pressed()
 
@@ -260,10 +272,11 @@ class player(pygame.sprite.Sprite):
             self.posY = clampedY
 
     def touchingExit(self, roomId):
-        for exitRect in getExitTiles(roomId, self.screenW, self.screenH):
-            rect, direction = exitRect
-            if self.rect.colliderect(rect):
-                return direction
+        if not self.doorsLocked:
+            for exitRect in getExitTiles(roomId, self.screenW, self.screenH):
+                rect, direction = exitRect
+                if self.rect.colliderect(rect):
+                    return direction
         return None
 
     def touchingElevator(self, roomID):
