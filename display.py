@@ -15,39 +15,32 @@ def spaceCalculator(screen, roomId):
             blockW,  #blockW     3
             blockH)  #blockH     4
 
+
 #tile renderer
 def drawRoom(screen, roomId):
+
     layout, rowCount, colCount, blockW, blockH = spaceCalculator(screen, roomId)
+
+
+
+    elevator = pygame.transform.scale(pygame.image.load(const.elevator).convert_alpha(), (blockH, blockW))
+    chest    = pygame.transform.scale(pygame.image.load(const.chest).convert_alpha()   , (blockH, blockW))
     for rowIdx, rowData in enumerate(layout):
         for colIdx, tileVal in enumerate(rowData):
             tileRect  = pygame.Rect(colIdx * blockW, rowIdx * blockH, blockW, blockH)
             colorName = tileColors.get(tileVal)
-            if colorName == "purple":
-                # elevator
-                screen.blit(pygame.transform.scale(pygame.image.load(const.elevator).convert_alpha(), (blockH, blockW)),
-                            tileRect)
-            elif colorName == "yellow":
-                screen.blit(pygame.transform.scale(
-                    pygame.image.load(const.chest).convert_alpha(),
-                    (blockH, blockW)), tileRect)
-            elif colorName:
-                pygame.draw.rect(screen, getattr(const, colorName), tileRect)
-            pygame.draw.rect(screen, const.black, tileRect, 1)
+            match colorName:
+                case "purple" : screen.blit(elevator, tileRect)
+                case "yellow" : screen.blit(chest, tileRect)
 
-"""            if colorName is not None:
-                match colorName:
-                    case "purple":
-                            screen.blit(pygame.transform.scale(
-                                pygame.image.load(const.elevator).convert_alpha(),
-                                           (blockH, blockW)),
-                            tileRect)
-                    case "yellow":
-                        screen.blit(pygame.transform.scale(
-                            pygame.image.load(const.chest).convert_alpha(),
-                            (blockH, blockW)), tileRect)
-                    case _: pygame.draw.rect(screen, getattr(const, colorName), tileRect)
-            else:
-                pygame.draw.rect(screen, const.black, tileRect, 1)"""
+                case _ if colorName:
+                    pygame.draw.rect(
+                        screen,
+                        getattr(const, colorName),
+                        tileRect
+                    )
+
+            pygame.draw.rect(screen, const.black, tileRect, 1)
 
 
 
