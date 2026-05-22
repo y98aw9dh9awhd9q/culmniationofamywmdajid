@@ -22,4 +22,4 @@ chest    = os.path.join(mapDirs, "chest.png")
 elevator = os.path.join(mapDirs, "elevator.png")
 
 # Xavier is watching me
-# keyano is gay
+# keyano is a poo poo head
