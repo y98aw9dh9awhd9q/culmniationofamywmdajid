@@ -10,10 +10,10 @@ directions  = ((-1, 0), (1, 0), (0, -1), (0, 1))
 oppositeDir = (1, 0, 3, 2)
 
 roomWeights = {
-    0: 10,
+    0: 8,
     1: 1,
-    5: 4,
-    6: 2
+    5: 12,
+    6: 18
 }
 
 counterKeys = {
@@ -26,13 +26,16 @@ byExactExits = {}
 
 for rid, robj in roomRegistery.items():
 
-    if rid <= 0:
+    if rid in (-1, -2, -3):
         continue
 
     byExactExits.setdefault(robj.exits, []).append(rid)
 
 patternCache     = {}
 patternCacheLock = threading.Lock()
+
+def getLayer(r, c):
+    return r + c
 
 def candidatesForPattern(pattern):
     cached = patternCache.get(pattern)
@@ -50,12 +53,22 @@ def candidatesForPattern(pattern):
     return result
 
 def buildWeightedPool(candidates, counters, limits):
+    remaining = {
+        "shop": limits["shop"] - counters["shop"],
+        "chest": limits["chest"] - counters["chest"],
+        "doubleChest": limits["doubleChest"] - counters["doubleChest"]
+    }
     pool = []
     for rid in candidates:
         ck = counterKeys.get(roomRegistery[rid].type)
         if ck and counters[ck] >= limits[ck]:
             continue
         pool.extend([rid] * roomWeights.get(roomRegistery[rid].type, 1))
+        if ck == "chest" and remaining["chest"] > 0:
+            pool.extend([rid] * 3)
+
+        if ck == "doubleChest" and remaining["doubleChest"] > 0:
+            pool.extend([rid] * 5)
     return pool
 
 #spanning tree========================================
@@ -201,31 +214,46 @@ def runAttempt(size, bossPos, maxShop, maxChest, maxDoubleChest, seed, stopEvent
         g[by * size + bx] = -3
         prePlaced[(by, bx)] = -3
 
-    requiredExits = buildSpanningTree(
-        size,
-        prePlaced,
-        rng,
-        stopEvent
-    )
+    requiredExits = buildSpanningTree(size, prePlaced, rng, stopEvent)
 
     if stopEvent.is_set():
         return False, None
 
     counters = {
-        "shop": 0,
-        "chest": 0,
-        "doubleChest": 0
+        "shop"        : 0,
+        "chest"       : 0,
+        "doubleChest" : 0
     }
 
     limits = {
-        "shop": maxShop,
-        "chest": maxChest,
-        "doubleChest": maxDoubleChest
+        "shop"        : maxShop,
+        "chest"       : maxChest,
+        "doubleChest" : maxDoubleChest
     }
 
     order = [(r, c) for r in range(size) for c in range(size) if g[r * size + c] == 0]
+    layerSpecial = {}
+
+    rngLocal = rng
+
+    maxLayer = (size - 1) * 2
+
+    for layer in range(maxLayer + 1):
+        if rngLocal.random() < 0.75:
+            layerSpecial[layer] = "left"
+        else:
+            layerSpecial[layer] = "top"
+
+    layerRemaining = {}
+
+    for layer, typ in layerSpecial.items():
+        count = sum(1 for (r, c) in order if getLayer(r, c) == layer)
+        layerRemaining[layer] = count
 
     def fillCell(idx):
+        progress    = idx / len(order)
+        chestTarget = progress * limits["chest"]
+
         if stopEvent.is_set():
             return False
 
@@ -234,27 +262,20 @@ def runAttempt(size, bossPos, maxShop, maxChest, maxDoubleChest, seed, stopEvent
 
         r, c       = order[idx]
         pos        = r * size + c
-
         pat        = [None, None, None, None]
         conflict   = False
 
         for d in range(4):
-            if stopEvent.is_set():
-                return False
-
             dr, dc = directions[d]
             nr, nc = r + dr, c + dc
 
-            inBounds = (0 <= nr < size and 0 <= nc < size)
-
-            if not inBounds:
+            if not (0 <= nr < size and 0 <= nc < size):
                 pat[d] = False
                 continue
 
-            treeReq = True if (r, c, d) in requiredExits else None
+            treeReq     = True if (r, c, d) in requiredExits else None
 
-            nb = g[nr * size + nc]
-
+            nb          = g[nr * size + nc]
             neighborReq = roomRegistery[nb].exits[oppositeDir[d]] if nb != 0 else None
 
             reqs = [x for x in (treeReq, neighborReq) if x is not None]
@@ -268,13 +289,46 @@ def runAttempt(size, bossPos, maxShop, maxChest, maxDoubleChest, seed, stopEvent
         if conflict:
             return False
 
-        candidates = candidatesForPattern(tuple(pat))
+        candidates       = candidatesForPattern(tuple(pat))
+        remainingCells   = len(order) - idx
+        validSpotsLeft   = remainingCells
+        forcedCandidates = []
 
-        pool = buildWeightedPool(
-            candidates,
-            counters,
-            limits
-        )
+        if typ == "top" and -4 in candidates:
+            forcedCandidates = [-4]
+
+        elif typ == "left":
+            leftOptions = [rid for rid in (-5, -6) if rid in candidates]
+
+            if leftOptions:
+                weighted = []
+                for rid in leftOptions:
+                    if rid == -5:
+                        weighted.extend([rid] * 3)  # 75%
+                    else:
+                        weighted.append(rid)  # 25%
+                forcedCandidates = weighted
+
+        mustForce = False
+
+        if typ == "top":
+            mustForce = (-4 in candidates and validSpotsLeft == 1)
+
+        elif typ == "left":
+            mustForce = (
+                    typ == "left"
+                    and counters["chest"] < limits["chest"]
+                    and len(candidates) <= 3
+                    and validSpotsLeft <= 3
+            )
+
+        if mustForce:
+            pool = forcedCandidates
+        else:
+            pool = buildWeightedPool(candidates, counters, limits)
+
+            if forcedCandidates:
+                pool.extend(forcedCandidates * 2)
 
         if not pool:
             return False
@@ -288,7 +342,6 @@ def runAttempt(size, bossPos, maxShop, maxChest, maxDoubleChest, seed, stopEvent
             g[pos] = rid
 
             ck = counterKeys.get(roomRegistery[rid].type)
-
             if ck:
                 counters[ck] += 1
 
@@ -299,6 +352,8 @@ def runAttempt(size, bossPos, maxShop, maxChest, maxDoubleChest, seed, stopEvent
 
             if ck:
                 counters[ck] -= 1
+        if counters["chest"] < chestTarget:
+            forcedCandidates.extend([-5, -5, -5, -6])
 
         return False
 
