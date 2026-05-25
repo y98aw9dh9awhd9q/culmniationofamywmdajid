@@ -1,3 +1,2 @@
 numpy
 pygame-ce
-PyOpenGl
