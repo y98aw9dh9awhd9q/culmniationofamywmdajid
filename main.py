@@ -233,7 +233,7 @@ while running:
                 try:
                     generatedMap = worldCache["1"]["1"]
                 except KeyError:
-                    print("main: wolrd cache missing 1-1")
+                    print("main: world cache missing 1-1")
 
                     mapGen.size = 3
                     mapGen.setupMap(boss=False)
