@@ -35,6 +35,7 @@ def updateCompendiumEntries(codeEntered = False):
         tabTemp = []
         for item in playerData[key]:
             #print("t" , readJsonCompendium(key)[item])
+            print("compendium manager", item)
             tabTemp.append(readJsonCompendium(key)[item])
         tabs.append((key, tabTemp))
     for item in tabs:
@@ -52,6 +53,7 @@ def updateCompendiumEntries(codeEntered = False):
             ("utility", list(readJsonCompendium("utility").values())),
             ('compendium', [{'name': 'nothing here', 'image': 'None',
                              'description': "kill enemies or obtain items to fill in the compendium"}]),
+            ("achievements", list(readJsonCompendium("achievements").values())),
 
         ]
     return tabs

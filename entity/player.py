@@ -37,8 +37,7 @@ class player(pygame.sprite.Sprite):
         self.obtainedGuns       = []
         self.doorsLocked        = False
 
-        if gun is None:
-            self.allowShoot = False
+        self.allowShoot = False if gun is None else True
 
     def getWeapon(self, obtained):
         self.obtainedGuns.append(obtained)

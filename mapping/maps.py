@@ -128,7 +128,7 @@ roomTutorialBreakables = Room([
     [1,0,0,0,0,0,0,2,0,0,0,0,0,0,1],
     [1,0,0,0,0,0,0,2,0,0,0,0,0,0,1],
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-], type=5, exits=(False, False, True, False))
+], type=5, exits=(False, False, True, True))
 
 roomTutorialArrowDown = Room([
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],

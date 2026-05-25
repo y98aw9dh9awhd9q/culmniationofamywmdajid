@@ -10,10 +10,11 @@ playerDataPth = os.path.join(const.baseDir,f"data/playerUnlockData/playerData/pl
 
 defaultDataToDump = {
     "unlockedCompendiumEntries" : {
-        "weapons" : [],
-        "utility" : [],
-        "enemies" : [],
-        "books"   : []
+        "weapons"     : [],
+        "utility"     : [],
+        "enemies"     : [],
+        "books"       : [],
+        "achievements": []
     },
 }
 
@@ -25,7 +26,9 @@ if not os.path.exists(playerDataPth):
 
 
 
-def writeJson(data: dict) -> None:
+def writeCompendiumEntry(key,value) -> None:
+    data = readJsonPlayerDat()
+    data["unlockedCompendiumEntries"][key].append(value)
     with open(playerDataPth, "w") as file:
         json.dump(data, file)
 
@@ -47,7 +50,3 @@ def checkCompendiumEntries():
             dataDict.update({key:value})
     print("datadict ", dataDict)
     return dataDict
-
-
-
-

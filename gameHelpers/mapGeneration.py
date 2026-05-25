@@ -254,7 +254,6 @@ def loadingBar(screen, font, progress, text="poo poo head"):
 
     pygame.display.flip()
 
-
 async def generateEntireWorld(mapGen, screen, font, worldCache):
     initAnim()   #reset the animation
 

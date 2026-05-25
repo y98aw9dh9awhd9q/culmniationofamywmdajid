@@ -239,7 +239,7 @@ def runAttempt(size, bossPos, maxShop, maxChest, maxDoubleChest, seed, stopEvent
     maxLayer = (size - 1) * 2
 
     for layer in range(maxLayer + 1):
-        if rngLocal.random() < 0.75:
+        if rngLocal.random() < 0.95:
             layerSpecial[layer] = "left"
         else:
             layerSpecial[layer] = "top"

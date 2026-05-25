@@ -1,0 +1,9 @@
+{
+  "tutorial": {
+        "name":        "tutorial",
+        "image":       "assets/achievements/nagraAI.png",
+        "description": "you completed the tutorial!",
+        "unlockReq"  : 15
+    }
+}
+

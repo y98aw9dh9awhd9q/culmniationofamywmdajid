@@ -32,7 +32,9 @@ def getMatchingEntrance(roomID,comingFromDir,screenW,screenH,prevCenter):
     )
 
 def roomIDer(roomX, roomY, roomIDCompendium,reset=False):
+    print(f"roomDirHelper: {roomIDCompendium} ")
     if reset:
+        print("roomDirHelper: RESET")
         roomIDCompendium = [(0, 0)]
     t = (roomX, roomY)
     if t not in roomIDCompendium:

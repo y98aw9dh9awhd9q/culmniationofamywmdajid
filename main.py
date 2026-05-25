@@ -19,6 +19,8 @@ import mainMenu.subMenu.pauseMenu as pauseMenu
 from   gameHelpers.roomDirHelper import getMatchingEntrance, mapDelta, roomIDer,placePlayerAtDoor
 from   gameHelpers.mapGeneration import generateEntireWorld
 
+from data.playerUnlockData.playerData.playerDataManager import writeCompendiumEntry
+
 #pre boot initialization =========================
 print(" main: ",settings.loadSettings())
 pygame.init()
@@ -113,6 +115,8 @@ else:
 
     #normal game==================================
     else:
+        playerObj.allowShoot = True
+        playerObj.getWeapon("pistol#1")
         mapGen.size = 3
         mapGen.setupMap(boss=False)
         asyncio.run(mapGen.prGenerateMap())
@@ -197,6 +201,8 @@ while running:
     #elevator=================================
     if playerObj.touchingElevator(currentRoomID):
 
+
+        roomIDCompendium = [(0,0)]
         roomIDer(0, 0, roomIDCompendium, True)
         currentRoomPosX = 0
         currentRoomPosY = 0
@@ -211,6 +217,8 @@ while running:
                 tutorialFinished = True
                 currentLayerID[0] = 1
                 currentLayerID[1] = 1
+                writeCompendiumEntry("achievements", "tutorial")
+
 
                 # generate full world========================
                 if not worldGenerated:
@@ -274,11 +282,7 @@ while running:
 
                 placePlayerAtDoor(playerObj,doorRect,exitDir)
 
-                roomIDResult = roomIDer(
-                    currentRoomPosX,
-                    currentRoomPosY,
-                    roomIDCompendium
-                )
+                roomIDResult = roomIDer(currentRoomPosX, currentRoomPosY, roomIDCompendium)
 
                 playerObj.syncPos()
 
