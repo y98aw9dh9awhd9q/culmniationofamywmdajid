@@ -1,7 +1,6 @@
 import pygame
 
-def fullShutdown():
-    global mapGen
+def fullShutdown(mapGen = None):
     try:
         if mapGen is not None:
             mapGen.shutdown()

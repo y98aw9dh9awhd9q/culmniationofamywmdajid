@@ -313,7 +313,7 @@ async def generateEntireWorld(mapGen, screen, font, worldCache):
         loadingBar(screen, font, 1.0, "completed!")
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                fullShutdown()
+                fullShutdown(mapGen)
         await asyncio.sleep(1/60)
 
     print("mapGeneration: shutting down")

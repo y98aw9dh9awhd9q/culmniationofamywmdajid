@@ -1,6 +1,8 @@
+"""
 #ben nethaeyahoo and keyahhno acarkey and emotional support horp
 #2026-06-07
 #anastasia will write something here
+"""
 
 import pygame
 import asyncio
