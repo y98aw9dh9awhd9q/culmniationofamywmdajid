@@ -6,7 +6,6 @@ from mapping.mapLogic.chestLogic import chest
 
 class player(pygame.sprite.Sprite):
     immuFrameTime  = 0.5
-    size           = (60, 60)
     speed          = 220
     dodgeKey       = pygame.K_f
     dodgeSpeed     = 900
@@ -14,8 +13,9 @@ class player(pygame.sprite.Sprite):
     roomCols       = 15
     roomRows       = 9
 
-    def __init__(self, screenW, screenH, gun=None):
+    def __init__(self, screenW, screenH, size = (60,60), gun=None ):
         super().__init__()
+        self.size               = size
         self.screenW            = screenW
         self.screenH            = screenH
         self.hp                 = 6
@@ -99,7 +99,7 @@ class player(pygame.sprite.Sprite):
 
 
 
-        dodgeDist         = 1.25 * min(tileW, tileH) #distance of dodge
+        dodgeDist         = 1.5 * min(tileW, tileH) #distance of dodge
 
         self.dodging          = True
         self.dodgeVec         = direction

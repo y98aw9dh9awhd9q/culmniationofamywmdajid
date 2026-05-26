@@ -6,9 +6,10 @@
 
 import pygame
 import asyncio
+
+import const
 import display
 import data.gameSaveData.dataSaving as dataSaving
-import os
 
 import mapping.tutorial.tutorialGen as tutorial
 import mapping.mapLogic.mapGenerator as mapGenerator
@@ -36,16 +37,20 @@ import gameHelpers.menus
 
 menuRes = gameHelpers.menus.mainMenu(screen,clock,font)
 
-tutorialFlag   = menuRes[1]
-difficulty     = menuRes[0]
+tutorialFlag       = menuRes[1]
+difficulty         = menuRes[0]
 
 print(f"main recieved menu result {menuRes}")
-cfg            = settings.loadSettings()
-screen         = settings.applySettings(cfg)
-loadedSettings = settings.loadSettings()
+cfg                = settings.loadSettings()
+screen             = settings.applySettings(cfg)
+loadedSettings     = settings.loadSettings()
 
 #core vars ===================================
-playerObj          = player(*screen.get_size())
+layout, rowCount, colCount, blockW, blockH = display.spaceCalculator(screen,-1)
+
+spriteH, spriteW   = blockH*0.75, blockW*0.75
+spriteSize         = (spriteW,spriteH)
+playerObj          = player(*screen.get_size(), size=spriteSize)
 mapGen             = mapGenerator.mapGenerator()
 generatedMap       = None
 currentRoomPosY    = 0
@@ -71,6 +76,8 @@ else:
     currentLayerID = [1, 1]
 
 #sprite groups===========================
+
+
 playerSpriteGroup = pygame.sprite.Group()
 playerSpriteGroup.add(playerObj)
 
@@ -312,8 +319,13 @@ while running:
                 playerObj.rect.center
             )
 
+            for bulletSprite in playerObj.bullets:
+                bulletSprite.kill()
+
             try:
                 print(f"main: new room id {newRoomID}")
+                print(f"main:current layeriD: {currentLayerID}spawns: {const.enemySpawnCount(currentLayerID[0],1)}")
+
                 if roomIDResult == "NEW" and newRoomID > 0:
                     playerObj.doorsLocked = True
                     print("room locked")

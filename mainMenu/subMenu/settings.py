@@ -22,7 +22,7 @@ defaultSettings = {
     },
 }
 
-fpsOptions         = (1, 30, 60, 120, 144, 240)
+fpsOptions         = (0.67, 1, 30, 60, 67,  120, 144, 240)
 resolutionOptions  = [
     [67,   67 ],
     [900,  600],
@@ -41,7 +41,7 @@ def loadSettings():
                 data.setdefault(k, v)
             for k, v in defaultSettings["keybinds"].items():
                 data["keybinds"].setdefault(k, v)
-            print(f"settings: loaded settings {data}")
+            #print(f"settings: loaded settings {data}")
             return data
         except Exception:
             pass

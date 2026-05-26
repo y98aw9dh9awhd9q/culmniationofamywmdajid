@@ -21,8 +21,6 @@ def drawRoom(screen, roomId):
 
     layout, rowCount, colCount, blockW, blockH = spaceCalculator(screen, roomId)
 
-
-
     elevator = pygame.transform.scale(pygame.image.load(const.elevator).convert_alpha(), (blockH, blockW))
     chest    = pygame.transform.scale(pygame.image.load(const.chest).convert_alpha()   , (blockH, blockW))
     for rowIdx, rowData in enumerate(layout):

@@ -25,10 +25,12 @@ elevator = os.path.join(mapDirs, "elevator.png")
 # keyano is a poo poo head
 
 def enemySpawnCount(layerID, difficultyMultiplier):
-    #S(L) = floor((10 - D)D * min(1, L / (12 - 4D)))+1
-
-    addOne = 1 if difficultyMultiplier != 0 else 0
-    return math.floor((10-difficultyMultiplier)* difficultyMultiplier*min(1,layerID/(12-4 * difficultyMultiplier))) + addOne
+    #S(L) = floor((10 - D)D * min(1, L / (12 - 4D)))+ceil(3*D)
+    #D ∈ {0, 0.25, 0.5, 1, 1.25, 1.5, 2}
+    #S(L)=\operatorname{floor}((10-D)D*\min(1,L/(12-4D)))+\operatorname{ceil}\left(3\cdot D\right)\left\{0<L\ \le9\right\}
+    return (math.floor((10-difficultyMultiplier) *
+                      difficultyMultiplier*min(1,layerID/(12-4 * difficultyMultiplier)))
+            + math.ceil(3*difficultyMultiplier))
 
 
 difficultyStats = {
