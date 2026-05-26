@@ -2,6 +2,7 @@ import pygame
 import json
 import os
 import mainMenu.theme as theme
+from pygame._sdl2.video import Window
 
 settingsFile = "data/settings/settings.json"
 
@@ -23,6 +24,7 @@ defaultSettings = {
 
 fpsOptions         = (1, 30, 60, 120, 144, 240)
 resolutionOptions  = [
+    [67,   67 ],
     [900,  600],
     [1280, 720],
     [1600, 900],
@@ -39,6 +41,7 @@ def loadSettings():
                 data.setdefault(k, v)
             for k, v in defaultSettings["keybinds"].items():
                 data["keybinds"].setdefault(k, v)
+            print(f"settings: loaded settings {data}")
             return data
         except Exception:
             pass
@@ -58,8 +61,10 @@ def applySettings(cfg):
     if mode == "fullscreen":
         return pygame.display.set_mode((w, h), pygame.FULLSCREEN)
     elif mode == "borderless":
-        info = pygame.display.Info()
-        return pygame.display.set_mode((info.current_w, info.current_h), pygame.NOFRAME)
+        #Window.move(0,0)
+        pygame.display.set_window_position((0,0))
+
+        return pygame.display.set_mode((0,0), pygame.NOFRAME)
     else:
         return pygame.display.set_mode((w, h))
 
@@ -178,6 +183,9 @@ def run(screen, clock, font):
                             idx = currentIndex(key, options)
                             if leftRect.collidepoint(mx, my):
                                 cfg[key] = list(options)[(idx - 1) % len(options)]
+
+                                if cfg[key] == "borderless":
+                                    cfg["resolution"] = [0,0]
                             elif rightRect.collidepoint(mx, my):
                                 cfg[key] = list(options)[(idx + 1) % len(options)]
 

@@ -24,8 +24,11 @@ elevator = os.path.join(mapDirs, "elevator.png")
 
 # keyano is a poo poo head
 
-def enemySpawnCount(layerID, difficulty):
-    return math.floor(min((1 + 2*layerID + difficulty) * (1.08 ** layerID), (10 - difficulty) * difficulty))
+def enemySpawnCount(layerID, difficultyMultiplier):
+    #S(L) = floor((10 - D)D * min(1, L / (12 - 4D)))+1
+
+    addOne = 1 if difficultyMultiplier != 0 else 0
+    return math.floor((10-difficultyMultiplier)* difficultyMultiplier*min(1,layerID/(12-4 * difficultyMultiplier))) + addOne
 
 
 difficultyStats = {
@@ -46,3 +49,5 @@ def getDifficultyStats(name):
 
 
 fontTextBasic = None
+
+

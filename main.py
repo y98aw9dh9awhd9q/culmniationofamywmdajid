@@ -8,6 +8,7 @@ import pygame
 import asyncio
 import display
 import data.gameSaveData.dataSaving as dataSaving
+import os
 
 import mapping.tutorial.tutorialGen as tutorial
 import mapping.mapLogic.mapGenerator as mapGenerator
@@ -29,7 +30,7 @@ pygame.init()
 screen = pygame.display.set_mode(settings.loadSettings()["resolution"])
 clock  = pygame.time.Clock()
 font   = pygame.font.SysFont(None, 28)
-
+settings.applySettings(settings.loadSettings())
 #menu=============================================
 import gameHelpers.menus
 
@@ -56,6 +57,10 @@ tutorialFinished   = False
 worldGenerated     = False
 worldGenerating    = False
 roomIDCompendium   = [(0, 0)]
+
+print(settings.loadSettings)
+
+
 
 #current floor logic===========================
 if tutorialFlag:
@@ -220,6 +225,10 @@ while running:
             if currentLayerID[1] != 4:
                 currentLayerID[1] += 1
                 generatedMap = tutorial.tutorialMatching[currentLayerID[1]]
+
+
+
+
             else:
                 #tutorial completee!==========================================
                 tutorialFinished = True

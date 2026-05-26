@@ -5,7 +5,10 @@ import const
 from mainMenu.subMenu.settings import loadSettings
 
 normalDescription = ("1x bullets | 1.25x dash i-frames | 1x enemies\n\n\n "
-                     "this is example text!!!!, i just want you to have 3 new lines between text")
+                     "Normal mode for normal people.")
+
+nagraDescription = ("2x bullets | 0.5x dash i-frames | 2x enemies + hp\n\n\n"
+                    "Nagra mode, ONLY FOR THE STRONGEST NAGRAS. ")
 
 difficultyDesc = {
     "redacted": "0.1x bullets | infinite dash i-frames | barely any enemies",
@@ -14,7 +17,7 @@ difficultyDesc = {
     "normal": normalDescription,
     "hard": "1.25x bullets | 1x dash i-frames | 1.25x enemies",
     "farag": "1.5x bullets | 0.75x dash i-frames | 1.5x enemies + hp",
-    "nagra": "2x bullets | 0.5x dash i-frames | 2x enemies + hp",
+    "nagra": nagraDescription,
 }
 
 def getScaledFont(baseSize, scale):
@@ -105,7 +108,7 @@ def run(screen, clock):
         for i, rect in enumerate(diffRects):
             isSelected  = i == selected
             isHovered   = i == hoveredDiff
-            bgColor     = theme.bgHover if isSelected else theme.bgMid if isHovered else theme.grayishidk
+            bgColor     = theme.bgHover if isSelected else theme.bgMid if isHovered else theme.bgMid
             borderColor = theme.accent if isSelected else theme.borderColor
             txt         = sideFont.render(const.difficultyOptions[i], True,
                                           theme.textPrimary if isSelected else theme.textSecondary)

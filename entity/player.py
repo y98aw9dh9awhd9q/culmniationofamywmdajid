@@ -67,7 +67,7 @@ class player(pygame.sprite.Sprite):
     def shoot(self):
         if self.allowShoot:
             mouseX, mouseY = pygame.mouse.get_pos()
-            newBullet = bullet(self.rect.centerx, self.rect.centery, mouseX, mouseY, owner="player")
+            newBullet = bullet(self.rect.centerx, self.rect.centery, mouseX, mouseY,(self.screenW,self.screenH), owner="player")
             self.bullets.add(newBullet)
             self.shootTimer = self.shootCooldown
 
