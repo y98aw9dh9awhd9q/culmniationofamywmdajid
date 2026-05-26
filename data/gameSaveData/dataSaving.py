@@ -12,7 +12,8 @@ def emptySave():
         },
 
         "worldData": {
-            "layers": {}
+            "layers": {},
+            "difficulty": None
         },
 
         "metaData": {
@@ -20,7 +21,7 @@ def emptySave():
         }
     }
 
-def saveData(playerSavePrep, currentLayerID, weapon, entrances, generatedMap):
+def saveData(playerSavePrep, currentLayerID, weapon, entrances, generatedMap, difficulty):
     try:
         if os.path.exists(savePath):
             with open(savePath, "r") as file:
@@ -40,6 +41,7 @@ def saveData(playerSavePrep, currentLayerID, weapon, entrances, generatedMap):
         save["playerData"]["weapon"]     = weapon
         save["playerData"]["layer"]      = currentLayerID
         save["metaData"]["visitedRooms"] = entrances
+        save["worldData"]["difficulty"]  = difficulty
 
         with open(savePath, "w") as file:
             json.dump(save, file, indent=4)
@@ -66,7 +68,8 @@ def readSave():
         worldID        = str(currentLayerID[0])
         floorID        = str(currentLayerID[1])
         generatedMap   = (worldData["layers"][worldID][floorID])
-        visitedRooms = [tuple(x)for x in metaData["visitedRooms"]]
+        visitedRooms   = [tuple(x)for x in metaData["visitedRooms"]]
+        difficulty     = save["worldData"] ["difficulty"]
 
         return (
             playerData["savePrep"],
@@ -74,7 +77,8 @@ def readSave():
             currentLayerID,
             playerData["weapon"],
             visitedRooms,
-            save
+            save,
+            difficulty
         )
 
     except Exception as e:
@@ -94,15 +98,6 @@ def getSavedMap(save, layerID):
     except:
         return None
 
-def saveMapOnly(save, layerID, generatedMap):
-    worldID = str(layerID[0])
-    floorID = str(layerID[1])
-    if worldID not in save["worldData"]["layers"]:
-        save["worldData"]["layers"][worldID] = {}
-    save["worldData"]["layers"][worldID][floorID] = generatedMap
-    with open(savePath, "w") as file:
-        json.dump(save, file, indent=4)
-
 
 def deleteSave():
     try:
@@ -112,7 +107,7 @@ def deleteSave():
         print("dataSaving: no save found, continuing")
 
 
-def saveGameCall(currentLayerID,playerSavePrep,playerObj,worldCache,roomIDCompendium):
+def saveGameCall(currentLayerID, playerSavePrep, playerObj, worldCache, roomIDCompendium, difficulty):
     try:
         saveDat = {
             "playerData": {
@@ -122,7 +117,8 @@ def saveGameCall(currentLayerID,playerSavePrep,playerObj,worldCache,roomIDCompen
             },
 
             "worldData": {
-                "layers": worldCache
+                "layers": worldCache,
+                "difficulties" : difficulty
             },
 
             "metaData": {

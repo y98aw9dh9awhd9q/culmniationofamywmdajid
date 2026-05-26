@@ -6,6 +6,7 @@ import mainMenu.subMenu.compendium as compendium
 import mainMenu.subMenu.settings as settings
 import mainMenu.theme as theme
 from mapping.maps import roomRegistery
+import mainMenu.subMenu.difficultySelecter as difficultySelect
 
 intervalOfRoomChange = 4.0 #bg room swaps
 
@@ -16,9 +17,6 @@ def getRandomRoomId():
 
 
 def run(screen, clock, font):
-    titleFont  = pygame.font.SysFont(None, 90)
-    buttonFont = pygame.font.SysFont(None, 42)
-
     #cheatcode vars
     konamiEntered = False
 
@@ -74,10 +72,23 @@ def run(screen, clock, font):
                         if label == "exit":
                             return "quit", screen
 
+
+
+
                         if label == "new game":
+                            picked = difficultySelect.run(screen, clock)
+                            if picked is None:
+                                buttons = buildButtons()
+                                continue
+
+                            if picked == "quit":
+                                return "quit", screen
+
+
+
                             data.gameSaveData.dataSaving.deleteSave()
-                            print("menu: new game")
-                            return "game", screen
+                            print(f"menu: new game difficulty:{picked}")
+                            return picked, screen
 
                         if label == "continue":
                             print("menu: continue")

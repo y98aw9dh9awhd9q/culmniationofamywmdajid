@@ -121,13 +121,11 @@ class player(pygame.sprite.Sprite):
         if shootBtn <= 3:
             if pygame.mouse.get_pressed()[shootBtn - 1] and self.shootTimer <= 0:
                 self.shoot()
-        elif pygame.key.get_pressed()[shootBtn] and self.shootTimer <= 0:
-            self.shoot()
 
 
 
             #TEMP CODE
-            self.doorsLocked = False
+                self.doorsLocked = False
             #====================
 
 

@@ -4,6 +4,7 @@ import asyncio
 import json
 from gameHelpers.SHUTDOWN import fullShutdown
 import const
+from mainMenu.subMenu.settings import loadSettings
 
 cyan          = (0x74, 0xd9, 0xf7)
 gridCol       = (180, 180, 180)
@@ -254,7 +255,7 @@ def loadingBar(screen, font, progress, text="poo poo head"):
 
     pygame.display.flip()
 
-async def generateEntireWorld(mapGen, screen, font, worldCache):
+async def generateEntireWorld(mapGen, screen, font, worldCache,difficulty):
     initAnim()   #reset the animation
 
     if not worldCache:
@@ -301,14 +302,14 @@ async def generateEntireWorld(mapGen, screen, font, worldCache):
 
             saveStructure = {
                 "playerData": {"savePrep": None, "weapon": ["pistol#1"], "layer": [1,1]},
-                "worldData":  {"layers": worldCache},
+                "worldData":  {"layers": worldCache, "difficulty":difficulty},
                 "metaData":   {"visitedRooms": [[0,0]]}
             }
             with open("data/gameSaveData/save.json","w") as f:
                 json.dump(saveStructure, f, indent=4)
             print(f"saved to save {layer}-{floor}")
 
-    holdFrames = 60 #except the agme doesnt run at 60fps locked
+    holdFrames = loadSettings()["fpsCap"]
     for _ in range(holdFrames):
         loadingBar(screen, font, 1.0, "completed!")
         for event in pygame.event.get():

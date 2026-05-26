@@ -33,8 +33,12 @@ font   = pygame.font.SysFont(None, 28)
 #menu=============================================
 import gameHelpers.menus
 
-gameHelpers.menus.mainMenu(screen,clock,font)
+menuRes = gameHelpers.menus.mainMenu(screen,clock,font)
 
+tutorialFlag   = menuRes[1]
+difficulty     = menuRes[0]
+
+print(f"main recieved menu result {menuRes}")
 cfg            = settings.loadSettings()
 screen         = settings.applySettings(cfg)
 loadedSettings = settings.loadSettings()
@@ -54,7 +58,7 @@ worldGenerating    = False
 roomIDCompendium   = [(0, 0)]
 
 #current floor logic===========================
-if loadedSettings["tutorial"]:
+if tutorialFlag:
     print("main: tutorial started")
     currentLayerID = [0, 1]
 else:
@@ -87,7 +91,8 @@ if saveDataRead:
         currentLayerID,
         weapon,
         roomIDCompendium,
-        fullSave
+        fullSave,
+        difficulty
     ) = saveDataRead
 
     worldCache = fullSave["worldData"]["layers"]
@@ -144,9 +149,9 @@ else:
         tutorialFinished    = True
         worldGenerated      = False
 
-        if not loadedSettings["tutorial"]:
+        if not tutorialFlag:
             worldGenerating = True
-            asyncio.run(generateEntireWorld(mapGen,screen,font,worldCache))
+            asyncio.run(generateEntireWorld(mapGen, screen, font, worldCache, difficulty))
             worldGenerated  = True
             worldGenerating = False
 
@@ -175,25 +180,26 @@ while running:
     #event handler====================================
     for event in events:
         if event.type == pygame.QUIT:
-            dataSaving.saveGameCall(currentLayerID,playerSavePrep,playerObj,worldCache,roomIDCompendium)
             running = False
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             pauseResult = pauseMenu.run(screen,clock)
             if pauseResult == "save":
-                dataSaving.saveGameCall(currentLayerID,playerSavePrep,playerObj,worldCache,roomIDCompendium)
+                dataSaving.saveGameCall(currentLayerID, playerSavePrep, playerObj, worldCache, roomIDCompendium, difficulty)
             elif pauseResult == "menu":
-                dataSaving.saveGameCall(currentLayerID,playerSavePrep,playerObj,worldCache,roomIDCompendium)
                 menuResult, screen = menu.run(screen,clock,font)
                 if menuResult == "quit":
                     running = False
 
+
+
+
+
+
             elif pauseResult == "settings":
-                dataSaving.saveGameCall(currentLayerID,playerSavePrep,playerObj,worldCache,roomIDCompendium)
                 result, screen = settings.run( screen, clock, font)
                 if result == "quit":
                     running = False
             elif pauseResult == "quit":
-                dataSaving.saveGameCall(currentLayerID,playerSavePrep,playerObj,worldCache,roomIDCompendium)
                 running = False
 
     currentRoomID = generatedMap[currentRoomPosY][currentRoomPosX]
@@ -225,7 +231,7 @@ while running:
                 # generate full world========================
                 if not worldGenerated:
                     worldGenerating = True
-                    asyncio.run(generateEntireWorld(mapGen,screen,font,worldCache))
+                    asyncio.run(generateEntireWorld(mapGen, screen, font, worldCache, difficulty))
                     worldGenerated = True
                     worldGenerating = False
 

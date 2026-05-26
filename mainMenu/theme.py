@@ -11,3 +11,4 @@ textSecondary   = (0xb0, 0xe8, 0xf5)       # dimmer for sec
 textDim         = (0x50, 0x80, 0x90)       # hints
 borderColor     = accentDim
 scrollbarColor  = accent
+grayishidk      = (35,35,35)

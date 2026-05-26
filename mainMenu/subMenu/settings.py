@@ -16,12 +16,11 @@ defaultSettings = {
         "left"    : pygame.K_a,
         "right"   : pygame.K_d,
         "shoot"   : 1,
-        "interact": pygame.K_RETURN,
         "dodge"   : pygame.K_f,
+        "interact": pygame.K_RETURN,
     },
 }
 
-tutorialOptions    = (True, False)
 fpsOptions         = (1, 30, 60, 120, 144, 240)
 resolutionOptions  = [
     [900,  600],
@@ -65,17 +64,12 @@ def applySettings(cfg):
         return pygame.display.set_mode((w, h))
 
 def keyName(val):
-    if isinstance(val, int) and val >= 1 and val <= 5:
-        names = {1: "LMB", 2: "MMB", 3: "RMB"}
-        return names.get(val, f"Mouse{val}")
+    if isinstance(val, int) and 1 <= val <= 5:
+        return {1:"LMB", 2:"MMB", 3:"RMB"}.get(val, f"Mouse{val}")
     try:
         return pygame.key.name(val).upper()
     except Exception:
         return str(val)
-
-
-
-
 
 generalSection  = "general"
 keybindSection = "keybinds"
@@ -88,14 +82,14 @@ def run(screen, clock, font):
     valueFont = pygame.font.SysFont(None, 34)
     hintFont  = pygame.font.SysFont(None, 24)
 
-    rowH   = 60
-    startY = 160
+    rowH      = 60
+    startY    = 160
+    kbScrollY = 0
 
     generalRows = [
         ("fps cap"      , "fpsCap"      , "cycle" , fpsOptions         ),
         ("resolution"   , "resolution"  , "cycle" , resolutionOptions  ),
         ("display mode" , "displayMode" , "cycle" , displayModeOptions ),
-        ("tutorial"     , "tutorial"    , "cycle" , tutorialOptions    ),
     ]
 
     #shown keybind actions
@@ -129,6 +123,9 @@ def run(screen, clock, font):
         winW, winH = screen.get_size()
         colX       = winW // 2
         mx, my     = pygame.mouse.get_pos()
+        listTop    = startY
+        listBottom = winH - 70
+        visibleH   = listBottom - listTop
         clock.tick(cfg["fpsCap"])
 
         for event in pygame.event.get():
@@ -142,16 +139,15 @@ def run(screen, clock, font):
             if rebindingAction is not None:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        rebindingAction = None   # cancel
-                    else:
+                        rebindingAction = None
+                    elif rebindingAction != "shoot":
                         cfg["keybinds"][rebindingAction] = event.key
                         rebindingAction = None
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    cfg["keybinds"][rebindingAction] = event.button
-                    rebindingAction = None
+                    if rebindingAction == "shoot":
+                        cfg["keybinds"][rebindingAction] = event.button
+                        rebindingAction = None
                 continue
-
-
 
             if event.type == pygame.KEYDOWN:
                 if event.key in (pygame.K_ESCAPE, pygame.K_BACKSPACE):
@@ -159,7 +155,10 @@ def run(screen, clock, font):
                     screen = applySettings(cfg)
                     return "menu", screen
 
-
+            if event.type == pygame.MOUSEWHEEL and currentSection == keybindSection:
+                totalKbH  = len(keybindActions) * rowH
+                maxScroll = max(0, totalKbH - visibleH)
+                kbScrollY = max(0, min(kbScrollY - event.y * 30, maxScroll))
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 tabW    = winW // 2
@@ -169,8 +168,6 @@ def run(screen, clock, font):
                     currentSection = generalSection
                 elif kbRect.collidepoint(mx, my):
                     currentSection = keybindSection
-
-
 
                 if currentSection == generalSection:
                     for i, (label, key, rowType, options) in enumerate(generalRows):
@@ -186,8 +183,10 @@ def run(screen, clock, font):
 
                 elif currentSection == keybindSection:
                     for i, action in enumerate(keybindActions):
-                        rowY       = startY + i * rowH
-                        bindRect   = pygame.Rect(colX + 10, rowY + 10, 160, 36)
+                        rowY     = listTop + i * rowH - kbScrollY
+                        if not (listTop <= rowY <= listBottom - rowH):
+                            continue
+                        bindRect = pygame.Rect(colX + 10, rowY + 10, 160, 36)
                         if bindRect.collidepoint(mx, my):
                             rebindingAction = action   # start listening
 
@@ -199,7 +198,7 @@ def run(screen, clock, font):
         screen.blit(title, (winW // 2 - title.get_width() // 2, 10))
 
         #section tabs
-        tabW    = winW // 2
+        tabW = winW // 2
         for i, (tabLabel, section) in enumerate([("general", generalSection),
                                                   ("keybinds", keybindSection)]):
             tabRect = pygame.Rect(i * tabW, 55, tabW - 2, 36)
@@ -234,9 +233,12 @@ def run(screen, clock, font):
                                       valueRect.centery - valSurf.get_height() // 2))
 
         elif currentSection == keybindSection:
+            #force rendering to be in the visable area
+            screen.set_clip(pygame.Rect(0, listTop, winW - 16, visibleH))
+
             for i, action in enumerate(keybindActions):
-                rowY      = startY + i * rowH
-                isActive  = rebindingAction == action
+                rowY     = listTop + i * rowH - kbScrollY
+                isActive = rebindingAction == action
 
                 labelSurf = labelFont.render(action, True, theme.textSecondary)
                 screen.blit(labelSurf, (colX - labelSurf.get_width() - 20, rowY + 14))
@@ -248,9 +250,22 @@ def run(screen, clock, font):
 
                 bindText  = "press a key" if isActive else keyName(cfg["keybinds"][action])
                 bindSurf  = valueFont.render(bindText, True,
-                                             theme.bgDark if isActive else theme.textPrimary)
+                                            theme.bgDark if isActive else theme.textPrimary)
                 screen.blit(bindSurf, (bindRect.centerx - bindSurf.get_width() // 2,
                                        bindRect.centery - bindSurf.get_height() // 2))
+
+            screen.set_clip(None)
+
+            #scrollbar
+            totalKbH  = len(keybindActions) * rowH
+            if totalKbH > visibleH:
+                barH  = max(30, visibleH * visibleH // totalKbH)
+                maxSc = max(1, totalKbH - visibleH)
+                barY  = listTop + kbScrollY * (visibleH - barH) // maxSc
+                pygame.draw.rect(screen, theme.accentDim,
+                                 (winW - 10, listTop, 6, visibleH), border_radius=3)
+                pygame.draw.rect(screen, theme.accent,
+                                 (winW - 10, barY, 6, barH), border_radius=3)
 
         pygame.draw.line(screen, theme.borderColor, (40, winH - 60), (winW - 40, winH - 60), 1)
 

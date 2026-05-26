@@ -22,3 +22,26 @@ chest    = os.path.join(mapDirs, "chest.png")
 elevator = os.path.join(mapDirs, "elevator.png")
 
 # keyano is a poo poo head
+
+def enemySpawnCount(layerID, difficulty):
+    return min(15 + difficulty * 2,  1 + layerID * 2 * difficulty)
+
+
+difficultyStats = {
+    "redacted": {"multiplier": 0.1,  "bulletSpeed": 0.1,  "dashFrames": 10000.0, "enemyCount": 0.0,  "enemyHp": 1.0},
+    "ign"     : {"multiplier": 0.25, "bulletSpeed": 0.25, "dashFrames": 2.0,     "enemyCount": 0.25, "enemyHp": 1.0},
+    "easy"    : {"multiplier": 0.5,  "bulletSpeed": 0.5,  "dashFrames": 1.5,     "enemyCount": 0.5,  "enemyHp": 1.0},
+    "normal"  : {"multiplier": 1.0,  "bulletSpeed": 1.0,  "dashFrames": 1.25,    "enemyCount": 1.0,  "enemyHp": 1.0},
+    "hard"    : {"multiplier": 1.25, "bulletSpeed": 1.25, "dashFrames": 1.0,     "enemyCount": 1.25, "enemyHp": 1.0},
+    "farag"   : {"multiplier": 1.5,  "bulletSpeed": 1.5,  "dashFrames": 0.75,    "enemyCount": 1.5,  "enemyHp": 1.5},
+    "nagra"   : {"multiplier": 2.0,  "bulletSpeed": 2.0,  "dashFrames": 0.5,     "enemyCount": 2.0,  "enemyHp": 2.0},
+}
+
+difficultyOptions = list(difficultyStats.keys())
+
+
+def getDifficultyStats(name):
+    return difficultyStats.get(name, difficultyStats["normal"])
+
+
+fontTextBasic = None
