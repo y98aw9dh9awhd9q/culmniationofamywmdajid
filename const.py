@@ -1,5 +1,6 @@
 import pygame
 import os
+import math
 
 black     = (0,0,0)
 white     = (255,255,255)
@@ -24,7 +25,7 @@ elevator = os.path.join(mapDirs, "elevator.png")
 # keyano is a poo poo head
 
 def enemySpawnCount(layerID, difficulty):
-    return min(15 + difficulty * 2,  1 + layerID * 2 * difficulty)
+    return math.floor(min((1 + 2*layerID + difficulty) * (1.08 ** layerID), (10 - difficulty) * difficulty))
 
 
 difficultyStats = {
