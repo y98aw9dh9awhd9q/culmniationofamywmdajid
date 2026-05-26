@@ -120,7 +120,7 @@ def run(screen, clock, font):
 
         # background room
         try:
-            import display
+            from gameHelpers.display import display
             bgSurf = pygame.Surface((winW, winH))
             display.drawRoom(bgSurf, bgRoomId)
             bgSurf.set_alpha(40)

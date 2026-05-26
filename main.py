@@ -8,7 +8,7 @@ import pygame
 import asyncio
 
 import const
-import display
+from gameHelpers.display import display
 import data.gameSaveData.dataSaving as dataSaving
 
 import mapping.tutorial.tutorialGen as tutorial
@@ -22,6 +22,7 @@ import mainMenu.subMenu.pauseMenu as pauseMenu
 
 from   gameHelpers.roomDirHelper import getMatchingEntrance, mapDelta, roomIDer,placePlayerAtDoor
 from   gameHelpers.mapGeneration import generateEntireWorld
+from   gameHelpers.display.dialogueBox import drawDialogueBox
 
 from data.playerUnlockData.playerData.playerDataManager import writeCompendiumEntry
 
@@ -45,8 +46,9 @@ cfg                = settings.loadSettings()
 screen             = settings.applySettings(cfg)
 loadedSettings     = settings.loadSettings()
 
+
 #core vars ===================================
-layout, rowCount, colCount, blockW, blockH = display.spaceCalculator(screen,-1)
+layout, rowCount, colCount, blockW, blockH = display.spaceCalculator(screen, -1)
 
 spriteH, spriteW   = blockH*0.75, blockW*0.75
 spriteSize         = (spriteW,spriteH)
@@ -62,6 +64,7 @@ tutorialFinished   = False
 worldGenerated     = False
 worldGenerating    = False
 roomIDCompendium   = [(0, 0)]
+tutorialDialogue   = True
 
 print(settings.loadSettings)
 
@@ -195,6 +198,7 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             pauseResult = pauseMenu.run(screen,clock)
+            playerObj.size = (blockH*0.75, blockW*0.75)
             if pauseResult == "save":
                 dataSaving.saveGameCall(currentLayerID, playerSavePrep, playerObj, worldCache, roomIDCompendium, difficulty)
             elif pauseResult == "menu":
@@ -227,15 +231,11 @@ while running:
         currentRoomPosX = 0
         currentRoomPosY = 0
 
-        #tutorial=========================================================
+        #tutorial ELEVATOR LOGIC=========================================================
         if currentLayerID[0] == 0:
             if currentLayerID[1] != 4:
                 currentLayerID[1] += 1
                 generatedMap = tutorial.tutorialMatching[currentLayerID[1]]
-
-
-
-
             else:
                 #tutorial completee!==========================================
                 tutorialFinished = True
@@ -338,9 +338,11 @@ while running:
 
 
     #render========================================
-    screen.fill((0, 0, 0))
 
-    display.drawRoom(screen,generatedMap[currentRoomPosY][currentRoomPosX])
+
+    screen.fill((0, 0, 0))  #clears the screen**************
+
+    display.drawRoom(screen, generatedMap[currentRoomPosY][currentRoomPosX])
 
     playerObj.update(
         deltaTime,
@@ -358,6 +360,18 @@ while running:
         playerObj
     )
 
+
+
+    if currentRoomID == 12 and currentLayerID == [0,1]:
+        if tutorialDialogue:
+                finishedDial = drawDialogueBox(screen,
+            f"welcome to (game)! to interact use {loadedSettings['keybinds']['interact']},"
+                f" to shoot use {loadedSettings['keybinds']['shoot']} but youll need a gun for that."
+                f"worry not! You can obtain a gun on the next layer, just go to the room on the right "
+                f"then up the elevator and interact with the chest.", typewrite=True)
+                if finishedDial:
+                    tutorialDialogue = False
+                    playerObj.doorsLocked = False
     pygame.display.flip()
 
 pygame.quit()
