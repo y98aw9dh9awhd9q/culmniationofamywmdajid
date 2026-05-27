@@ -1,0 +1,26 @@
+{
+  "0": {
+    "fodder": {
+      "hp": "5",
+      "atk": "1",
+      "weapon": "pistol#1",
+      "ai": "fodder",
+      "imagePath": "fodder.png"
+    }
+
+  },
+  "1": {
+    "strongerFodder": {
+      "hp": "10",
+      "atk": "2",
+      "weapon": "pistol#1",
+      "ai": "fodder",
+      "imagePath": "strongerFoddler.png"
+
+
+    }
+
+  }
+
+
+}

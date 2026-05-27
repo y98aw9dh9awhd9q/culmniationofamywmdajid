@@ -13,9 +13,13 @@ from gameHelpers.display import display
 import data.gameSaveData.dataSaving as dataSaving
 
 import mapping.tutorial.tutorialGen as tutorial
-import mapping.mapLogic.mapGenerator as mapGenerator\
+import mapping.mapLogic.mapGenerator as mapGenerator
+from gameHelpers.display.display import spaceCalculator
+from   mapping.maps import getEnemySpawns
 
 from   entity.player import player
+from   entity.entityClass import enemyBuilder
+from   entity.enemyLogic.reader.enemySheetReader import getRandomEnemy
 
 import mainMenu.subMenu.settings as settings
 import mainMenu.menu as menu
@@ -99,6 +103,7 @@ else:
 
 playerSpriteGroup = pygame.sprite.Group()
 playerSpriteGroup.add(playerObj)
+enemyGroup        = pygame.sprite.Group()
 
 
 #save loader=======================
@@ -194,6 +199,63 @@ if currentLayerID[0] == 0:
 else:
     print(worldCache)
     generatedMap = worldCache[str(currentLayerID[0])][str(currentLayerID[1])]
+
+
+
+
+
+
+#enemy helper func
+
+spawnIndicators      = []
+spawnEffectsStarted  = False
+
+def resetSpawnEffects():
+    global spawnIndicators
+    global spawnEffectsStarted
+    spawnIndicators.clear()
+    spawnEffectsStarted = False
+
+def spawnEnemy(roomID, layerID):
+    enemyGroup.empty()
+    enemySpawns = getEnemySpawns(roomID,layerID[0],
+                                 const.difficultyStats[f"{difficulty}"]["enemyCount"])
+
+    layout, rowCount, colCount, blockW, blockH = display.spaceCalculator(screen, roomID)
+
+    for row, col in enemySpawns:
+
+        enemyX = col * blockW
+        enemyY = row * blockH
+
+        enemy = enemyBuilder(
+            enemyName=getRandomEnemy(layerID[0]),
+            spawnPos=(enemyX, enemyY),
+            layer=layerID[0],
+            screenW=screen.get_width(),
+            screenH=screen.get_height()
+        )
+
+        enemyGroup.add(enemy)
+
+
+def spawnEnemies(screen, roomId, layerId, difficulty):
+    global spawnEffectsStarted
+    layout, rowCount, colCount, blockW, blockH = spaceCalculator(screen, roomId)
+
+    if not spawnEffectsStarted:
+        enemySpawns = getEnemySpawns(roomId,layerId,difficulty)
+        for row, col in enemySpawns:
+            spawnIndicators.append(spawner.enemySpawnIndicator(row, col, blockW, blockH))
+            if spawnIndicators[0].state == "holding": print("holding!")
+        spawnEffectsStarted = True
+
+    for indicator in spawnIndicators:
+        indicator.update()
+        indicator.draw(screen)
+
+    spawnIndicators[:] = [indicator for indicator in spawnIndicators if not indicator.done]
+
 
 #main loop====================================
 
@@ -332,7 +394,7 @@ while running:
 
                 playerObj.syncPos()
 
-                spawner.resetSpawnEffects()
+
 
 
 
@@ -440,7 +502,7 @@ while running:
                         playerObj.doorsLocked = False
 
         if currentLayerID[1] == 4 and currentRoomID == 33:
-            spawner.drawSpawnEffects(screen, currentRoomID, currentLayerID[0],
+            spawnEnemies(screen, currentRoomID, currentLayerID[0],
                                      const.difficultyStats[f"{difficulty}"]["enemyCount"])
 
     pygame.display.flip()

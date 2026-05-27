@@ -1,12 +1,6 @@
 import pygame
 import const
 
-from gameHelpers.display.display import spaceCalculator
-from mapping.maps import getEnemySpawns
-
-spawnIndicators      = []
-spawnEffectsStarted  = False
-
 class enemySpawnIndicator:
     def __init__(self, row, col, blockW, blockH):
         self.centerX       = int(col * blockW + (blockW / 2))
@@ -44,24 +38,4 @@ class enemySpawnIndicator:
                            const.enemySpawnIndicatorColor,
                            (self.centerX, self.centerY),int(self.radius),0)
 
-def resetSpawnEffects():
-    global spawnIndicators
-    global spawnEffectsStarted
-    spawnIndicators.clear()
-    spawnEffectsStarted = False
 
-def drawSpawnEffects(screen, roomId, layerId, difficulty):
-    global spawnEffectsStarted
-    layout, rowCount, colCount, blockW, blockH = spaceCalculator(screen, roomId)
-
-    if not spawnEffectsStarted:
-        enemySpawns = getEnemySpawns(roomId,layerId,difficulty)
-        for row, col in enemySpawns:
-            spawnIndicators.append(enemySpawnIndicator(row,col,blockW,blockH))
-        spawnEffectsStarted = True
-
-    for indicator in spawnIndicators:
-        indicator.update()
-        indicator.draw(screen)
-
-    spawnIndicators[:] = [indicator for indicator in spawnIndicators if not indicator.done]

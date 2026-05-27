@@ -60,7 +60,7 @@ def drawDialogueBox(screen, text, clock, image=None, typewrite=True):
         drawDialogueBox.timer += 1
 
 
-        typeWriterSpeed = 67 #higher is slower
+        typeWriterSpeed = 2 #higher is slower
 
 
         if drawDialogueBox.timer >= typeWriterSpeed:
