@@ -131,7 +131,7 @@ def run(screen, clock, font):
         #scales font
         scaledTitleSize = max(40, int(winH * 0.12))
         scaledTitleFont = pygame.font.SysFont(None, scaledTitleSize)
-        titleSurf = scaledTitleFont.render("nagra idk", True, theme.textPrimary)
+        titleSurf = scaledTitleFont.render("The Amazing Digital Dungeon", True, theme.textPrimary)
         screen.blit(titleSurf, (winW // 2 - titleSurf.get_width() // 2,
                                  int(winH * 0.10)))
 

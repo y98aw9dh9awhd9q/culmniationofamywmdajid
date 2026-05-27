@@ -55,4 +55,5 @@ def getDifficultyStats(name):
 
 fontTextBasic = None
 
+enemySpawnIndicatorColor = red #anastasia said so
 

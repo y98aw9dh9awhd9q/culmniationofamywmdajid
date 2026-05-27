@@ -1,6 +1,9 @@
 from dataclasses import dataclass, replace
 import pygame
 
+import const
+
+
 @dataclass(frozen=True)
 class Room:
     # tile values:
@@ -853,3 +856,17 @@ def breakTile(roomId, rowIdx, colIdx):
         layout[rowIdx][colIdx] = 0
 
     roomRegistery[roomId] = replace(roomRegistery[roomId], layout=layout)
+
+
+import random
+import numpy
+
+def getEnemySpawns(roomID, layerID, difficulty):
+    #returns tuples of arrays
+    enemySpawnCount = const.enemySpawnCount(layerID, difficulty)
+    roomLayout      = numpy.array(getLayout(roomID))
+    validSpawns     = numpy.argwhere(roomLayout == 0)
+    validSpawns     = [tuple(pos) for pos in validSpawns]
+    enemySpawns     = random.sample(validSpawns, enemySpawnCount)
+    return enemySpawns
+

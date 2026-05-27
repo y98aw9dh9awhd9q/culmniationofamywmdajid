@@ -25,6 +25,7 @@ from   gameHelpers.mapGeneration import generateEntireWorld
 from   gameHelpers.display.dialogueBox import drawDialogueBox
 
 from data.playerUnlockData.playerData.playerDataManager import writeCompendiumEntry
+import gameHelpers.display.enemySpawnIndicator as spawner
 
 #pre boot initialization =========================
 print(" main: ",settings.loadSettings())
@@ -329,6 +330,10 @@ while running:
 
                 playerObj.syncPos()
 
+                spawner.resetSpawnEffects()
+
+
+
             transitionCooldown = 0.25
 
             playerSavePrep = (
@@ -380,6 +385,9 @@ while running:
         screen,
         playerObj
     )
+
+    spawner.drawSpawnEffects(screen, currentRoomID, currentLayerID[0],
+                             const.difficultyStats[f"{difficulty}"]["enemyCount"])
 
     #tutorial dialogue handling
     if currentLayerID[0] == 0:
