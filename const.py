@@ -25,6 +25,7 @@ mapDirs  = os.path.join(baseDir, "assets","maps")
 chest    = os.path.join(mapDirs, "chest.png")
 elevator = os.path.join(mapDirs, "elevator.png")
 
+caineDir  = os.path.join(baseDir, "assets","caine")
 # keyano is a poo poo head
 
 def enemySpawnCount(layerID, difficultyMultiplier):

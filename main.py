@@ -6,13 +6,14 @@
 
 import pygame
 import asyncio
+import os
 
 import const
 from gameHelpers.display import display
 import data.gameSaveData.dataSaving as dataSaving
 
 import mapping.tutorial.tutorialGen as tutorial
-import mapping.mapLogic.mapGenerator as mapGenerator
+import mapping.mapLogic.mapGenerator as mapGenerator\
 
 from   entity.player import player
 
@@ -75,6 +76,7 @@ tutorialDialogueFirst  = True
 tutorialDialogueSecond = True
 tutorialDialogue2x     = True
 tutorialDialogueArrow  = True
+tutorialGotGun         = True
 
 
 
@@ -386,16 +388,14 @@ while running:
         playerObj
     )
 
-    spawner.drawSpawnEffects(screen, currentRoomID, currentLayerID[0],
-                             const.difficultyStats[f"{difficulty}"]["enemyCount"])
-
     #tutorial dialogue handling
     if currentLayerID[0] == 0:
 
         #tutorial first
         if currentRoomID == 12 and currentLayerID == [0,1]:
             if tutorialDialogueFirst:
-                    finishedDial = drawDialogueBox(screen,tutorial.tutorialDialogueFirst , clock,typewrite=True)
+                    finishedDial = drawDialogueBox(screen,tutorial.tutorialDialogueFirst , clock,typewrite=True,
+                                                   image= os.path.join(const.caineDir, "caineFirst.png"))
                     if finishedDial:
                         tutorialDialogueFirst = False
                         playerObj.doorsLocked = False
@@ -406,10 +406,19 @@ while running:
             if currentRoomID == -7:
                 if tutorialDialogueSecond:
                     playerObj.doorsLocked = True
-                    finishedDial = drawDialogueBox(screen,tutorial.tutorialDialogueSecond , clock,typewrite=True)
+                    finishedDial = drawDialogueBox(screen,tutorial.tutorialDialogueSecond , clock,typewrite=True,
+                                                   image=os.path.join(const.caineDir, "caineFirst.png"))
                     if finishedDial:
                         tutorialDialogueSecond = False
                         playerObj.doorsLocked = False
+
+                if len(playerObj.obtainedGuns)> 0 and tutorialGotGun:
+                    finishedDial = drawDialogueBox(screen,"WOWZERS ! YOU GOT A GUN!!!!!" , clock,typewrite=True,
+                                                   image=os.path.join(const.caineDir, "caineFirst.png"))
+                    if finishedDial:
+                        tutorialGotGun = False
+
+
 
             if currentRoomID == -8:
                 if tutorialDialogue2x:
@@ -420,6 +429,8 @@ while running:
                         playerObj.doorsLocked = False
 
         if currentLayerID[1] == 3:
+
+
             if currentRoomID == -9:
                 if tutorialDialogueArrow:
                     playerObj.doorsLocked = True
@@ -428,7 +439,9 @@ while running:
                         tutorialDialogueArrow = False
                         playerObj.doorsLocked = False
 
-
+        if currentLayerID[1] == 4 and currentRoomID == 33:
+            spawner.drawSpawnEffects(screen, currentRoomID, currentLayerID[0],
+                                     const.difficultyStats[f"{difficulty}"]["enemyCount"])
 
     pygame.display.flip()
 

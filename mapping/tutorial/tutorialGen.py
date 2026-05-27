@@ -22,7 +22,7 @@ tutorialMatching ={
 loadedSettings = loadSettings()
 
 tutorialDialogueFirst =  (
-f"welcome to (game)! to interact use [{pygame.key.name(loadedSettings['keybinds']['interact']).upper()}],"
+f"welcome to The Amazing Digital Dungeon! to interact use [{pygame.key.name(loadedSettings['keybinds']['interact']).upper()}],"
                 f" to shoot use [{pygame.key.name(loadedSettings['keybinds']['shoot']).upper()}] but youll need a gun for that."
                 f" Worry not (main character)! You can obtain a gun on the next layer, just go to the room on the right "
                 f"then up the elevator and interact with the chest. Also, if you hate me you can press "

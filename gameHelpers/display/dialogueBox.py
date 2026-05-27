@@ -43,7 +43,8 @@ def drawDialogueBox(screen, text, clock, image=None, typewrite=True):
     imgRect = pygame.Rect(boxX + 15, boxY + (boxH - imgSize) // 2,imgSize,imgSize)
 
     if image is not None:
-        scaledImg = pygame.transform.scale(image,(imgSize, imgSize))
+
+        scaledImg = pygame.transform.scale(pygame.image.load(image).convert_alpha(),(imgSize, imgSize))
         screen.blit(scaledImg,imgRect)
 
 
@@ -59,7 +60,7 @@ def drawDialogueBox(screen, text, clock, image=None, typewrite=True):
         drawDialogueBox.timer += 1
 
 
-        typeWriterSpeed = 2 #higher is slower
+        typeWriterSpeed = 67 #higher is slower
 
 
         if drawDialogueBox.timer >= typeWriterSpeed:
