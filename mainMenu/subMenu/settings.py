@@ -24,10 +24,10 @@ defaultSettings = {
 
 fpsOptions         = (0.67, 1, 30, 60, 67,  120, 144, 240)
 resolutionOptions  = [
-    [67,   67 ],
-    [900,  600],
-    [1280, 720],
-    [1600, 900],
+    [670,  670 ],
+    [900,  600 ],
+    [1280, 720 ],
+    [1600, 900 ],
     [1920, 1080],
 ]
 displayModeOptions = ["windowed", "borderless", "fullscreen"]

@@ -1,8 +1,13 @@
 import pygame
 import const
 import mainMenu.theme as theme
+from   mainMenu.subMenu.settings import loadSettings
 
-def drawDialogueBox(screen, text, image=None, typewrite=True):
+skipDialogueBtn = loadSettings()["keybinds"]["interact"]
+skipCD          = 300
+lastSkipPress   = 0
+
+def drawDialogueBox(screen, text, clock, image=None, typewrite=True):
     if not hasattr(drawDialogueBox, "charIndex"):
         drawDialogueBox.charIndex = 0
 
@@ -72,24 +77,27 @@ def drawDialogueBox(screen, text, image=None, typewrite=True):
         drawDialogueBox.finished = True
 
 
-    #genshin would never
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_SPACE]:
+    if keys[skipDialogueBtn]:
+        currentTime = pygame.time.get_ticks()
 
-        if not drawDialogueBox.finished:
-            drawDialogueBox.charIndex = len(fullText)
-            drawDialogueBox.finished = True
+        global lastSkipPress
+        if currentTime - lastSkipPress >= skipCD:
+            if not drawDialogueBox.finished:
+                drawDialogueBox.charIndex = len(fullText)
+                drawDialogueBox.finished = True
+                lastSkipPress = currentTime
 
-        else:
-            drawDialogueBox.charIndex = 0
-            drawDialogueBox.timer = 0
-            drawDialogueBox.finished = False
-            drawDialogueBox.lastText = ""
+            else:
+                drawDialogueBox.charIndex = 0
+                drawDialogueBox.timer = 0
+                drawDialogueBox.finished = False
+                drawDialogueBox.lastText = ""
+                return True
 
-            return True
 
-    font        = pygame.font.SysFont(const.fontTextBasic, 30)
+    font        = pygame.font.SysFont(const.fontTextBasic, int(screen.get_height()/30))
     textX       = imgRect.right + 15
     textY       = boxY + 20
 
@@ -115,7 +123,7 @@ def drawDialogueBox(screen, text, image=None, typewrite=True):
         screen.blit(rendered, (textX, textY + (i * 30)))
 
     if drawDialogueBox.finished:
-        continueText = font.render("[SPACE]", True, (200, 200, 200))
+        continueText = font.render(pygame.key.name(loadSettings()["keybinds"]["interact"]), True, (200, 200, 200))
         screen.blit(continueText,(boxX + boxW - 110, boxY + boxH - 35))
 
     return False

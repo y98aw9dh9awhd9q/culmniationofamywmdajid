@@ -13,6 +13,9 @@ orange    = pygame.Color("#FFA500")
 bulletRed = pygame.Color("#EE4B2B")
 blockSize = 20
 
+roomCols  = 9
+roomRows  = 15
+
 
 baseDir   = os.path.dirname(os.path.abspath(__file__))
 playerDir = os.path.join(baseDir, "assets", "pictures", "entities", "player.png")

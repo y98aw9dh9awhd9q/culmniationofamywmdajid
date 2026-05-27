@@ -1,14 +1,22 @@
 import pygame
-from mapping.maps import getExitTiles, getWallRects, getElevatorTiles, getBreakableRectsWithCoords, breakTile, getChestRectsWithCoords
+import const
+
 from entity.weapons.bullet import bullet
 from entity.weapons.weaponReader import weapon
+
 from mapping.mapLogic.chestLogic import chest
+from mapping.maps import getExitTiles, getWallRects, getElevatorTiles, getBreakableRectsWithCoords, breakTile, getChestRectsWithCoords
+
 
 class player(pygame.sprite.Sprite):
     immuFrameTime  = 0.5
-    speed          = 220
     dodgeKey       = pygame.K_f
-    dodgeSpeed     = 900
+
+    #these are tiles per second
+    gridPS          = 0.25
+    dodgeGridPS     = 2
+
+
     dodgeCooldown  = 0.5
     roomCols       = 15
     roomRows       = 9
@@ -36,6 +44,7 @@ class player(pygame.sprite.Sprite):
         self.dodgeCooldownTimer = 0.0
         self.obtainedGuns       = []
         self.doorsLocked        = False
+        self.updateSpeed()
 
         self.allowShoot = False if gun is None else True
 
@@ -272,3 +281,13 @@ class player(pygame.sprite.Sprite):
             return None
         elif roomID == -2 and self.rect.colliderect(getElevatorTiles(roomID, self.screenW, self.screenH)):
             return True
+
+    def rescaleSprite(self):
+        self.image = pygame.transform.scale(self.image,(int(self.size[0]), int(self.size[1])))
+        center = self.rect.center
+        self.rect = self.image.get_rect(center=center)
+
+
+    def updateSpeed(self):
+        self.speed      = self.screenW * self.gridPS
+        self.dodgeSpeed = self.screenW * self.dodgeGridPS

@@ -50,27 +50,40 @@ loadedSettings     = settings.loadSettings()
 #core vars ===================================
 layout, rowCount, colCount, blockW, blockH = display.spaceCalculator(screen, -1)
 
-spriteH, spriteW   = blockH*0.75, blockW*0.75
-spriteSize         = (spriteW,spriteH)
-playerObj          = player(*screen.get_size(), size=spriteSize)
-mapGen             = mapGenerator.mapGenerator()
-generatedMap       = None
-currentRoomPosY    = 0
-currentRoomPosX    = 0
-transitionCooldown = 0.0
-playerSavePrep     = None
-worldCache         = {}
-tutorialFinished   = False
-worldGenerated     = False
-worldGenerating    = False
-roomIDCompendium   = [(0, 0)]
-tutorialDialogue   = True
+spriteH, spriteW       = blockH*0.75, blockW*0.75
+spriteSize             = (spriteW,spriteH)
+playerObj              = player(*screen.get_size(), size=spriteSize)
+mapGen                 = mapGenerator.mapGenerator()
+generatedMap           = None
+currentRoomPosY        = 0
+currentRoomPosX        = 0
+transitionCooldown     = 0.0
+playerSavePrep         = None
+worldCache             = {}
+tutorialFinished       = False
+worldGenerated         = False
+worldGenerating        = False
+roomIDCompendium       = [(0, 0)]
+
 
 print(settings.loadSettings)
 
 
+#tutorial flags
+tutorialDialogueFirst  = True
+tutorialDialogueSecond = True
+tutorialDialogue2x     = True
+tutorialDialogueArrow  = True
+
+
+
 
 #current floor logic===========================
+
+
+
+
+
 if tutorialFlag:
     print("main: tutorial started")
     currentLayerID = [0, 1]
@@ -198,7 +211,6 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             pauseResult = pauseMenu.run(screen,clock)
-            playerObj.size = (blockH*0.75, blockW*0.75)
             if pauseResult == "save":
                 dataSaving.saveGameCall(currentLayerID, playerSavePrep, playerObj, worldCache, roomIDCompendium, difficulty)
             elif pauseResult == "menu":
@@ -213,10 +225,17 @@ while running:
 
             elif pauseResult == "settings":
                 result, screen = settings.run( screen, clock, font)
+                layout, rowCount, colCount, blockW, blockH = display.spaceCalculator(screen, -1)
+                playerObj.size = (blockW * 0.75, blockH * 0.75)
+                playerObj.rescaleSprite()
+                playerObj.screenH = screen.get_height()
+                playerObj.screenW = screen.get_width()
+                playerObj.updateSpeed()
                 if result == "quit":
                     running = False
             elif pauseResult == "quit":
                 running = False
+
 
     currentRoomID = generatedMap[currentRoomPosY][currentRoomPosX]
     exitDir = playerObj.touchingExit( currentRoomID)
@@ -340,6 +359,8 @@ while running:
     #render========================================
 
 
+
+
     screen.fill((0, 0, 0))  #clears the screen**************
 
     display.drawRoom(screen, generatedMap[currentRoomPosY][currentRoomPosX])
@@ -360,18 +381,47 @@ while running:
         playerObj
     )
 
+    #tutorial dialogue handling
+    if currentLayerID[0] == 0:
+
+        #tutorial first
+        if currentRoomID == 12 and currentLayerID == [0,1]:
+            if tutorialDialogueFirst:
+                    finishedDial = drawDialogueBox(screen,tutorial.tutorialDialogueFirst , clock,typewrite=True)
+                    if finishedDial:
+                        tutorialDialogueFirst = False
+                        playerObj.doorsLocked = False
 
 
-    if currentRoomID == 12 and currentLayerID == [0,1]:
-        if tutorialDialogue:
-                finishedDial = drawDialogueBox(screen,
-            f"welcome to (game)! to interact use {loadedSettings['keybinds']['interact']},"
-                f" to shoot use {loadedSettings['keybinds']['shoot']} but youll need a gun for that."
-                f"worry not! You can obtain a gun on the next layer, just go to the room on the right "
-                f"then up the elevator and interact with the chest.", typewrite=True)
-                if finishedDial:
-                    tutorialDialogue = False
-                    playerObj.doorsLocked = False
+        #tutorial floor 2
+        if currentLayerID[1] == 2:
+            if currentRoomID == -7:
+                if tutorialDialogueSecond:
+                    playerObj.doorsLocked = True
+                    finishedDial = drawDialogueBox(screen,tutorial.tutorialDialogueSecond , clock,typewrite=True)
+                    if finishedDial:
+                        tutorialDialogueSecond = False
+                        playerObj.doorsLocked = False
+
+            if currentRoomID == -8:
+                if tutorialDialogue2x:
+                    playerObj.doorsLocked = True
+                    finishedDial = drawDialogueBox(screen,tutorial.tutorialDialogueSecondSecond , clock,typewrite=True)
+                    if finishedDial:
+                        tutorialDialogue2x = False
+                        playerObj.doorsLocked = False
+
+        if currentLayerID[1] == 3:
+            if currentRoomID == -9:
+                if tutorialDialogueArrow:
+                    playerObj.doorsLocked = True
+                    finishedDial = drawDialogueBox(screen,tutorial.tutorialArrowRoom , clock,typewrite=True)
+                    if finishedDial:
+                        tutorialDialogueArrow = False
+                        playerObj.doorsLocked = False
+
+
+
     pygame.display.flip()
 
 pygame.quit()
