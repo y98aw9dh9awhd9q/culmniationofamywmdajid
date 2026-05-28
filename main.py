@@ -491,7 +491,7 @@ while running:
 
     #tutorial dialogue handling
     if currentLayerID[0] == 0:
-        tutorial.runTutorial(screen, tutorial, clock, currentLayerID, currentRoomID,playerObj)
+        tutorial.runTutorial(screen, clock, currentLayerID, currentRoomID,playerObj)
         if currentLayerID[1] == 4 and newRoomID == 33:
             spawnEnemies(screen, currentRoomID, currentLayerID[0], const.difficultyStats[f"{difficulty}"]["enemyCount"],1)
         if currentLayerID[1]==4 and newRoomID == -3:
