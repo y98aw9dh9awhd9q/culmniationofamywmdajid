@@ -24,6 +24,9 @@ bulletDir = os.path.join(baseDir, "assets", "pictures", "entities", "bullet.png"
 mapDirs  = os.path.join(baseDir, "assets","maps")
 chest    = os.path.join(mapDirs, "chest.png")
 elevator = os.path.join(mapDirs, "elevator.png")
+wall     = os.path.join(mapDirs, "wall.png")
+door     = os.path.join(mapDirs, "door.png")
+box      = os.path.join(mapDirs, "box.png")
 
 caineDir  = os.path.join(baseDir, "assets","caine")
 

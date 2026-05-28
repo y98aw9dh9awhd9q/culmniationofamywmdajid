@@ -21,16 +21,21 @@ def drawRoom(screen, roomId):
 
     layout, rowCount, colCount, blockW, blockH = spaceCalculator(screen, roomId)
 
-    elevator = pygame.transform.scale(pygame.image.load(const.elevator).convert_alpha(), (blockH, blockW))
-    chest    = pygame.transform.scale(pygame.image.load(const.chest).convert_alpha()   , (blockH, blockW))
+    elevator = pygame.transform.scale(pygame.image.load(const.elevator).convert_alpha(), (blockW, blockH))
+    chest    = pygame.transform.scale(pygame.image.load(const.chest).convert_alpha()   , (blockW, blockH))
+    wall     = pygame.transform.scale(pygame.image.load(const.wall).convert_alpha()    , (blockW, blockH))
+    door     = pygame.transform.scale(pygame.image.load(const.door).convert_alpha()    , (blockW, blockH))
+    box      = pygame.transform.scale(pygame.image.load(const.box).convert_alpha()     , (blockW, blockH))
     for rowIdx, rowData in enumerate(layout):
         for colIdx, tileVal in enumerate(rowData):
             tileRect  = pygame.Rect(colIdx * blockW, rowIdx * blockH, blockW, blockH)
             colorName = tileColors.get(tileVal)
             match colorName:
                 case "purple" : screen.blit(elevator, tileRect)
-                case "yellow" : screen.blit(chest, tileRect)
-
+                case "yellow" : screen.blit(chest,    tileRect)
+                case "white"  : screen.blit(wall,     tileRect)
+                case "orange" : screen.blit(door,     tileRect)
+                case "brown"  : screen.blit(box,      tileRect)
                 case _ if colorName:
                     pygame.draw.rect(
                         screen,

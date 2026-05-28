@@ -514,7 +514,7 @@ while running:
 
                 if len(playerObj.obtainedGuns)> 0 and tutorialGotGun:
                     finishedDial = drawDialogueBox(screen,"WOWZERS ! YOU GOT A GUN!!!!!" , clock,typewrite=True,
-                                                   image=os.path.join(const.caineDir, "caineFirst.png"))
+                                                   image=os.path.join(const.caineDir, "bubbleFirst.png"))
                     if finishedDial:
                         tutorialGotGun = False
 
@@ -523,7 +523,8 @@ while running:
             if currentRoomID == -8:
                 if tutorialDialogue2x:
                     playerObj.doorsLocked = True
-                    finishedDial = drawDialogueBox(screen,tutorial.tutorialDialogueSecondSecond , clock,typewrite=True)
+                    finishedDial = drawDialogueBox(screen,tutorial.tutorialDialogueSecondSecond , clock,typewrite=True,
+                                                   image = os.path.join(const.caineDir, "broadCaster.png"))
                     if finishedDial:
                         tutorialDialogue2x = False
                         playerObj.doorsLocked = False
