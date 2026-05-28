@@ -1,7 +1,56 @@
 # hardcoded tutorial level
 # 0-1, 0-2, 0-3, 0-4
 from mainMenu.subMenu.settings import loadSettings
-import pygame
+from gameHelpers.display.dialogueBox import drawDialogueBox
+import const, os, pygame
+
+def runTutorial(screen, tutorial, clock, currentLayerID, currentRoomID, tutorialDialogueFirst,
+                tutorialDialogueSecond, tutorialDialogue2x, tutorialDialogueArrow, playerObj, tutorialGotGun):
+    # tutorial first
+    if currentRoomID == 12 and currentLayerID == [0, 1]:
+        if tutorialDialogueFirst:
+            finishedDial = drawDialogueBox(screen, tutorial.tutorialDialogueFirst, clock, typewrite=True,
+                                           image=os.path.join(const.caineDir, "caineFirst.png"))
+            if finishedDial:
+                tutorialDialogueFirst = False
+                playerObj.doorsLocked = False
+
+    # tutorial floor 2
+    if currentLayerID[1] == 2:
+        if currentRoomID == -7:
+            if tutorialDialogueSecond:
+                playerObj.doorsLocked = True
+                finishedDial = drawDialogueBox(screen, tutorial.tutorialDialogueSecond, clock, typewrite=True,
+                                               image=os.path.join(const.caineDir, "caineFirst.png"))
+                if finishedDial:
+                    tutorialDialogueSecond = False
+                    playerObj.doorsLocked = False
+
+            if len(playerObj.obtainedGuns) > 0 and tutorialGotGun:
+                finishedDial = drawDialogueBox(screen, "WOWZERS ! YOU GOT A GUN!!!!!", clock, typewrite=True,
+                                               image=os.path.join(const.caineDir, "bubbleFirst.png"))
+                if finishedDial:
+                    tutorialGotGun = False
+
+        if currentRoomID == -8:
+            if tutorialDialogue2x:
+                playerObj.doorsLocked = True
+                finishedDial = drawDialogueBox(screen, tutorial.tutorialDialogueSecondSecond, clock, typewrite=True,
+                                               image=os.path.join(const.caineDir, "broadCaster.png"))
+                if finishedDial:
+                    tutorialDialogue2x = False
+                    playerObj.doorsLocked = False
+
+    if currentLayerID[1] == 3:
+
+        if currentRoomID == -9:
+            if tutorialDialogueArrow:
+                playerObj.doorsLocked = True
+                finishedDial = drawDialogueBox(screen, tutorial.tutorialArrowRoom, clock, typewrite=True)
+                if finishedDial:
+                    tutorialDialogueArrow = False
+                    playerObj.doorsLocked = False
+
 
 tutorialMatching ={
     1:

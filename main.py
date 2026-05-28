@@ -27,7 +27,6 @@ import mainMenu.subMenu.pauseMenu as pauseMenu
 
 from   gameHelpers.roomDirHelper import getMatchingEntrance, mapDelta, roomIDer,placePlayerAtDoor
 from   gameHelpers.mapGeneration import generateEntireWorld
-from   gameHelpers.display.dialogueBox import drawDialogueBox
 
 from data.playerUnlockData.playerData.playerDataManager import writeCompendiumEntry
 import gameHelpers.display.enemySpawnIndicator as spawner
@@ -491,54 +490,8 @@ while running:
     #tutorial dialogue handling
     if currentLayerID[0] == 0:
 
-        #tutorial first
-        if currentRoomID == 12 and currentLayerID == [0,1]:
-            if tutorialDialogueFirst:
-                    finishedDial = drawDialogueBox(screen,tutorial.tutorialDialogueFirst , clock,typewrite=True,
-                                                   image= os.path.join(const.caineDir, "caineFirst.png"))
-                    if finishedDial:
-                        tutorialDialogueFirst = False
-                        playerObj.doorsLocked = False
-
-
-        #tutorial floor 2
-        if currentLayerID[1] == 2:
-            if currentRoomID == -7:
-                if tutorialDialogueSecond:
-                    playerObj.doorsLocked = True
-                    finishedDial = drawDialogueBox(screen,tutorial.tutorialDialogueSecond , clock,typewrite=True,
-                                                   image=os.path.join(const.caineDir, "caineFirst.png"))
-                    if finishedDial:
-                        tutorialDialogueSecond = False
-                        playerObj.doorsLocked = False
-
-                if len(playerObj.obtainedGuns)> 0 and tutorialGotGun:
-                    finishedDial = drawDialogueBox(screen,"WOWZERS ! YOU GOT A GUN!!!!!" , clock,typewrite=True,
-                                                   image=os.path.join(const.caineDir, "bubbleFirst.png"))
-                    if finishedDial:
-                        tutorialGotGun = False
-
-
-
-            if currentRoomID == -8:
-                if tutorialDialogue2x:
-                    playerObj.doorsLocked = True
-                    finishedDial = drawDialogueBox(screen,tutorial.tutorialDialogueSecondSecond , clock,typewrite=True,
-                                                   image = os.path.join(const.caineDir, "broadCaster.png"))
-                    if finishedDial:
-                        tutorialDialogue2x = False
-                        playerObj.doorsLocked = False
-
-        if currentLayerID[1] == 3:
-
-
-            if currentRoomID == -9:
-                if tutorialDialogueArrow:
-                    playerObj.doorsLocked = True
-                    finishedDial = drawDialogueBox(screen,tutorial.tutorialArrowRoom , clock,typewrite=True)
-                    if finishedDial:
-                        tutorialDialogueArrow = False
-                        playerObj.doorsLocked = False
+        tutorial.runTutorial(screen, tutorial, clock, currentLayerID, currentRoomID, tutorialDialogueFirst,
+                    tutorialDialogueSecond, tutorialDialogue2x, tutorialDialogueArrow, playerObj, tutorialGotGun)
 
         if currentLayerID[1] == 4 and currentRoomID == 33:
             spawnEnemies(screen, currentRoomID, currentLayerID[0], const.difficultyStats[f"{difficulty}"]["enemyCount"])
