@@ -861,9 +861,13 @@ def breakTile(roomId, rowIdx, colIdx):
 import random
 import numpy
 
-def getEnemySpawns(roomID, layerID, difficulty):
+def getEnemySpawns(roomID, layerID, difficulty, enemySpawnOverrideCount = None):
     #returns tuples of arrays
-    enemySpawnCount = const.enemySpawnCount(layerID, difficulty)
+    print(f"maps: enemyspawncount {enemySpawnOverrideCount}")
+    if isinstance(enemySpawnOverrideCount, int):
+        enemySpawnCount = enemySpawnOverrideCount
+    else:
+        enemySpawnCount = const.enemySpawnCount(layerID, difficulty)
     roomLayout      = numpy.array(getLayout(roomID))
     validSpawns     = numpy.argwhere(roomLayout == 0)
     validSpawns     = [tuple(pos) for pos in validSpawns]

@@ -4,9 +4,18 @@ from mainMenu.subMenu.settings import loadSettings
 from gameHelpers.display.dialogueBox import drawDialogueBox
 import const, os, pygame
 
-def runTutorial(screen, tutorial, clock, currentLayerID, currentRoomID, tutorialDialogueFirst,
-                tutorialDialogueSecond, tutorialDialogue2x, tutorialDialogueArrow, playerObj, tutorialGotGun):
+
+tutorialDialogueFirst  = True
+tutorialDialogueSecond = True
+tutorialDialogue2x     = True
+tutorialDialogueArrow  = True
+tutorialGotGun         = True
+
+
+def runTutorial(screen, tutorial, clock, currentLayerID, currentRoomID, playerObj):
     # tutorial first
+    global tutorialDialogueFirst,tutorialDialogueSecond,tutorialDialogue2x,tutorialDialogueArrow,tutorialGotGun
+
     if currentRoomID == 12 and currentLayerID == [0, 1]:
         if tutorialDialogueFirst:
             finishedDial = drawDialogueBox(screen, tutorial.tutorialDialogueFirst, clock, typewrite=True,

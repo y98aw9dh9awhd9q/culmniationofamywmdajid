@@ -27,6 +27,7 @@ import mainMenu.subMenu.pauseMenu as pauseMenu
 
 from   gameHelpers.roomDirHelper import getMatchingEntrance, mapDelta, roomIDer,placePlayerAtDoor
 from   gameHelpers.mapGeneration import generateEntireWorld
+from   gameHelpers.display.dialogueBox import drawDialogueBox
 
 from data.playerUnlockData.playerData.playerDataManager import writeCompendiumEntry
 import gameHelpers.display.enemySpawnIndicator as spawner
@@ -74,12 +75,7 @@ roomIDCompendium       = [(0, 0)]
 print(settings.loadSettings)
 
 
-#tutorial flags
-tutorialDialogueFirst  = True
-tutorialDialogueSecond = True
-tutorialDialogue2x     = True
-tutorialDialogueArrow  = True
-tutorialGotGun         = True
+
 
 
 
@@ -238,12 +234,17 @@ def spawnEnemy(roomID, layerID):
         enemyGroup.add(enemy)
 
 
-def spawnEnemies(screen, roomId, layerId, difficulty):
+def spawnEnemies(screen, roomId, layerId, difficulty, enemySpawnOverrideCountPR = None):
     global spawnEffectsStarted
     layout, rowCount, colCount, blockW, blockH = spaceCalculator(screen, roomId)
 
     if not spawnEffectsStarted:
-        enemySpawns = getEnemySpawns(roomId, layerId, difficulty)
+        print(f"main enemy spawn override count {enemySpawnOverrideCountPR}")
+
+        enemySpawns = getEnemySpawns(roomID=roomId,
+                                     layerID=layerId,
+                                     difficulty=difficulty,
+                                     enemySpawnOverrideCount=enemySpawnOverrideCountPR)
         for row, col in enemySpawns:
             spawnIndicators.append(
                 spawner.enemySpawnIndicator(
@@ -424,8 +425,9 @@ while running:
                 print(f"main: new room id {newRoomID}")
                 print(f"main:current layeriD: {currentLayerID}spawns: {const.enemySpawnCount(currentLayerID[0],1)}")
 
-                if roomIDResult == "NEW" and newRoomID > 0:
+                if roomIDResult == "NEW" and (newRoomID >0 or newRoomID == -3) :
                     playerObj.doorsLocked = True
+                    spawnEffectsStarted = False
                     print("room locked")
 
             except Exception as e:
@@ -489,13 +491,11 @@ while running:
 
     #tutorial dialogue handling
     if currentLayerID[0] == 0:
-
-        tutorial.runTutorial(screen, tutorial, clock, currentLayerID, currentRoomID, tutorialDialogueFirst,
-                    tutorialDialogueSecond, tutorialDialogue2x, tutorialDialogueArrow, playerObj, tutorialGotGun)
-
-        if currentLayerID[1] == 4 and currentRoomID == 33:
-            spawnEnemies(screen, currentRoomID, currentLayerID[0], const.difficultyStats[f"{difficulty}"]["enemyCount"])
-
+        tutorial.runTutorial(screen, tutorial, clock, currentLayerID, currentRoomID,playerObj)
+        if currentLayerID[1] == 4 and newRoomID == 33:
+            spawnEnemies(screen, currentRoomID, currentLayerID[0], const.difficultyStats[f"{difficulty}"]["enemyCount"],1)
+        if currentLayerID[1]==4 and newRoomID == -3:
+            spawnEnemies(screen, currentRoomID, currentLayerID[0], const.difficultyStats[f"{difficulty}"]["enemyCount"],3)
     pygame.display.flip()
 
 pygame.quit()
