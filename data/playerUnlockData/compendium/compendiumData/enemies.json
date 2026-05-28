@@ -10,6 +10,12 @@
         "image":       "None",
         "description": "gooner",
         "unlockReq"  : 15
-    }
+    },
+  "fodder": {
+    "name": "fodder",
+    "image": "assets/pictures/enemies/fodder.png",
+    "description": "the weakest enemy. Moves around and fires shots at the player. HP: 3, ATK: 1, AI type: FODDER.",
+    "unlockReq" : 2
+  }
 }
 

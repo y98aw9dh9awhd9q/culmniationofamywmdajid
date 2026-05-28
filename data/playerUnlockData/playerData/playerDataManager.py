@@ -8,6 +8,10 @@ import json
 
 playerDataPth = os.path.join(const.baseDir,f"data/playerUnlockData/playerData/playerData.json")
 
+enemyKillRequirements = {
+    "fodder" : 1
+}
+
 defaultDataToDump = {
     "unlockedCompendiumEntries" : {
         "weapons"     : [],
@@ -16,6 +20,8 @@ defaultDataToDump = {
         "books"       : [],
         "achievements": []
     },
+
+    "enemyKills" : {}
 }
 
 
@@ -28,9 +34,38 @@ if not os.path.exists(playerDataPth):
 
 def writeCompendiumEntry(key,value) -> None:
     data = readJsonPlayerDat()
-    data["unlockedCompendiumEntries"][key].append(value)
+
+    if value not in data["unlockedCompendiumEntries"][key]:
+        data["unlockedCompendiumEntries"][key].append(value)
+
     with open(playerDataPth, "w") as file:
         json.dump(data, file)
+
+def addEnemyKill(enemyName) -> None:
+    data = readJsonPlayerDat()
+
+    if enemyName not in data["enemyKills"]:
+        data["enemyKills"][enemyName] = 0
+
+    data["enemyKills"][enemyName] += 1
+
+    if enemyName in enemyKillRequirements:
+        requiredKills = enemyKillRequirements[enemyName]
+
+        if data["enemyKills"][enemyName] >= requiredKills:
+            if enemyName not in data["unlockedCompendiumEntries"]["enemies"]:
+                data["unlockedCompendiumEntries"]["enemies"].append(enemyName)
+
+    with open(playerDataPth, "w") as file:
+        json.dump(data, file)
+
+def getEnemyKills(enemyName) -> int:
+    data = readJsonPlayerDat()
+
+    if enemyName not in data["enemyKills"]:
+        return 0
+
+    return data["enemyKills"][enemyName]
 
 def readJsonPlayerDat() -> dict:
     try:
@@ -44,9 +79,10 @@ def readJsonPlayerDat() -> dict:
 def checkCompendiumEntries():
     readData = readJsonPlayerDat()["unlockedCompendiumEntries"]
     dataDict = {}
+
     for key, value in readData.items():
-        #print(key, value)
         if len(readData[key]) != 0 and readData[key] is not None:
             dataDict.update({key:value})
+
     print("datadict ", dataDict)
     return dataDict

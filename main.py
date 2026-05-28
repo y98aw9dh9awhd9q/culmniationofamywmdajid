@@ -27,10 +27,11 @@ import mainMenu.subMenu.pauseMenu as pauseMenu
 
 from   gameHelpers.roomDirHelper import getMatchingEntrance, mapDelta, roomIDer,placePlayerAtDoor
 from   gameHelpers.mapGeneration import generateEntireWorld
-from   gameHelpers.display.dialogueBox import drawDialogueBox
 
 from data.playerUnlockData.playerData.playerDataManager import writeCompendiumEntry
 import gameHelpers.display.enemySpawnIndicator as spawner
+
+from data.playerUnlockData.playerData.playerDataManager import addEnemyKill
 
 #pre boot initialization =========================
 print(" main: ",settings.loadSettings())
@@ -468,6 +469,7 @@ while running:
                 bullet.kill()
 
                 if enemy.isDead():
+                    addEnemyKill(enemy.enemyName)
                     enemy.kill()
 
                 break
