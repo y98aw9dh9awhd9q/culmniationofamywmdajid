@@ -6,7 +6,6 @@
 
 import pygame
 import asyncio
-import os
 
 import const
 from gameHelpers.display import display
@@ -27,6 +26,7 @@ import mainMenu.subMenu.pauseMenu as pauseMenu
 
 from   gameHelpers.roomDirHelper import getMatchingEntrance, mapDelta, roomIDer,placePlayerAtDoor
 from   gameHelpers.mapGeneration import generateEntireWorld
+from   gameHelpers.display.hud   import drawHud, drawGameOver
 
 from data.playerUnlockData.playerData.playerDataManager import writeCompendiumEntry
 import gameHelpers.display.enemySpawnIndicator as spawner
@@ -71,21 +71,12 @@ tutorialFinished       = False
 worldGenerated         = False
 worldGenerating        = False
 roomIDCompendium       = [(0, 0)]
-
+gameOver               = False
+gameOverTimer          = 0.0
 
 print(settings.loadSettings)
 
-
-
-
-
-
-
 #current floor logic===========================
-
-
-
-
 
 if tutorialFlag:
     print("main: tutorial started")
@@ -96,11 +87,9 @@ else:
 
 #sprite groups===========================
 
-
 playerSpriteGroup = pygame.sprite.Group()
 playerSpriteGroup.add(playerObj)
 enemyGroup        = pygame.sprite.Group()
-
 
 #save loader=======================
 saveDataRead = dataSaving.readSave()
@@ -189,14 +178,122 @@ else:
 
 
 
+def deleteCurrentProgress():
+    global worldCache
+    global generatedMap
+    global currentRoomPosX
+    global currentRoomPosY
+    global roomIDCompendium
+    global currentLayerID
+
+    print("main: deleting current progress")
+
+
+    worldCache       = {}
+    currentRoomPosX  = 0
+    currentRoomPosY  = 0
+    roomIDCompendium = [(0, 0)]
+    currentLayerID   = [1, 1]
+
+    try:
+        dataSaving.emptySave()
+        print("main: save deleted")
+
+    except Exception as e:
+        print("main: failed to delete save", e)
+
+
+
+def resetRun():
+    #oh my globals
+    global generatedMap
+    global currentRoomPosY
+    global currentRoomPosX
+    global transitionCooldown
+    global playerSavePrep
+    global worldCache
+    global tutorialFinished
+    global worldGenerated
+    global worldGenerating
+    global roomIDCompendium
+    global deathCount
+    global gameOver
+    global gameOverTimer
+    global currentLayerID
+    global difficulty
+    global tutorialFlag
+
+    print("main: resetting run")
+
+    deleteCurrentProgress()
+    enemyGroup.empty()
+
+    for bulletSprite in playerObj.bullets:
+        bulletSprite.kill()
+
+    spawnIndicators.clear()
+
+    menuRes = gameHelpers.menus.mainMenu(screen,clock,font)
+
+    tutorialFlag          = menuRes[1]
+    difficulty            = menuRes[0]
+    tutorialFinished      = False
+    worldGenerated        = False
+    worldGenerating       = False
+    transitionCooldown    = 0.0
+    playerSavePrep        = None
+    gameOver              = False
+    gameOverTimer         = 0
+    deathCount            = 0
+    roomIDCompendium      = [(0, 0)]
+    playerObj.hp          = playerObj.maxHp
+    playerObj.rect.center = screen.get_width() // 2,screen.get_height() // 2
+    playerObj.syncPos()
+    playerObj.doorsLocked = False
+    worldCache            = {}
+
+
+    if tutorialFlag:
+        currentLayerID    = [0, 1]
+    else:
+        currentLayerID    = [1, 1]
+
+
+    if currentLayerID[0] == 0:
+        generatedMap      = tutorial.tutorialMatching[currentLayerID[1]]
+
+    else:
+        playerObj.allowShoot = True
+
+        if not playerObj.weapon:
+            playerObj.getWeapon("pistol#1")
+
+        mapGen.size = 3
+        mapGen.setupMap(boss=False)
+        asyncio.run(mapGen.prGenerateMap())
+        worldCache = {
+            "1": {
+                "1": mapGen.result
+            }
+        }
+
+        generatedMap    = worldCache["1"]["1"]
+        worldGenerating = True
+        asyncio.run(generateEntireWorld(mapGen,screen,font,worldCache,difficulty))
+        worldGenerated  = True
+        worldGenerating = False
+
+    currentRoomPosX = 0
+    currentRoomPosY = 0
+
+    print("main: run reset complete")
+
 #load first
 if currentLayerID[0] == 0:
     generatedMap = tutorial.tutorialMatching[currentLayerID[1]]
 else:
     print(worldCache)
     generatedMap = worldCache[str(currentLayerID[0])][str(currentLayerID[1])]
-
-
 
 
 
@@ -282,6 +379,26 @@ while running:
     playerObj.screenH = winH
     keybinds          = cfg.get("keybinds",settings.defaultSettings["keybinds"])
 
+    if gameOver:
+        print("main: game over logic run")
+        screen.fill((0, 0, 0))
+        drawGameOver(screen)
+        gameOverTimer -= deltaTime
+        pygame.display.flip()
+
+        #individualized event handler because the other stuff wont run
+        for event in events:
+
+            if event.type == pygame.QUIT:
+                running = False
+
+            if event.type == pygame.KEYDOWN and event.key == loadedSettings["keybinds"]["interact"]:
+                gameOverTimer = 0
+
+        if gameOverTimer <= 0:
+            resetRun()
+
+        continue
     #event handler====================================
     for event in events:
         if event.type == pygame.QUIT:
@@ -461,6 +578,15 @@ while running:
         playerObj
     )
 
+    drawHud(
+        screen,
+        playerObj,
+        generatedMap,
+        currentRoomPosY,
+        currentRoomPosX,
+        roomIDCompendium,
+    )
+
     #bullet handler=====================================================================
     for bullet in list(playerObj.bullets):
         for enemy in list(enemyGroup):
@@ -484,6 +610,18 @@ while running:
                 print("main: detected player hit")
 
                 playerObj.takeDamage()
+                if playerObj.hp <= 0 and not gameOver:
+
+                    gameOver = True
+                    gameOverTimer = 30
+
+                    deleteCurrentProgress()
+                    enemyGroup.empty()
+
+                    for bulletSprite in playerObj.bullets:
+                        bulletSprite.kill()
+
+                    print("main: player died")
 
                 bullet.kill()
 
@@ -498,6 +636,7 @@ while running:
             spawnEnemies(screen, currentRoomID, currentLayerID[0], const.difficultyStats[f"{difficulty}"]["enemyCount"],1)
         if currentLayerID[1]==4 and newRoomID == -3:
             spawnEnemies(screen, currentRoomID, currentLayerID[0], const.difficultyStats[f"{difficulty}"]["enemyCount"],3)
+
     pygame.display.flip()
 
 pygame.quit()

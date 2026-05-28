@@ -12,6 +12,7 @@ purple    = (255,0,255)
 orange    = pygame.Color("#FFA500")
 bulletRed = pygame.Color("#EE4B2B")
 blockSize = 20
+darkgray  = (60,60,60)
 
 roomCols  = 9
 roomRows  = 15
@@ -41,7 +42,10 @@ enemyPths = {
 }
 
 
-
+UIElements = os.path.join(baseDir, "assets","pictures","UIelements")
+fullHeart = os.path.join(UIElements, "heart","fullheart.png")
+halfHeart = os.path.join(UIElements, "heart","halfheart.png")
+loseSceren= os.path.join(UIElements,"lose.png")
 
 
 
