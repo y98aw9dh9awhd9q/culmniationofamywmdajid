@@ -229,12 +229,12 @@ def spawnEnemy(roomID, layerID):
         enemyY = row * blockH
 
         enemy = enemyBuilder(
-            enemyName=getRandomEnemy(layerID[0]),
-            spawnPos=(enemyX, enemyY),
-            layer=layerID[0],
-            screenW=screen.get_width(),
-            screenH=screen.get_height()
-        )
+            enemyName = getRandomEnemy(layerID[0]),
+            spawnPos  = (enemyX, enemyY),
+            layer     = layerID[0],
+            screenW   = screen.get_width(),
+            screenH   = screen.get_height()
+        ) #gridH and the other one isnt needed because this works
 
         enemyGroup.add(enemy)
 
@@ -244,15 +244,26 @@ def spawnEnemies(screen, roomId, layerId, difficulty):
     layout, rowCount, colCount, blockW, blockH = spaceCalculator(screen, roomId)
 
     if not spawnEffectsStarted:
-        enemySpawns = getEnemySpawns(roomId,layerId,difficulty)
+        enemySpawns = getEnemySpawns(roomId, layerId, difficulty)
         for row, col in enemySpawns:
-            spawnIndicators.append(spawner.enemySpawnIndicator(row, col, blockW, blockH))
-            if spawnIndicators[0].state == "holding": print("holding!")
+            spawnIndicators.append(
+                spawner.enemySpawnIndicator(
+                    row, col, blockW, blockH,
+                    layerID = currentLayerID[0],
+                    screenW = screen.get_width(),
+                    screenH = screen.get_height(),
+                    screen  = screen
+                )
+            )
         spawnEffectsStarted = True
 
     for indicator in spawnIndicators:
         indicator.update()
         indicator.draw(screen)
+        if indicator.spawned and indicator.enemy is not None:
+            if indicator.enemy not in enemyGroup:
+                enemyGroup.add(indicator.enemy)
+                print("main:enemy spawned!")
 
     spawnIndicators[:] = [indicator for indicator in spawnIndicators if not indicator.done]
 
@@ -425,9 +436,7 @@ while running:
         transitionCooldown -= deltaTime
 
 
-    #render========================================
-
-
+    #render=======================================
 
 
     screen.fill((0, 0, 0))  #clears the screen**************
@@ -449,6 +458,35 @@ while running:
         screen,
         playerObj
     )
+
+    #bullet handler=====================================================================
+    for bullet in list(playerObj.bullets):
+        for enemy in list(enemyGroup):
+            if bullet.rect.colliderect(enemy.rect):
+                enemy.takeDamage(bullet.damage)
+                bullet.kill()
+
+                if enemy.isDead():
+                    enemy.kill()
+
+                break
+
+    #player shot
+    for enemy in enemyGroup:
+        if enemy.ai is None:
+            continue
+
+        for bullet in list(enemy.ai.bullets):
+            if bullet.rect.colliderect(playerObj.rect):
+                print("main: detected player hit")
+
+                playerObj.takeDamage()
+
+                bullet.kill()
+
+    enemyGroup.update(generatedMap[currentRoomPosY][currentRoomPosX], playerObj, deltaTime)
+    for enemy in enemyGroup:
+        enemy.draw(screen)
 
     #tutorial dialogue handling
     if currentLayerID[0] == 0:
@@ -502,8 +540,7 @@ while running:
                         playerObj.doorsLocked = False
 
         if currentLayerID[1] == 4 and currentRoomID == 33:
-            spawnEnemies(screen, currentRoomID, currentLayerID[0],
-                                     const.difficultyStats[f"{difficulty}"]["enemyCount"])
+            spawnEnemies(screen, currentRoomID, currentLayerID[0], const.difficultyStats[f"{difficulty}"]["enemyCount"])
 
     pygame.display.flip()
 
