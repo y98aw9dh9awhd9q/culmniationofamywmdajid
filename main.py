@@ -235,6 +235,7 @@ def resetRun():
     global currentLayerID
     global difficulty
     global tutorialFlag
+    global newRoomID
 
     print("main: resetting run")
 
@@ -270,6 +271,7 @@ def resetRun():
     playerObj.doorsLocked = False
     playerObj.difficulty  = difficulty
     worldCache            = {}
+    newRoomID             = 0
 
 
     if tutorialFlag:
@@ -307,6 +309,7 @@ def resetRun():
     currentRoomPosX = 0
     currentRoomPosY = 0
     dataSaving.deleteSave()
+    resetSpawnEffects()
 
     print("main: run reset complete")
 
@@ -442,6 +445,10 @@ while running:
                 dataSaving.saveGameCall(currentLayerID, playerSavePrep, playerObj, worldCache, roomIDCompendium, difficulty)
             elif pauseResult == "menu":
                 menuResult, screen = menu.run(screen,clock,font)
+
+                if type(menuResult) == tuple:
+                    resetRun()
+
                 if menuResult == "quit":
                     running = False
 
@@ -594,7 +601,7 @@ while running:
 
     screen.fill((0, 0, 0))  #clears the screen**************
 
-    display.drawRoom(screen, generatedMap[currentRoomPosY][currentRoomPosX])
+    display.drawRoom(screen, generatedMap[currentRoomPosY][currentRoomPosX], playerObj.doorsLocked)
 
     playerObj.update(
         deltaTime,
