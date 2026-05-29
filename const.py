@@ -37,7 +37,8 @@ enemyDirs = os.path.join(baseDir,"assets","pictures","enemies")
 
 
 enemyPths = {
-    "fodder": os.path.join(enemyDirs, "fodder.png")
+    "fodder": os.path.join(enemyDirs, "fodder.png"),
+    "triplet": os.path.join(enemyDirs, "triplet.png"),
 
 }
 
@@ -57,7 +58,7 @@ def enemySpawnCount(layerID, difficultyMultiplier):
     #S(L)=\operatorname{floor}((10-D)D*\min(1,L/(12-4D)))+\operatorname{ceil}\left(3\cdot D\right)\left\{0<L\ \le9\right\}
     return (math.floor((10-difficultyMultiplier) *
                       difficultyMultiplier*min(1,layerID/(12-4 * difficultyMultiplier)))
-            + math.ceil(3*difficultyMultiplier))
+            + math.floor(2.5*difficultyMultiplier))
 
 
 difficultyStats = {
@@ -71,11 +72,6 @@ difficultyStats = {
 }
 
 difficultyOptions = list(difficultyStats.keys())
-
-
-def getDifficultyStats(name):
-    return difficultyStats.get(name, difficultyStats["normal"])
-
 
 fontTextBasic = None
 

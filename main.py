@@ -1,7 +1,15 @@
 """
 #ben nethaeyahoo and keyahhno acarkey and emotional support horp
 #2026-06-07
-#anastasia will write something here
+The Amazing Digital Dungeon!
+
+This is a game inspired by games such as but not limited to:
+Enter The Gungeon,
+Soul Knight,
+etc.
+
+This game features a tutorial and interactive menus. The main gameplay is going through 9 layers
+with 4 floors each killing every enemy and boss.
 """
 
 import pygame
@@ -73,6 +81,7 @@ worldGenerating        = False
 roomIDCompendium       = [(0, 0)]
 gameOver               = False
 gameOverTimer          = 0.0
+newRoomID              = 0
 
 print(settings.loadSettings)
 
@@ -371,6 +380,15 @@ def spawnEnemies(screen, roomId, layerId, difficulty, enemySpawnOverrideCountPR 
 running = True
 
 while running:
+
+
+    if len(enemyGroup) ==  0:
+        print("main: doors unlocked")
+        playerObj.doorsLocked = False
+    elif len(enemyGroup) > 0:
+        playerObj.doorsLocked = True
+
+
     cfg               = settings.loadSettings()
     deltaTime         = clock.tick(cfg["fpsCap"]) / 1000.0
     events            = pygame.event.get()
@@ -629,13 +647,16 @@ while running:
     for enemy in enemyGroup:
         enemy.draw(screen)
 
-    #tutorial dialogue handling
+    #tutorial special case enemy spawns
     if currentLayerID[0] == 0:
         tutorial.runTutorial(screen, clock, currentLayerID, currentRoomID,playerObj)
         if currentLayerID[1] == 4 and newRoomID == 33:
             spawnEnemies(screen, currentRoomID, currentLayerID[0], const.difficultyStats[f"{difficulty}"]["enemyCount"],1)
         if currentLayerID[1]==4 and newRoomID == -3:
             spawnEnemies(screen, currentRoomID, currentLayerID[0], const.difficultyStats[f"{difficulty}"]["enemyCount"],3)
+    else:
+        if newRoomID > 0:
+            spawnEnemies(screen,newRoomID,currentLayerID[0],const.difficultyStats[difficulty]["enemyCount"])
 
     pygame.display.flip()
 

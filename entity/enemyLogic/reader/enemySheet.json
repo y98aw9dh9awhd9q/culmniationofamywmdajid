@@ -10,12 +10,12 @@
 
   },
   "1": {
-    "strongerFodder": {
-      "hp": "10",
+    "triplet": {
+      "hp": "5",
       "atk": "2",
       "weapon": "pistol#1",
-      "ai": "fodder",
-      "imagePath": "strongerFoddler.png"
+      "ai": "triplet",
+      "imagePath": "triplet.png"
 
 
     }

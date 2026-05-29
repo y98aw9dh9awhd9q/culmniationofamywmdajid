@@ -868,9 +868,9 @@ def getEnemySpawns(roomID, layerID, difficulty, enemySpawnOverrideCount = None):
         enemySpawnCount = enemySpawnOverrideCount
     else:
         enemySpawnCount = const.enemySpawnCount(layerID, difficulty)
-    roomLayout      = numpy.array(getLayout(roomID))
-    validSpawns     = numpy.argwhere(roomLayout == 0)
-    validSpawns     = [tuple(pos) for pos in validSpawns]
-    enemySpawns     = random.sample(validSpawns, enemySpawnCount)
+    roomLayout          = numpy.array(getLayout(roomID))
+    validSpawns         = numpy.argwhere(roomLayout == 0)
+    validSpawns         = [tuple(pos) for pos in validSpawns]
+    enemySpawns         = random.sample(validSpawns, enemySpawnCount)
     return enemySpawns
 

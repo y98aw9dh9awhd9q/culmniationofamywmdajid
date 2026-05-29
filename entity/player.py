@@ -134,7 +134,7 @@ class player(pygame.sprite.Sprite):
 
 
             #TEMP CODE
-                self.doorsLocked = False
+                #self.doorsLocked = False
             #====================
 
 

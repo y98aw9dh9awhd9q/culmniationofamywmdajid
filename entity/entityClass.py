@@ -5,10 +5,12 @@ import entity.enemyLogic.reader.enemySheetReader as reader
 import const
 
 from entity.enemyLogic.AI.fodderAI import fodderAIClass
+from entity.enemyLogic.AI.tripletAI import tripletAIClass
 
 def aiMatcher(aiName, enemy,screen):
     match aiName:
         case "fodder": return fodderAIClass(enemy, screen)
+        case "triplet":return tripletAIClass(enemy,screen)
         case _ :return None
 
 
@@ -40,7 +42,7 @@ class enemyBuilder(pygame.sprite.Sprite):
             self.ai.bullets.draw(screen)
 
     def takeDamage(self, dmg):
-        self.hp -= dmg
+        self.hp        -= dmg
 
     def isDead(self):
         return self.hp <= 0
