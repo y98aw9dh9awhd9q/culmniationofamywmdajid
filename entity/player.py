@@ -1,5 +1,4 @@
 import pygame
-import const
 
 from entity.weapons.bullet import bullet
 from entity.weapons.weaponReader import weapon

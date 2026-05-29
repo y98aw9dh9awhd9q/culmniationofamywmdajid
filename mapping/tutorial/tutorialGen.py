@@ -30,13 +30,14 @@ tutorialMatching ={
 loadedSettings = loadSettings()
 
 tutorialDialogueFirst =  (
-f"welcome to The Amazing Digital Dungeon! to interact use [{pygame.key.name(loadedSettings['keybinds']['interact']).upper()}],"
-                f" to shoot use [{pygame.key.name(loadedSettings['keybinds']['shoot']).upper()}] but youll need a gun for that."
-                f" Worry not (main character)! You can obtain a gun on the next layer, just go to the room on the right "
-                f"then up the elevator and interact with the chest. Also, if you hate me you can press "
-                f"[{pygame.key.name(loadedSettings['keybinds']['interact']).upper()}] to skip my yap sesh. "
-                f" Also you may not pass while im  yapping because I said so. Oh you're still here! Let me tell you a secret..."
-                f" You can dodge by pressing [{pygame.key.name(loadedSettings['keybinds']['dodge']).upper()}]")
+    f"welcome to The Amazing Digital Dungeon! to interact use [{pygame.key.name(loadedSettings['keybinds']['interact']).upper()}],"
+    f" to shoot use [{pygame.key.name(loadedSettings['keybinds']['shoot']).upper()}] but youll need a gun for that."
+    f" Worry not (main character)! You can obtain a gun on the next layer, just go to the room on the right "
+    f"then up the elevator and interact with the chest. Also, if you hate me you can press "
+    f"[{pygame.key.name(loadedSettings['keybinds']['interact']).upper()}] to skip my yap sesh. "
+    f" Also you may not pass while im  yapping because I said so. Oh you're still here! Let me tell you a secret..."
+    f" You can dodge by pressing [{pygame.key.name(loadedSettings['keybinds']['dodge']).upper()}]"
+)
 
 tutorialDialogueSecond = (
     f"Oh my! You made it! I know, such treacherous journey to get here! I am absolutely flabbergasted at your ability to navigate"
@@ -50,11 +51,18 @@ tutorialDialogueSecondSecond = (
     f"hey remember that gun you got? those boxes look breakable. I sure wonder what would happen if you shot them"
 )
 
-
 tutorialArrowRoom  = (
     f"Oh look! a big arrow! I sure wonder what it's pointing at! I bet there could be something good... or someone important... Anyways!"
     f" There will be enemies in the next room, beware!"
 )
+
+def resetTutorial():
+    global tutorialDialogueFirstOn,tutorialDialogueSecondOn,tutorialDialogue2xOn,tutorialDialogueArrowOn,tutorialGotGunOn
+    tutorialDialogueFirstOn  = True
+    tutorialDialogueSecondOn = True
+    tutorialDialogue2xOn     = True
+    tutorialDialogueArrowOn  = True
+    tutorialGotGunOn         = True
 
 def runTutorial(screen, clock, currentLayerID, currentRoomID, playerObj):
     # tutorial first

@@ -292,6 +292,8 @@ def resetRun():
         worldGenerated  = True
         worldGenerating = False
 
+    tutorial.resetTutorial()
+
     currentRoomPosX = 0
     currentRoomPosY = 0
 
