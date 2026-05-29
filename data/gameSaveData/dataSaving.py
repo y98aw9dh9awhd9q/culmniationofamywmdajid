@@ -51,6 +51,17 @@ def saveData(playerSavePrep, currentLayerID, weapon, entrances, generatedMap, di
 
 
 def readSave():
+    """
+        return (
+            playerData["savePrep"], #0
+            generatedMap,           #1
+            currentLayerID,         #2
+            playerData["weapon"],   #3
+            visitedRooms,           #4
+            save,                   #5
+            difficulty              #6
+        )
+    """
     if not os.path.exists(savePath):
         return False
     try:
@@ -69,16 +80,26 @@ def readSave():
         floorID        = str(currentLayerID[1])
         generatedMap   = (worldData["layers"][worldID][floorID])
         visitedRooms   = [tuple(x)for x in metaData["visitedRooms"]]
-        difficulty     = save["worldData"] ["difficulty"]
+        difficulty     = save["worldData"]["difficulties"]
 
-        return (
-            playerData["savePrep"],
-            generatedMap,
-            currentLayerID,
-            playerData["weapon"],
-            visitedRooms,
-            save,
+
+        print(
+            playerData["savePrep"],  # 0
+            generatedMap,  # 1
+            currentLayerID,  # 2
+            playerData["weapon"],  # 3
+            visitedRooms,  # 4
+            save,  # 5
             difficulty
+        )
+        return (
+            playerData["savePrep"], #0
+            generatedMap,           #1
+            currentLayerID,         #2
+            playerData["weapon"],   #3
+            visitedRooms,           #4
+            save,                   #5
+            difficulty              #6
         )
 
     except Exception as e:
@@ -86,7 +107,7 @@ def readSave():
         return False
 
 def getDifficulty(save):
-    return save["worldData"]["difficulty"]
+    return save["worldData"]["difficulties"]
 
 def getSavedMap(save, layerID):
     try:

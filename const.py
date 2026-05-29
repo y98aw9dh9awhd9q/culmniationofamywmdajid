@@ -13,6 +13,7 @@ orange    = pygame.Color("#FFA500")
 bulletRed = pygame.Color("#EE4B2B")
 blockSize = 20
 darkgray  = (60,60,60)
+green     = (0,255,0)
 
 roomCols  = 9
 roomRows  = 15
@@ -78,3 +79,8 @@ fontTextBasic = None
 
 enemySpawnIndicatorColor = red #anastasia said so
 
+gunPaths = os.path.join(baseDir, "assets","guns")
+gunPths = {
+    "pistol#1": os.path.join(gunPaths, "pistol.png")
+
+}

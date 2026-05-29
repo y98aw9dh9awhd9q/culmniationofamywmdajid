@@ -7,6 +7,8 @@ import const
 from entity.enemyLogic.AI.fodderAI import fodderAIClass
 from entity.enemyLogic.AI.tripletAI import tripletAIClass
 
+from data.gameSaveData.dataSaving import readSave
+
 def aiMatcher(aiName, enemy,screen, difficulty):
     match aiName:
         case "fodder": return fodderAIClass(enemy, screen, difficulty)
@@ -18,7 +20,10 @@ class enemyBuilder(pygame.sprite.Sprite):
     def __init__(self, enemyName, spawnPos, layer, screenW, screenH, gridH, gridW, difficulty):
         super().__init__()
         self.enemyName = enemyName
-        self.hp        = int(reader.readLayers(layer)[enemyName]["hp"])
+        if isinstance(readSave(), bool):
+            self.hp = int(reader.readLayers(layer)[enemyName]["hp"])
+        else:
+            self.hp        = int(reader.readLayers(layer)[enemyName]["hp"]) * const.difficultyStats[readSave()[6]]["enemyHp"]
         self.atk       = int(reader.readLayers(layer)[enemyName]["atk"])
         self.weapon    = reader.readLayers(layer)[enemyName]["weapon"]
         self.screenW   = screenW

@@ -2,7 +2,6 @@ import pygame
 import random
 from entity.weapons.bullet import bullet
 from mapping.maps import getWallRects, getBreakableRectsWithCoords,breakTile
-
 #extremely basic ai, shoots 3 times then moves to a valid cell
 
 

@@ -4,14 +4,21 @@ from mapping.maps import roomRegistery
 import mainMenu.theme as theme
 
 heartCache = {}
+gunCache   = {}
 
 def loadHeart(path, size):
     key = (path, size)
     if key not in heartCache:
         img = pygame.image.load(path).convert_alpha()
         heartCache[key] = pygame.transform.scale(img, (size, size))
-
     return heartCache[key]
+
+def loadGun(path, w, h):
+    key = (path, w, h)
+    if key not in gunCache:
+        img = pygame.image.load(path).convert_alpha()
+        gunCache[key] = pygame.transform.scale(img, (w, h))
+    return gunCache[key]
 
 def drawHearts(screen, playerObj):
     winW, winH = screen.get_size()
@@ -26,82 +33,69 @@ def drawHearts(screen, playerObj):
 
     for i in range(slots):
         hpValue = hp - i * 2
-
         if hpValue >= 2:
             img = fullHeart
-
         elif hpValue == 1:
             img = halfHeart
-
         else:
             img = fullHeart.copy()
             img.set_alpha(55)
+        screen.blit(img, (margin + i * (heartSize + spacing), margin))
 
-        x = margin + i * (heartSize + spacing)
-        y = margin
+    gunY = margin + heartSize + max(4, int(heartSize * 0.2))
+    gunH = max(14, int(heartSize * 0.7))
+    gunW = gunH * 3
 
-        screen.blit(img, (x, y))
+    if hasattr(playerObj, "obtainedGuns") and playerObj.obtainedGuns:
+        for gi, gunName in enumerate(playerObj.obtainedGuns):
+            try:
+                path    = const.gunPths[gunName]
+                gunImg  = loadGun(path, gunW, gunH)
+                screen.blit(gunImg, (margin + gi * (gunW + spacing), gunY))
+            except Exception:
+                pass
 
-roomShop = 1
-roomChest = 5
+roomShop   = 1
+roomChest  = 5
 roomDChest = 6
-roomBoss = -3
-roomEntry = -1
-roomExit = -2
+roomBoss   = -3
+roomEntry  = -1
+roomExit   = -2
+dirMap     = {0: (-1, 0), 1: (1, 0), 2: (0, -1), 3: (0, 1)}
+oppDir     = (1, 0, 3, 2)
 
-directions = ((-1, 0), (1, 0), (0, -1), (0, 1))
-
-def connectedRooms(generatedMap, startR, startC):
-    rows    = len(generatedMap)
-    cols    = len(generatedMap[0]) if rows else 0
-    visited = set()
-    queue   = [(startR, startC)]
-
-    visited.add((startR, startC))
-
-    while queue:
-        r, c   = queue.pop(0)
-        roomId = generatedMap[r][c]
-
-        if roomId not in roomRegistery:
+def adjacentConnected(generatedMap, r, c):
+    rows   = len(generatedMap)
+    cols   = len(generatedMap[0]) if rows else 0
+    if not (0 <= r < rows and 0 <= c < cols):
+        return set()
+    roomId = generatedMap[r][c]
+    if roomId not in roomRegistery:
+        return set()
+    exits  = roomRegistery[roomId].exits
+    result = set()
+    for d, (dr, dc) in dirMap.items():
+        nr, nc = r + dr, c + dc
+        if not (0 <= nr < rows and 0 <= nc < cols):
             continue
+        if not exits[d]:
+            continue
+        nId = generatedMap[nr][nc]
+        if nId not in roomRegistery:
+            continue
+        if roomRegistery[nId].exits[oppDir[d]]:
+            result.add((nr, nc))
+    return result
 
-        exits = roomRegistery[roomId].exits
+def visibleRooms(generatedMap, seen, currentR, currentC):
+    rows     = len(generatedMap)
+    cols     = len(generatedMap[0]) if rows else 0
+    visible  = {(r, c) for r, c in seen if 0 <= r < rows and 0 <= c < cols}
+    visible |= adjacentConnected(generatedMap, currentR, currentC)
+    visible.add((currentR, currentC))
+    return visible
 
-        dirMap = {
-            0: (-1, 0),
-            1: (1, 0),
-            2: (0, -1),
-            3: (0, 1)
-        }
-
-        for d, (dr, dc) in dirMap.items():
-            nr = r + dr
-            nc = c + dc
-
-            if (nr, nc) in visited:
-                continue
-
-            if not (0 <= nr < rows and 0 <= nc < cols):
-                continue
-
-            if not exits[d]:
-                continue
-
-            nId = generatedMap[nr][nc]
-
-            if nId not in roomRegistery:
-                continue
-
-            opp = (1, 0, 3, 2)[d]
-
-            if roomRegistery[nId].exits[opp]:
-                visited.add((nr, nc))
-                queue.append((nr, nc))
-
-    return visited
-
-def drawMinimap(screen,generatedMap,currentRoomPosY,currentRoomPosX,roomIdCompendium):
+def drawMinimap(screen, generatedMap, currentRoomPosY, currentRoomPosX, roomIdCompendium):
     if not generatedMap:
         return
 
@@ -115,92 +109,71 @@ def drawMinimap(screen,generatedMap,currentRoomPosY,currentRoomPosX,roomIdCompen
     mapH       = rows * (cellSize + gap) - gap
     originX    = winW - margin - mapW
     originY    = margin
-    visited    = connectedRooms(generatedMap,currentRoomPosY,currentRoomPosX)
     seen       = {(r, c) for r, c in roomIdCompendium}
+    visible    = visibleRooms(generatedMap, seen, currentRoomPosY, currentRoomPosX)
     panelPad   = max(4, int(cellSize * 0.3))
-    panel      = pygame.Surface((mapW + panelPad * 2, mapH + panelPad * 2),pygame.SRCALPHA)
-
+    panel      = pygame.Surface((mapW + panelPad * 2, mapH + panelPad * 2), pygame.SRCALPHA)
     panel.fill((0, 0, 0, 120))
     screen.blit(panel, (originX - panelPad, originY - panelPad))
-
-    iconFont = pygame.font.SysFont(const.fontTextBasic,max(10, int(cellSize * 0.9)))
+    iconFont   = pygame.font.SysFont(const.fontTextBasic, max(10, int(cellSize * 0.9)))
 
     for r in range(rows):
         for c in range(cols):
-
-            if (r, c) not in visited:
+            if (r, c) not in visible:
                 continue
 
-            x = originX + c * (cellSize + gap)
-            y = originY + r * (cellSize + gap)
-
-            roomId = generatedMap[r][c]
-
+            x         = originX + c * (cellSize + gap)
+            y         = originY + r * (cellSize + gap)
+            roomId    = generatedMap[r][c]
             isCurrent = r == currentRoomPosY and c == currentRoomPosX
-
-            hasSeen = (r, c) in seen
+            hasSeen   = (c, r) in seen
 
             if isCurrent:
                 bgColor = theme.accentDim
-
-            elif not hasSeen:
-                bgColor = theme.borderColor
-
+            elif hasSeen:
+                bgColor = const.green
             else:
-                bgColor = theme.textSecondary
+                bgColor = (30, 30, 40)
 
-            pygame.draw.rect(
-                screen,
-                bgColor,
-                (x, y, cellSize, cellSize),
-                border_radius=2
-            )
+            pygame.draw.rect(screen, bgColor, (x, y, cellSize, cellSize), border_radius=2)
 
-            #letter overlay for special rooms
             if roomId in roomRegistery and hasSeen:
-
-                rType = roomRegistery[roomId].type
-
+                rType  = roomRegistery[roomId].type
                 letter = None
                 lColor = const.white
 
                 if rType in (roomChest, roomDChest):
                     letter = "C"
                     lColor = theme.textPrimary
-
                 elif rType == roomShop:
                     letter = "S"
                     lColor = theme.textPrimary
-
-                elif rType == roomBoss:
+                elif roomId == roomBoss or rType == 2:
                     letter = "B"
                     lColor = const.red
-
-                elif rType == roomExit:
+                elif roomId == roomExit or rType == 4:
                     letter = "E"
                     lColor = theme.textPrimary
 
                 if letter:
                     surf = iconFont.render(letter, True, lColor)
-
-                    screen.blit(surf,(x + cellSize // 2 - surf.get_width() // 2,y + cellSize // 2 - surf.get_height() // 2))
+                    screen.blit(surf, (x + cellSize // 2 - surf.get_width() // 2,
+                                       y + cellSize // 2 - surf.get_height() // 2))
 
             borderColor = theme.borderColor if isCurrent else const.darkgray
+            pygame.draw.rect(screen, borderColor, (x, y, cellSize, cellSize), 1, border_radius=2)
 
-            pygame.draw.rect(screen,borderColor,(x, y, cellSize, cellSize),1,border_radius=2)
-
-def drawGameOver(screen,deathMessage="GAME OVER"):
+def drawGameOver(screen, deathMessage="GAME OVER"):
     winW, winH   = screen.get_size()
     BG           = pygame.image.load(const.loseSceren).convert()
     BG           = pygame.transform.scale(BG, (winW, winH))
-    screen.blit(BG, (0,0))
+    screen.blit(BG, (0, 0))
     fontSize     = max(72, int(winH * 0.14))
-    gameOverFont = pygame.font.SysFont(None,fontSize)
-    textSurf = gameOverFont.render(deathMessage,True,const.red)
-    textX = (winW // 2) - (textSurf.get_width() // 2)
-    textY = (winH // 2) - (textSurf.get_height() // 2)
-    screen.blit(textSurf,(textX, textY))
+    gameOverFont = pygame.font.SysFont(None, fontSize)
+    textSurf     = gameOverFont.render(deathMessage, True, const.red)
+    screen.blit(textSurf, (winW // 2 - textSurf.get_width() // 2,
+                            winH // 2 - textSurf.get_height() // 2))
 
-def drawHud(screen,playerObj,generatedMap,currentRoomPosY,currentRoomPosX,roomIdCompendium):
+def drawHud(screen, playerObj, generatedMap, currentRoomPosY, currentRoomPosX, roomIdCompendium):
     drawHearts(screen, playerObj)
-    drawMinimap(screen,generatedMap,currentRoomPosY,currentRoomPosX,roomIdCompendium)
+    drawMinimap(screen, generatedMap, currentRoomPosY, currentRoomPosX, roomIdCompendium)
