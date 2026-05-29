@@ -14,7 +14,7 @@ class tripletAIClass:
     tripletCD      = 0.2
     tripletShots   = 3
 
-    def __init__(self, enemy, screen):
+    def __init__(self, enemy, screen, difficulty):
         self.enemy         = enemy
         self.shootTimer    = random.uniform(0, self.shootCooldown)
         self.moveTimer     = 0.0
@@ -23,6 +23,7 @@ class tripletAIClass:
         self.bullets       = pygame.sprite.Group()
         self.screen        = screen
         self.burstShotsLeft= 0
+        self.difficulty    = difficulty
 
     def update(self, deltaTime, roomId, player):
         self.shootTimer -= deltaTime
@@ -67,7 +68,8 @@ class tripletAIClass:
             color  = (220, 60, 60),
             damage = self.enemy.atk,
             owner  = "enemy",
-            screen = self.screen
+            screen = self.screen,
+            difficulty = self.difficulty
         )
         self.bullets.add(newBullet)
 

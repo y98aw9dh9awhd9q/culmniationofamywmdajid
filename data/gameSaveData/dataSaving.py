@@ -85,6 +85,9 @@ def readSave():
         print("dataSaving parse error:", e)
         return False
 
+def getDifficulty(save):
+    return save["worldData"]["difficulty"]
+
 def getSavedMap(save, layerID):
     try:
         worldID = str(layerID[0])

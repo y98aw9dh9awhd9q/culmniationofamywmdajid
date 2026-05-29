@@ -58,7 +58,7 @@ def enemySpawnCount(layerID, difficultyMultiplier):
     #S(L)=\operatorname{floor}((10-D)D*\min(1,L/(12-4D)))+\operatorname{ceil}\left(3\cdot D\right)\left\{0<L\ \le9\right\}
     return (math.floor((10-difficultyMultiplier) *
                       difficultyMultiplier*min(1,layerID/(12-4 * difficultyMultiplier)))
-            + math.floor(2.5*difficultyMultiplier))
+            + math.ceil(3*difficultyMultiplier))
 
 
 difficultyStats = {

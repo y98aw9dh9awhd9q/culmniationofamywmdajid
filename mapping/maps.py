@@ -1,5 +1,6 @@
 from dataclasses import dataclass, replace
 import pygame
+from copy import deepcopy
 
 import const
 
@@ -725,6 +726,11 @@ roomRegistery = {
     40: roomAllExitsF,
 }
 
+originalRoomRegistry = {
+    roomId: deepcopy(room)
+    for roomId, room in roomRegistery.items()
+}
+
 normalPool = [roomId for roomId in roomRegistery if roomId > 0]
 
 #helper func
@@ -795,6 +801,14 @@ def getWallRects(roomId, screenW, screenH):
         for colIdx, tileVal in enumerate(rowData)
         if tileVal in wallTiles
     ]
+
+def resetRoom(roomId):
+    roomRegistery[roomId] = deepcopy(originalRoomRegistry[roomId])
+
+
+def resetAllRooms():
+    for roomId in roomRegistery:
+        roomRegistery[roomId] = deepcopy(originalRoomRegistry[roomId])
 
 def getElevatorTiles(roomId,screenW,screenH):
     layout   = roomRegistery[roomId].layout

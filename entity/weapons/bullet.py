@@ -2,7 +2,7 @@ import pygame
 import const
 
 class bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, targetX, targetY, screen, crossingTime= 1, size=(10, 10), color=(255, 220, 50), damage=1, owner=None):
+    def __init__(self, x, y, targetX, targetY, screen, difficulty, crossingTime= 1, size=(10, 10), color=(255, 220, 50), damage=1, owner=None):
         super().__init__()
         self.damage     = damage
         self.owner      = owner #hit filtering purpose
@@ -18,6 +18,10 @@ class bullet(pygame.sprite.Sprite):
         if direction.length() > 0:
             direction = direction.normalize()
         self.velocity = direction * (crossingTime*screen[0])
+        print(self.velocity)
+        if owner != "player":
+            print("bullet: increasec vel", difficulty)
+            self.velocity*=difficulty
 
 
 

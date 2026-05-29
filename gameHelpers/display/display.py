@@ -1,3 +1,5 @@
+from enum import nonmember
+
 import pygame
 import const
 from mapping.maps import roomRegistery, tileColors
@@ -16,16 +18,27 @@ def spaceCalculator(screen, roomId):
             blockH)  #blockH     4
 
 
-#tile renderer
-def drawRoom(screen, roomId):
+elevator = None
+chest = None
+wall = None
+door = None
+box = None
 
-    layout, rowCount, colCount, blockW, blockH = spaceCalculator(screen, roomId)
-
+def setAssets(screen):
+    global elevator, chest, wall, door, box
+    layout, rowCount, colCount, blockW, blockH = spaceCalculator(screen, -1)
     elevator = pygame.transform.scale(pygame.image.load(const.elevator).convert_alpha(), (blockW, blockH))
     chest    = pygame.transform.scale(pygame.image.load(const.chest).convert_alpha()   , (blockW, blockH))
     wall     = pygame.transform.scale(pygame.image.load(const.wall).convert_alpha()    , (blockW, blockH))
     door     = pygame.transform.scale(pygame.image.load(const.door).convert_alpha()    , (blockW, blockH))
     box      = pygame.transform.scale(pygame.image.load(const.box).convert_alpha()     , (blockW, blockH))
+
+#tile renderer
+def drawRoom(screen, roomId):
+    global elevator, chest, wall, door, box
+    layout, rowCount, colCount, blockW, blockH = spaceCalculator(screen, roomId)
+
+
     for rowIdx, rowData in enumerate(layout):
         for colIdx, tileVal in enumerate(rowData):
             tileRect  = pygame.Rect(colIdx * blockW, rowIdx * blockH, blockW, blockH)

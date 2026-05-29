@@ -21,8 +21,9 @@ import data.gameSaveData.dataSaving as dataSaving
 
 import mapping.tutorial.tutorialGen as tutorial
 import mapping.mapLogic.mapGenerator as mapGenerator
-from gameHelpers.display.display import spaceCalculator
+
 from   mapping.maps import getEnemySpawns
+from   mapping.maps import resetAllRooms
 
 from   entity.player import player
 from   entity.entityClass import enemyBuilder
@@ -35,6 +36,7 @@ import mainMenu.subMenu.pauseMenu as pauseMenu
 from   gameHelpers.roomDirHelper import getMatchingEntrance, mapDelta, roomIDer,placePlayerAtDoor
 from   gameHelpers.mapGeneration import generateEntireWorld
 from   gameHelpers.display.hud   import drawHud, drawGameOver
+from   gameHelpers.display.display import spaceCalculator
 
 from data.playerUnlockData.playerData.playerDataManager import writeCompendiumEntry
 import gameHelpers.display.enemySpawnIndicator as spawner
@@ -48,6 +50,7 @@ screen = pygame.display.set_mode(settings.loadSettings()["resolution"])
 clock  = pygame.time.Clock()
 font   = pygame.font.SysFont(None, 28)
 settings.applySettings(settings.loadSettings())
+display.setAssets(screen)
 #menu=============================================
 import gameHelpers.menus
 
@@ -206,6 +209,7 @@ def deleteCurrentProgress():
 
     try:
         dataSaving.emptySave()
+        dataSaving.deleteSave()
         print("main: save deleted")
 
     except Exception as e:
@@ -235,7 +239,12 @@ def resetRun():
     print("main: resetting run")
 
     deleteCurrentProgress()
+    dataSaving.deleteSave()
+
     enemyGroup.empty()
+    resetAllRooms()
+    playerObj.emptyWeapons()
+    playerObj.chestRegistry = {}
 
     for bulletSprite in playerObj.bullets:
         bulletSprite.kill()
@@ -259,6 +268,7 @@ def resetRun():
     playerObj.rect.center = screen.get_width() // 2,screen.get_height() // 2
     playerObj.syncPos()
     playerObj.doorsLocked = False
+    playerObj.difficulty  = difficulty
     worldCache            = {}
 
 
@@ -274,8 +284,8 @@ def resetRun():
     else:
         playerObj.allowShoot = True
 
-        if not playerObj.weapon:
-            playerObj.getWeapon("pistol#1")
+        if not hasattr(playerObj, "weapon"):
+             playerObj.getWeapon("pistol#1")
 
         mapGen.size = 3
         mapGen.setupMap(boss=False)
@@ -296,6 +306,7 @@ def resetRun():
 
     currentRoomPosX = 0
     currentRoomPosY = 0
+    dataSaving.deleteSave()
 
     print("main: run reset complete")
 
@@ -337,7 +348,8 @@ def spawnEnemy(roomID, layerID):
             spawnPos  = (enemyX, enemyY),
             layer     = layerID[0],
             screenW   = screen.get_width(),
-            screenH   = screen.get_height()
+            screenH   = screen.get_height(),
+            difficulty=difficulty
         ) #gridH and the other one isnt needed because this works
 
         enemyGroup.add(enemy)
@@ -361,7 +373,8 @@ def spawnEnemies(screen, roomId, layerId, difficulty, enemySpawnOverrideCountPR 
                     layerID = currentLayerID[0],
                     screenW = screen.get_width(),
                     screenH = screen.get_height(),
-                    screen  = screen
+                    screen  = screen,
+                    difficulty = difficulty,
                 )
             )
         spawnEffectsStarted = True
@@ -385,7 +398,7 @@ while running:
 
 
     if len(enemyGroup) ==  0:
-        print("main: doors unlocked")
+        #print("main: doors unlocked")
         playerObj.doorsLocked = False
     elif len(enemyGroup) > 0:
         playerObj.doorsLocked = True
@@ -445,6 +458,7 @@ while running:
                 playerObj.screenH = screen.get_height()
                 playerObj.screenW = screen.get_width()
                 playerObj.updateSpeed()
+                display.setAssets(screen)
                 if result == "quit":
                     running = False
             elif pauseResult == "quit":
@@ -457,7 +471,7 @@ while running:
 
     #elevator=================================
     if playerObj.touchingElevator(currentRoomID):
-
+        resetAllRooms()
 
         roomIDCompendium = [(0,0)]
         roomIDer(0, 0, roomIDCompendium, True)
@@ -492,7 +506,7 @@ while running:
 
                     mapGen.size = 3
                     mapGen.setupMap(boss=False)
-                    asyncio.run(mapGen._generateMap())
+                    asyncio.run(mapGen.prGenerateMap())
                     worldCache.setdefault("1", {})["1"] = mapGen.result
                     generatedMap = worldCache["1"]["1"]
 

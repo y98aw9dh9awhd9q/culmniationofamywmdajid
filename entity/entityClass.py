@@ -7,15 +7,15 @@ import const
 from entity.enemyLogic.AI.fodderAI import fodderAIClass
 from entity.enemyLogic.AI.tripletAI import tripletAIClass
 
-def aiMatcher(aiName, enemy,screen):
+def aiMatcher(aiName, enemy,screen, difficulty):
     match aiName:
-        case "fodder": return fodderAIClass(enemy, screen)
-        case "triplet":return tripletAIClass(enemy,screen)
+        case "fodder": return fodderAIClass(enemy, screen, difficulty)
+        case "triplet":return tripletAIClass(enemy,screen, difficulty)
         case _ :return None
 
 
 class enemyBuilder(pygame.sprite.Sprite):
-    def __init__(self, enemyName, spawnPos, layer, screenW, screenH, gridH, gridW):
+    def __init__(self, enemyName, spawnPos, layer, screenW, screenH, gridH, gridW, difficulty):
         super().__init__()
         self.enemyName = enemyName
         self.hp        = int(reader.readLayers(layer)[enemyName]["hp"])
@@ -30,7 +30,7 @@ class enemyBuilder(pygame.sprite.Sprite):
         self.image     = pygame.transform.scale(self.image, (gridW * 0.75, gridH * 0.75))
         self.rect      = self.image.get_rect(topleft=(int(self.posX), int(self.posY)))
         aiName         = reader.readLayers(layer)[enemyName]["ai"]
-        self.ai        = aiMatcher(aiName, self, (self.screenW, self.screenH))
+        self.ai        = aiMatcher(aiName, self, (self.screenW, self.screenH),difficulty)
 
     def update(self, roomId, player, deltaTime):
         if self.ai is not None:

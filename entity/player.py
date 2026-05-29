@@ -20,7 +20,7 @@ class player(pygame.sprite.Sprite):
     roomCols       = 15
     roomRows       = 9
 
-    def __init__(self, screenW, screenH, size = (60,60), gun=None ):
+    def __init__(self, screenW, screenH, difficulty = None, size = (60,60), gun=None ):
         super().__init__()
         self.size               = size
         self.screenW            = screenW
@@ -44,8 +44,8 @@ class player(pygame.sprite.Sprite):
         self.obtainedGuns       = []
         self.doorsLocked        = False
         self.updateSpeed()
-
-        self.allowShoot = False if gun is None else True
+        self.difficulty         = difficulty
+        self.allowShoot         = False if gun is None else True
 
     def getWeapon(self, obtained):
         self.obtainedGuns.append(obtained)
@@ -75,7 +75,12 @@ class player(pygame.sprite.Sprite):
     def shoot(self):
         if self.allowShoot:
             mouseX, mouseY = pygame.mouse.get_pos()
-            newBullet = bullet(self.rect.centerx, self.rect.centery, mouseX, mouseY,(self.screenW,self.screenH), owner="player")
+            newBullet = bullet(self.rect.centerx,
+                               self.rect.centery,
+                               mouseX, mouseY,
+                               (self.screenW,self.screenH),
+                               owner="player",
+                               difficulty = self.difficulty)
             self.bullets.add(newBullet)
             self.shootTimer = self.shootCooldown
 
@@ -290,3 +295,7 @@ class player(pygame.sprite.Sprite):
     def updateSpeed(self):
         self.speed      = self.screenW * self.gridPS
         self.dodgeSpeed = self.screenW * self.dodgeGridPS
+
+    def emptyWeapons(self):
+        self.allowShoot = False
+        self.obtainedGuns = []

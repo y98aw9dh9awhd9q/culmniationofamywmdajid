@@ -4,7 +4,7 @@ from entity.entityClass import enemyBuilder
 from entity.enemyLogic.reader.enemySheetReader import getRandomEnemy
 
 class enemySpawnIndicator:
-    def __init__(self, row, col, blockW, blockH, layerID, screenW, screenH, screen):
+    def __init__(self, row, col, blockW, blockH, layerID, screenW, screenH, screen,difficulty):
         self.centerX     = int(col * blockW + (blockW / 2))
         self.centerY     = int(row * blockH + (blockH / 2))
         self.maxRadius   = int(min(blockW, blockH) / 2)
@@ -24,6 +24,7 @@ class enemySpawnIndicator:
         self.blockH      = blockH
         self.blockW      = blockW
         self.screen      = screen
+        self.difficulty  = difficulty
 
     def update(self):
         match self.state:
@@ -43,6 +44,7 @@ class enemySpawnIndicator:
                         screenH   = self.screenH,
                         gridH     = self.blockH,
                         gridW     = self.blockW,
+                        difficulty= self.difficulty
                     )
                     self.spawned = True
 
