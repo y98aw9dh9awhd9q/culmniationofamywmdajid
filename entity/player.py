@@ -1,12 +1,15 @@
 import pygame
-import const
-
-from entity.weapons.bullet import bullet
-from entity.weapons.weaponReader import weapon
 
 from mapping.mapLogic.chestLogic import chest
 from mapping.maps import getExitTiles, getWallRects, getElevatorTiles, getBreakableRectsWithCoords, breakTile, getChestRectsWithCoords
-from data.gameSaveData.dataSaving import readSave
+
+#import entity.weapons.pistols as pistols
+#import entity.weapons.shotguns as shotguns
+
+from entity.weapons.pistols.burstPistol import burstPistolClass
+from entity.weapons.pistols.basicPistol import basicPistolClass
+from entity.weapons.shotguns.basicShotgun import shotgunClass
+
 
 class player(pygame.sprite.Sprite):
     immuFrameTime  = 0.5
@@ -42,18 +45,15 @@ class player(pygame.sprite.Sprite):
         self.dodgeVec           = pygame.Vector2(0, 0)
         self.dodgeRemaining     = 0.0
         self.dodgeCooldownTimer = 0.0
-        self.obtainedGuns       = []
         self.doorsLocked        = False
+        self.obtainedGuns       = []
+        self.currentGunIndex    = 0
         self.updateSpeed()
         self.difficulty         = difficulty
+        self.gun                = gun
         self.allowShoot         = False if gun is None else True
-
-    def getWeapon(self, obtained):
-        self.obtainedGuns.append(obtained)
-        self.allowShoot    = True
-        self.gun           = weapon(obtained)
-        self.gun.readWeaponSheet()
-        self.shootCooldown = float(self.gun.cooldown)
+        self.qHeld = False
+        self.eHeld = False
 
     def respawn(self, screenW, screenH):
         self.screenW     = screenW
@@ -74,16 +74,11 @@ class player(pygame.sprite.Sprite):
         return self.invincibilityTimer > 0 and int(self.invincibilityTimer * 10) % 2 == 0
 
     def shoot(self):
-        if self.allowShoot:
-            mouseX, mouseY = pygame.mouse.get_pos()
-            newBullet = bullet(self.rect.centerx,
-                               self.rect.centery,
-                               mouseX, mouseY,
-                               (self.screenW,self.screenH),
-                               owner="player",
-                               difficulty = self.difficulty)
-            self.bullets.add(newBullet)
-            self.shootTimer = self.shootCooldown
+        if not self.allowShoot or self.gun is None:
+            return
+
+        self.gun.shoot(self)
+        self.shootTimer = self.gun.cooldown
 
     def playerToucherHelper(self, otherRect):
         sides1 = [self.rect.right, self.rect.left, self.rect.bottom, self.rect.top]
@@ -122,6 +117,9 @@ class player(pygame.sprite.Sprite):
                                       dodgeDist / self.dodgeSpeed + 0.05)
 
     def update(self, deltaTime, currentRoomId, currentLayerID, currentRoomPosX=0, currentRoomPosY=0, keybinds=None):
+        if self.gun is not None and hasattr(self.gun, "update"):
+            self.gun.update(self, deltaTime)
+
         if self.invincibilityTimer > 0:
             self.invincibilityTimer -= deltaTime
 
@@ -156,9 +154,11 @@ class player(pygame.sprite.Sprite):
             rightKey = keybinds["right"]
             interact = keybinds["interact"]
             dodgeKey = keybinds["dodge"]
+            nextGun  = keybinds["nextGun"]
+            prevGun  = keybinds["prevGun"]
         else:
-            upKey, downKey, leftKey, rightKey, interact, dodgeKey = (
-                pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_RETURN, pygame.K_f
+            upKey, downKey, leftKey, rightKey, interact, dodgeKey, nextGun, prevGun = (
+                pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_RETURN, pygame.K_f, pygame.K_e, pygame.K_q,
             )
 
         dx, dy = 0, 0
@@ -167,9 +167,24 @@ class player(pygame.sprite.Sprite):
         if keyState[upKey]    or keyState[pygame.K_UP]:    dy -= 1
         if keyState[downKey]  or keyState[pygame.K_DOWN]:  dy += 1
 
+
+
         if keyState[dodgeKey] and not self.dodging and self.dodgeCooldownTimer <= 0:
             self.startDodge(dx, dy)
 
+        if keyState[prevGun]:
+            if not self.qHeld:
+                self.previousGun()
+            self.qHeld = True
+        else:
+            self.qHeld = False
+
+        if keyState[nextGun]:
+            if not self.eHeld:
+                self.nextGun()
+            self.eHeld = True
+        else:
+            self.eHeld = False
 
 
 
@@ -300,3 +315,47 @@ class player(pygame.sprite.Sprite):
     def emptyWeapons(self):
         self.allowShoot = False
         self.obtainedGuns = []
+
+    def getWeapon(self, obtained):
+
+        gunMap = {
+            "basicPistol": basicPistolClass,
+            "burstPistol": burstPistolClass,
+            "shotgun"    : shotgunClass
+        }
+
+        gunClass = gunMap.get(obtained)
+
+        if gunClass is None:
+            return
+
+        newGun = gunClass()
+
+        self.obtainedGuns.append(newGun)
+
+        if self.gun is None:
+            self.currentGunIndex = 0
+            self.gun = newGun
+
+        self.allowShoot = True
+        self.shootCooldown = self.gun.cooldown
+
+    def nextGun(self):
+        if not self.obtainedGuns:
+            return
+
+        self.currentGunIndex = (
+                                       self.currentGunIndex + 1
+                               ) % len(self.obtainedGuns)
+
+        self.gun = self.obtainedGuns[self.currentGunIndex]
+        self.shootCooldown = self.gun.cooldown
+
+    def previousGun(self):
+        if not self.obtainedGuns:
+            return
+
+        self.currentGunIndex = (self.currentGunIndex - 1) % len(self.obtainedGuns)
+
+        self.gun = self.obtainedGuns[self.currentGunIndex]
+        self.shootCooldown = self.gun.cooldown

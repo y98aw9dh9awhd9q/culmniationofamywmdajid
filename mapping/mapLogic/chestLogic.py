@@ -2,7 +2,8 @@ import random
 import uuid
 
 chestLoot = {
-    0: ["pistol#1"]
+    0: ["basicPistol"],
+    1: ["burstRifle", "shotgun"]
 }
 
 class chest:

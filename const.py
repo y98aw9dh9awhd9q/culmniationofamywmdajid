@@ -81,6 +81,8 @@ enemySpawnIndicatorColor = red #anastasia said so
 
 gunPaths = os.path.join(baseDir, "assets","guns")
 gunPths = {
-    "pistol#1": os.path.join(gunPaths, "pistol.png")
+    "basicPistol": os.path.join(gunPaths, "basicPistol.png"),
+    "burstPistol": os.path.join(gunPaths, "burstPistol.png"),
+    "basicShotgun":os.path.join(gunPaths, "basicShotgun.png"),
 
 }

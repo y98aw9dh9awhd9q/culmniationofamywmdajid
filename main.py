@@ -156,7 +156,9 @@ else:
     #normal game==================================
     else:
         playerObj.allowShoot = True
-        playerObj.getWeapon("pistol#1")
+        playerObj.getWeapon("basicPistol")
+        playerObj.getWeapon("burstPistol")
+        playerObj.getWeapon("shotgun")
         mapGen.size = 3
         mapGen.setupMap(boss=False)
         asyncio.run(mapGen.prGenerateMap())
@@ -287,7 +289,7 @@ def resetRun():
         playerObj.allowShoot = True
 
         if not hasattr(playerObj, "weapon"):
-             playerObj.getWeapon("pistol#1")
+             playerObj.getWeapon("basicPistol")
 
         mapGen.size = 3
         mapGen.setupMap(boss=False)

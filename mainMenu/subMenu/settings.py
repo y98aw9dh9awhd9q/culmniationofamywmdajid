@@ -19,6 +19,8 @@ defaultSettings = {
         "shoot"   : 1,
         "dodge"   : pygame.K_f,
         "interact": pygame.K_RETURN,
+        "nextGun" : pygame.K_e,
+        "prevGun" : pygame.K_q,
     },
 }
 
@@ -42,9 +44,10 @@ def loadSettings():
             for k, v in defaultSettings["keybinds"].items():
                 data["keybinds"].setdefault(k, v)
             #print(f"settings: loaded settings {data}")
+            #print(f"settings: data: {data}")
             return data
-        except Exception:
-            pass
+        except Exception as e:
+            print("settings: caught exception", e)
     return dict(defaultSettings)
 
 def saveSettings(cfg):
@@ -98,7 +101,7 @@ def run(screen, clock, font):
     ]
 
     #shown keybind actions
-    keybindActions = ["up", "down", "left", "right", "shoot", "interact", "dodge"]
+    keybindActions = ["up", "down", "left", "right", "shoot", "interact", "dodge", "nextGun", "prevGun"]
 
     currentSection  = generalSection
     rebindingAction = None    #holds for key press

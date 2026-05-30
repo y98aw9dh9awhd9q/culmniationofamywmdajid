@@ -47,13 +47,25 @@ def drawHearts(screen, playerObj):
     gunW = gunH * 3
 
     if hasattr(playerObj, "obtainedGuns") and playerObj.obtainedGuns:
-        for gi, gunName in enumerate(playerObj.obtainedGuns):
+        for gi, gunObj in enumerate(playerObj.obtainedGuns):
             try:
-                path    = const.gunPths[gunName]
+                x      = margin + gi * (gunW + spacing)
+                y      = gunY
+                if gi == playerObj.currentGunIndex:
+                    pygame.draw.rect(
+                        screen,
+                        const.red,
+                        (x - 5, y - 5, gunW + 10, gunH + 10),
+                        width=4
+                    )
+
+                path    = const.gunPths[gunObj.name]
                 gunImg  = loadGun(path, gunW, gunH)
-                screen.blit(gunImg, (margin + gi * (gunW + spacing), gunY))
-            except Exception:
-                pass
+
+                screen.blit(gunImg, (x, y))
+
+            except Exception as e:
+                print(e)
 
 roomShop   = 1
 roomChest  = 5
