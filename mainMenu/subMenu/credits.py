@@ -4,7 +4,8 @@ import mainMenu.theme as theme
 creditsText = [
     ("Creation", ["yahu", "keys", "fih"]),
     ("menus", ["keys"]),
-    ("Xavier", ["xavier "])
+    ("Xavier", ["xavier "]),
+    ("Extra assets", ["SirSneakALot"])
 
 ]
 
