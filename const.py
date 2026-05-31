@@ -2,34 +2,35 @@ import pygame
 import os
 import math
 
-black     = (0,0,0)
-white     = (255,255,255)
-brown     = pygame.Color("#7A5901")
-red       = (255,0,0)
-cyan      = (0,255,255)
-yellow    = (255,255,0)
-purple    = (255,0,255)
-orange    = pygame.Color("#FFA500")
-bulletRed = pygame.Color("#EE4B2B")
-blockSize = 20
-darkgray  = (60,60,60)
-green     = (0,255,0)
+black      = (0,0,0)
+white      = (255,255,255)
+brown      = pygame.Color("#7A5901")
+red        = (255,0,0)
+cyan       = (0,255,255)
+yellow     = (255,255,0)
+purple     = (255,0,255)
+orange     = pygame.Color("#FFA500")
+bulletRed  = pygame.Color("#EE4B2B")
+blockSize  = 20
+darkgray   = (60,60,60)
+green      = (0,255,0)
 
-roomCols  = 9
-roomRows  = 15
+roomCols   = 9
+roomRows   = 15
 
 
-baseDir   = os.path.dirname(os.path.abspath(__file__))
-playerDir = os.path.join(baseDir, "assets", "pictures", "entities", "player.png")
-bulletDir = os.path.join(baseDir, "assets", "pictures", "entities", "bullet.png")
+baseDir    = os.path.dirname(os.path.abspath(__file__))
+playerDir  = os.path.join(baseDir, "assets", "pictures", "entities", "player.png")
+bulletDir  = os.path.join(baseDir, "assets", "pictures", "entities", "bullet.png")
 
-mapDirs  = os.path.join(baseDir, "assets","maps")
-chest    = os.path.join(mapDirs, "chest.png")
-elevator = os.path.join(mapDirs, "elevator.png")
-wall     = os.path.join(mapDirs, "wall.png")
-doorO    = os.path.join(mapDirs, "doorOpen.png")
-doorL    = os.path.join(mapDirs, "doorLocked.png")
-box      = os.path.join(mapDirs, "box.png")
+mapDirs    = os.path.join(baseDir, "assets","maps")
+chest      = os.path.join(mapDirs, "chest.png")
+elevator   = os.path.join(mapDirs, "elevator.png")
+wall       = os.path.join(mapDirs, "wall.png")
+doorO      = os.path.join(mapDirs, "doorOpen.png")
+doorL      = os.path.join(mapDirs, "doorLocked.png")
+box        = os.path.join(mapDirs, "box.png")
+shopImg    = os.path.join(mapDirs, "shop.png")
 
 caineDir  = os.path.join(baseDir, "assets","caine")
 
@@ -46,10 +47,12 @@ enemyPths = {
 
 
 UIElements = os.path.join(baseDir, "assets","pictures","UIelements")
-fullHeart = os.path.join(UIElements, "heart","fullheart.png")
-halfHeart = os.path.join(UIElements, "heart","halfheart.png")
-loseSceren= os.path.join(UIElements,"lose.png")
-
+fullHeart  = os.path.join(UIElements, "heart","fullheart.png")
+halfHeart  = os.path.join(UIElements, "heart","halfheart.png")
+loseSceren = os.path.join(UIElements,"lose.png")
+money      = os.path.join(UIElements,"money.png")
+shopKeeper = os.path.join(UIElements, "shopKeeper.png")
+healingPot = os.path.join(UIElements, "healingPotion.png")
 
 
 # keyano is a poo poo head

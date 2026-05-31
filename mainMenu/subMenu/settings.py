@@ -21,6 +21,7 @@ defaultSettings = {
         "interact": pygame.K_RETURN,
         "nextGun" : pygame.K_e,
         "prevGun" : pygame.K_q,
+        "heal"    : pygame.K_r
     },
 }
 
@@ -101,7 +102,7 @@ def run(screen, clock, font):
     ]
 
     #shown keybind actions
-    keybindActions = ["up", "down", "left", "right", "shoot", "interact", "dodge", "nextGun", "prevGun"]
+    keybindActions = ["up", "down", "left", "right", "shoot", "interact", "dodge", "nextGun", "prevGun", "heal"]
 
     currentSection  = generalSection
     rebindingAction = None    #holds for key press

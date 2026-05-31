@@ -863,6 +863,25 @@ def getChestRectsWithCoords(roomId, screenW, screenH):
     return result
 
 
+shopTiles = {5}
+def getShopRects(roomId, screenW, screenH):
+    """
+    this code looks really familiar...
+    """
+    layout = roomRegistery[roomId].layout
+    rowCount = len(layout)
+    colCount = len(layout[0])
+    blockW = screenW / colCount
+    blockH = screenH / rowCount
+    result = []
+    for rowIdx, rowData in enumerate(layout):
+        for colIdx, tileVal in enumerate(rowData):
+            if tileVal in shopTiles:
+                rect = pygame.Rect(colIdx * blockW, rowIdx * blockH, blockW, blockH)
+                result.append(
+                    {"rect": rect, "col":(rowIdx, colIdx)})
+    return result
+
 def breakTile(roomId, rowIdx, colIdx):
     print("breaktile")
     layout = [list(row) for row in roomRegistery[roomId].layout]

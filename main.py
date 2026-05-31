@@ -32,6 +32,9 @@ from   entity.enemyLogic.reader.enemySheetReader import getRandomEnemy
 import mainMenu.subMenu.settings as settings
 import mainMenu.menu as menu
 import mainMenu.subMenu.pauseMenu as pauseMenu
+from   mainMenu.subMenu.shop import shopInstance
+import mainMenu.subMenu.shop as shop
+
 
 from   gameHelpers.roomDirHelper import getMatchingEntrance, mapDelta, roomIDer,placePlayerAtDoor
 from   gameHelpers.mapGeneration import generateEntireWorld
@@ -125,7 +128,9 @@ if saveDataRead:
         weapon,
         roomIDCompendium,
         fullSave,
-        difficulty
+        difficulty,
+        money,
+        inventory
     ) = saveDataRead
 
     worldCache = fullSave["worldData"]["layers"]
@@ -142,6 +147,8 @@ if saveDataRead:
             playerObj.getWeapon(
                 weapon[0]
             )
+            playerObj.money = money
+            playerObj.inventory = inventory
 
     except Exception as e:
 
@@ -149,6 +156,8 @@ if saveDataRead:
 
 else:
     #tutorial mode=========================
+    playerObj.money = 10
+
     if currentLayerID[0] == 0:
         generatedMap = tutorial.tutorialMatching[currentLayerID[1]]
         tutorialFinished = False
@@ -162,6 +171,7 @@ else:
         mapGen.size = 3
         mapGen.setupMap(boss=False)
         asyncio.run(mapGen.prGenerateMap())
+
 
         worldCache = {
             "1": {
@@ -481,6 +491,7 @@ while running:
     #elevator=================================
     if playerObj.touchingElevator(currentRoomID):
         resetAllRooms()
+        shopInstance.resetStock()
 
         roomIDCompendium = [(0,0)]
         roomIDer(0, 0, roomIDCompendium, True)
@@ -682,6 +693,14 @@ while running:
     else:
         if newRoomID > 0:
             spawnEnemies(screen,newRoomID,currentLayerID[0],const.difficultyStats[difficulty]["enemyCount"])
+
+    #shop logic
+    if playerObj.openShop:
+        playerObj.openShop = False
+        result = shop.run(screen,clock,playerObj)
+        if result == "quit":
+            running = False
+        continue
 
     pygame.display.flip()
 

@@ -1,7 +1,7 @@
 import pygame
 
 from mapping.mapLogic.chestLogic import chest
-from mapping.maps import getExitTiles, getWallRects, getElevatorTiles, getBreakableRectsWithCoords, breakTile, getChestRectsWithCoords
+from mapping.maps import getExitTiles, getWallRects, getElevatorTiles, getBreakableRectsWithCoords, breakTile, getChestRectsWithCoords, getShopRects
 
 #import entity.weapons.pistols as pistols
 #import entity.weapons.shotguns as shotguns
@@ -24,7 +24,7 @@ class player(pygame.sprite.Sprite):
     roomCols       = 15
     roomRows       = 9
 
-    def __init__(self, screenW, screenH, difficulty = None, size = (60,60), gun=None ):
+    def __init__(self, screenW, screenH, difficulty = None, size = (60,60), gun=None):
         super().__init__()
         self.size               = size
         self.screenW            = screenW
@@ -52,8 +52,12 @@ class player(pygame.sprite.Sprite):
         self.difficulty         = difficulty
         self.gun                = gun
         self.allowShoot         = False if gun is None else True
-        self.qHeld = False
-        self.eHeld = False
+        self.qHeld              = False
+        self.eHeld              = False
+        self.rHeld              = False
+        self.money              = 0
+        self.inventory          = []
+        self.openShop           = False
 
     def respawn(self, screenW, screenH):
         self.screenW     = screenW
@@ -67,8 +71,8 @@ class player(pygame.sprite.Sprite):
             return
         self.hp                -= 1
         self.invincibilityTimer = self.immuFrameTime
-        if self.hp <= 0:
-            self.isAlive = False
+        if self.hp             <= 0:
+            self.isAlive        = False
 
     def isFlickering(self):
         return self.invincibilityTimer > 0 and int(self.invincibilityTimer * 10) % 2 == 0
@@ -120,6 +124,8 @@ class player(pygame.sprite.Sprite):
         if self.gun is not None and hasattr(self.gun, "update"):
             self.gun.update(self, deltaTime)
 
+        #print(self.inventory)
+
         if self.invincibilityTimer > 0:
             self.invincibilityTimer -= deltaTime
 
@@ -156,9 +162,10 @@ class player(pygame.sprite.Sprite):
             dodgeKey = keybinds["dodge"]
             nextGun  = keybinds["nextGun"]
             prevGun  = keybinds["prevGun"]
+            heal     = keybinds["heal"]
         else:
-            upKey, downKey, leftKey, rightKey, interact, dodgeKey, nextGun, prevGun = (
-                pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_RETURN, pygame.K_f, pygame.K_e, pygame.K_q,
+            upKey, downKey, leftKey, rightKey, interact, dodgeKey, nextGun, prevGun, heal = (
+                pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_RETURN, pygame.K_f, pygame.K_e, pygame.K_q, pygame.K_r
             )
 
         dx, dy = 0, 0
@@ -186,6 +193,16 @@ class player(pygame.sprite.Sprite):
         else:
             self.eHeld = False
 
+        if keyState[heal]:
+            healAmount = 1
+            if not self.rHeld:
+                if "HP1" in self.inventory:
+                    if not self.hp + healAmount > self.maxHp:
+                        self.hp += healAmount
+                        self.inventory.remove("HP1")
+            self.rHeld = True
+        else:
+            self.rHeld = False
 
 
 
@@ -208,6 +225,13 @@ class player(pygame.sprite.Sprite):
                     print(f"player: got {loot} from chest {chestKey}")
 
 
+
+        #man this looks really familiar
+        shopRectSuff = getShopRects(currentRoomId, self.screenW, self.screenH)
+
+        for shopData in shopRectSuff:
+            if self.playerToucherHelper(shopData["rect"]) and keyState[interact]:
+                self.openShop = True
 
 
 
@@ -359,3 +383,6 @@ class player(pygame.sprite.Sprite):
 
         self.gun = self.obtainedGuns[self.currentGunIndex]
         self.shootCooldown = self.gun.cooldown
+
+    def getItem(self,item):
+        self.inventory.append(item)

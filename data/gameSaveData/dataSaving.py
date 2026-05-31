@@ -8,7 +8,9 @@ def emptySave():
         "playerData": {
             "savePrep": None,
             "weapon": [],
-            "layer": [1, 1]
+            "layer": [1, 1],
+            "money": 0,
+            "inventory": []
         },
 
         "worldData": {
@@ -90,7 +92,10 @@ def readSave():
             playerData["weapon"],  # 3
             visitedRooms,  # 4
             save,  # 5
-            difficulty
+            difficulty,
+            playerData["money"],
+            playerData["inventory"]
+
         )
         return (
             playerData["savePrep"], #0
@@ -99,7 +104,9 @@ def readSave():
             playerData["weapon"],   #3
             visitedRooms,           #4
             save,                   #5
-            difficulty              #6
+            difficulty,             #6
+            playerData["money"],    #7
+            playerData["inventory"] #8
         )
 
     except Exception as e:
@@ -137,7 +144,9 @@ def saveGameCall(currentLayerID, playerSavePrep, playerObj, worldCache, roomIDCo
             "playerData": {
                 "savePrep": playerSavePrep,
                 "weapon": playerObj.obtainedGuns,
-                "layer": currentLayerID
+                "layer": currentLayerID,
+                "money":playerObj.money,
+                "inventory": playerObj.inventory,
             },
 
             "worldData": {

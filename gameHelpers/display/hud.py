@@ -5,6 +5,14 @@ import mainMenu.theme as theme
 
 heartCache = {}
 gunCache   = {}
+moneyCache = {}
+
+def loadMoney(path, size):
+    key                 = (path, size)
+    if key not in moneyCache:
+        img             = pygame.image.load(path).convert_alpha()
+        moneyCache[key] = pygame.transform.scale(img, (size, size))
+    return moneyCache[key]
 
 def loadHeart(path, size):
     key = (path, size)
@@ -75,6 +83,23 @@ roomEntry  = -1
 roomExit   = -2
 dirMap     = {0: (-1, 0), 1: (1, 0), 2: (0, -1), 3: (0, 1)}
 oppDir     = (1, 0, 3, 2)
+
+def drawMoney(screen, playerObj):
+    winW, winH = screen.get_size()
+    heartSize  = max(20, int(winH * 0.055))
+    margin     = max(8, int(winW * 0.012))
+    spacing    = max(4, int(heartSize * 0.15))
+    gunY       = margin + heartSize + max(4, int(heartSize * 0.2))
+    gunH       = max(14, int(heartSize * 0.7))
+    iconSize   = max(18, int(heartSize * 0.9))
+    moneyImg   = loadMoney(const.money, iconSize)
+    font       = pygame.font.SysFont(const.fontTextBasic, max(16, int(iconSize * 0.9)))
+    moneyText  = font.render(f"Mex$₿$₱£€¥₹ #{playerObj.money}# ¢₽₩₴R$Ξ₺", True, const.white)
+    x          = margin
+    y          = gunY + gunH + max(6, int(heartSize * 0.25))
+
+    screen.blit(moneyImg, (x, y))
+    screen.blit(moneyText, (x + iconSize + spacing, y + iconSize // 2 - moneyText.get_height() // 2))
 
 def adjacentConnected(generatedMap, r, c):
     rows   = len(generatedMap)
@@ -189,3 +214,4 @@ def drawGameOver(screen, deathMessage="GAME OVER"):
 def drawHud(screen, playerObj, generatedMap, currentRoomPosY, currentRoomPosX, roomIdCompendium):
     drawHearts(screen, playerObj)
     drawMinimap(screen, generatedMap, currentRoomPosY, currentRoomPosX, roomIdCompendium)
+    drawMoney(screen, playerObj)

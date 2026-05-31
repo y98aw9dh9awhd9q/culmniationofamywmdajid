@@ -24,9 +24,10 @@ wall     = None
 door     = None
 box      = None
 doorL    = None
+shop     = None
 
 def setAssets(screen):
-    global elevator, chest, wall, door, box, doorL
+    global elevator, chest, wall, door, box, doorL, shop
     layout, rowCount, colCount, blockW, blockH = spaceCalculator(screen, -1)
     elevator = pygame.transform.scale(pygame.image.load(const.elevator).convert_alpha(), (blockW, blockH))
     chest    = pygame.transform.scale(pygame.image.load(const.chest).convert_alpha()   , (blockW, blockH))
@@ -34,10 +35,11 @@ def setAssets(screen):
     door     = pygame.transform.scale(pygame.image.load(const.doorO).convert_alpha()    , (blockW, blockH))
     box      = pygame.transform.scale(pygame.image.load(const.box).convert_alpha()     , (blockW, blockH))
     doorL    = pygame.transform.scale(pygame.image.load(const.doorL).convert_alpha()     , (blockW, blockH))
+    shop     = pygame.transform.scale(pygame.image.load(const.shopImg).convert_alpha()     , (blockW, blockH))
 
 #tile renderer
 def drawRoom(screen, roomId, doorsLocked = False):
-    global elevator, chest, wall, door, box, doorL
+    global elevator, chest, wall, door, box, doorL, shop
     layout, rowCount, colCount, blockW, blockH = spaceCalculator(screen, roomId)
 
 
@@ -51,6 +53,7 @@ def drawRoom(screen, roomId, doorsLocked = False):
                 case "white"  : screen.blit(wall,     tileRect)
                 case "orange" : screen.blit(doorL if doorsLocked else door, tileRect)
                 case "brown"  : screen.blit(box,      tileRect)
+                case "cyan"   : screen.blit(shop,     tileRect)
                 case _ if colorName:
                     pygame.draw.rect(
                         screen,
