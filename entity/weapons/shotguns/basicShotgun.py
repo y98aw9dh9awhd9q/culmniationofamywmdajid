@@ -12,7 +12,7 @@ class shotgunClass(gun):
         direction              = pygame.Vector2(mx-start.x,my-start.y)
         if direction.length() == 0:return
         direction              = direction.normalize()
-        angles                 = [-15, 0, 15]
+        angles                 = [-10, 0, 10]
 
         for angle in angles:
             pelletDir = direction.rotate(angle)

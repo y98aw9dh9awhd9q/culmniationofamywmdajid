@@ -16,6 +16,12 @@
     "image": "assets/pictures/enemies/fodder.png",
     "description": "the weakest enemy. Moves around and fires shots at the player. HP: 3, ATK: 1, AI type: FODDER.",
     "unlockReq" : 2
+  },
+    "triplet": {
+    "name": "triplet",
+    "image": "assets/pictures/enemies/triplet.png",
+    "description": "another weak enemy, fires in a burst of three uses triplet AI type",
+    "unlockReq" : 2
   }
 }
 

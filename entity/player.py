@@ -10,6 +10,7 @@ from entity.weapons.pistols.burstPistol import burstPistolClass
 from entity.weapons.pistols.basicPistol import basicPistolClass
 from entity.weapons.shotguns.basicShotgun import shotgunClass
 
+from data.playerUnlockData.playerData.playerDataManager import writeCompendiumEntry
 
 class player(pygame.sprite.Sprite):
     immuFrameTime  = 0.5
@@ -66,14 +67,13 @@ class player(pygame.sprite.Sprite):
         self.posX        = float(self.rect.x)
         self.posY        = float(self.rect.y)
 
-    def takeDamage(self):
+    def takeDamage(self, dmg=1):
         if self.invincibilityTimer > 0:
             return
-        self.hp                -= 1
+        self.hp -= dmg
         self.invincibilityTimer = self.immuFrameTime
-        if self.hp             <= 0:
-            self.isAlive        = False
-
+        if self.hp <= 0:
+            self.isAlive = False
     def isFlickering(self):
         return self.invincibilityTimer > 0 and int(self.invincibilityTimer * 10) % 2 == 0
 
@@ -349,6 +349,7 @@ class player(pygame.sprite.Sprite):
         }
 
         gunClass = gunMap.get(obtained)
+        writeCompendiumEntry("weapons", f"{obtained}")
 
         if gunClass is None:
             return
@@ -386,3 +387,7 @@ class player(pygame.sprite.Sprite):
 
     def getItem(self,item):
         self.inventory.append(item)
+
+    def increaseMaxHP(self):
+        self.maxHp +=2
+        self.hp    +=2

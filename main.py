@@ -130,8 +130,12 @@ if saveDataRead:
         fullSave,
         difficulty,
         money,
-        inventory
+        inventory,
+        playerHP,
+        playerMHP
     ) = saveDataRead
+
+    print(f"main: saveDataRead result is {saveDataRead}")
 
     worldCache = fullSave["worldData"]["layers"]
 
@@ -140,15 +144,20 @@ if saveDataRead:
     tutorialFinished = True
 
     try:
-        currentRoomPosX = playerSaveData[1]
-        currentRoomPosY = playerSaveData[2]
-        playerObj.rect.center = playerSaveData[3]
+        if playerSaveData is not None:
+            currentRoomPosX = playerSaveData[1]
+            currentRoomPosY = playerSaveData[2]
+            playerObj.rect.center = playerSaveData[3]
         if len(weapon) != 0:
-            playerObj.getWeapon(
-                weapon[0]
-            )
-            playerObj.money = money
+            for weaponItem in weapon:
+                print(weaponItem)
+
+                playerObj.getWeapon(weaponItem.replace("Class", ""))
+
+            playerObj.money     = money
             playerObj.inventory = inventory
+            playerObj.maxHp     = playerMHP
+            playerObj.hp        = playerHP
 
     except Exception as e:
 
@@ -186,7 +195,7 @@ else:
 
             mapGen.size = 3
             mapGen.setupMap(boss=False)
-            asyncio.run(mapGen._generateMap())
+            asyncio.run(mapGen.prGenerateMap())
 
             worldCache.setdefault("1", {})["1"] = mapGen.result
             generatedMap    = worldCache["1"]["1"]
@@ -370,7 +379,10 @@ def spawnEnemy(roomID, layerID):
         enemyGroup.add(enemy)
 
 
-def spawnEnemies(screen, roomId, layerId, difficulty, enemySpawnOverrideCountPR = None):
+def spawnEnemies(screen, roomId, layerId, difficulty,
+                 enemySpawnOverrideCountPR=None,
+                 enemySpawnBoss=None,
+                 bossEnemy=None):
     global spawnEffectsStarted
     layout, rowCount, colCount, blockW, blockH = spaceCalculator(screen, roomId)
 
@@ -381,15 +393,30 @@ def spawnEnemies(screen, roomId, layerId, difficulty, enemySpawnOverrideCountPR 
                                      layerID=layerId,
                                      difficulty=difficulty,
                                      enemySpawnOverrideCount=enemySpawnOverrideCountPR)
-        for row, col in enemySpawns:
+        rowB, colB = 4,7
+        if enemySpawnBoss is None:
+            for row, col in enemySpawns:
+                spawnIndicators.append(
+                    spawner.enemySpawnIndicator(
+                        row, col, blockW, blockH,
+                        layerID = currentLayerID[0],
+                        screenW = screen.get_width(),
+                        screenH = screen.get_height(),
+                        screen  = screen,
+                        difficulty = difficulty,
+
+                    )
+                )
+        else:
             spawnIndicators.append(
                 spawner.enemySpawnIndicator(
-                    row, col, blockW, blockH,
-                    layerID = currentLayerID[0],
-                    screenW = screen.get_width(),
-                    screenH = screen.get_height(),
-                    screen  = screen,
-                    difficulty = difficulty,
+                    rowB, colB, blockW, blockH,
+                    layerID=6767,
+                    screenW=screen.get_width(),
+                    screenH=screen.get_height(),
+                    screen=screen,
+                    difficulty=difficulty,
+                    forcedEnemy=bossEnemy,
                 )
             )
         spawnEffectsStarted = True
@@ -454,6 +481,7 @@ while running:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             pauseResult = pauseMenu.run(screen,clock)
             if pauseResult == "save":
+                print("main: save game called")
                 dataSaving.saveGameCall(currentLayerID, playerSavePrep, playerObj, worldCache, roomIDCompendium, difficulty)
             elif pauseResult == "menu":
                 menuResult, screen = menu.run(screen,clock,font)
@@ -484,7 +512,14 @@ while running:
                 running = False
 
 
-    currentRoomID = generatedMap[currentRoomPosY][currentRoomPosX]
+    try:
+        currentRoomID = generatedMap[currentRoomPosY][currentRoomPosX]
+    except IndexError:
+        currentRoomPosX = 0
+        currentRoomPosY = 0
+        currentRoomID = -1
+    except Exception as e:
+        print(f"main: error caught in room ID process {e}")
     exitDir = playerObj.touchingExit( currentRoomID)
 
 
@@ -492,6 +527,8 @@ while running:
     if playerObj.touchingElevator(currentRoomID):
         resetAllRooms()
         shopInstance.resetStock()
+        dataSaving.saveGameCall(currentLayerID, playerSavePrep, playerObj, worldCache, roomIDCompendium, difficulty)
+
 
         roomIDCompendium = [(0,0)]
         roomIDer(0, 0, roomIDCompendium, True)
@@ -502,6 +539,7 @@ while running:
         if currentLayerID[0] == 0:
             if currentLayerID[1] != 4:
                 currentLayerID[1] += 1
+                playerObj.increaseMaxHP()
                 generatedMap = tutorial.tutorialMatching[currentLayerID[1]]
             else:
                 #tutorial completee!==========================================
@@ -509,6 +547,8 @@ while running:
                 currentLayerID[0] = 1
                 currentLayerID[1] = 1
                 writeCompendiumEntry("achievements", "tutorial")
+                currentRoomPosX = 0
+                currentRoomPosY = 0
 
 
                 # generate full world========================
@@ -602,6 +642,8 @@ while running:
                     spawnEffectsStarted = False
                     print("room locked")
 
+
+
             except Exception as e:
                 print("main:no room id", e)
 
@@ -651,6 +693,7 @@ while running:
                 if enemy.isDead():
                     addEnemyKill(enemy.enemyName)
                     enemy.kill()
+                    playerObj.money += 1+(2*currentLayerID[0])
 
                 break
 
@@ -658,6 +701,10 @@ while running:
     for enemy in enemyGroup:
         if enemy.ai is None:
             continue
+
+        if hasattr(enemy.ai, "beamHitsPlayer"):
+            if enemy.ai.beamHitsPlayer(playerObj):
+                playerObj.takeDamage(4)
 
         for bullet in list(enemy.ai.bullets):
             if bullet.rect.colliderect(playerObj.rect):
@@ -690,9 +737,17 @@ while running:
             spawnEnemies(screen, currentRoomID, currentLayerID[0], const.difficultyStats[f"{difficulty}"]["enemyCount"],1)
         if currentLayerID[1]==4 and newRoomID == -3:
             spawnEnemies(screen, currentRoomID, currentLayerID[0], const.difficultyStats[f"{difficulty}"]["enemyCount"],3)
+
     else:
         if newRoomID > 0:
             spawnEnemies(screen,newRoomID,currentLayerID[0],const.difficultyStats[difficulty]["enemyCount"])
+        if newRoomID == -3:
+            print("main: boss spawn called")
+            spawnEnemies(screen, currentRoomID, currentLayerID[0],
+                         const.difficultyStats[f"{difficulty}"]["enemyCount"],
+                         1,
+                         enemySpawnBoss=True,
+                         bossEnemy="bossOne")
 
     #shop logic
     if playerObj.openShop:

@@ -9,7 +9,7 @@ def run(screen, clock):
 
     buttons = [
         ("resume"       , "resume"),
-        ("save game"    , "save"),
+        #("save game"    , "save"),
         ("settings"     , "settings"),
         ("exit to menu" , "menu"),
 

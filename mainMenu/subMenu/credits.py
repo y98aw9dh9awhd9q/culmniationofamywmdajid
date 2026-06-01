@@ -5,7 +5,7 @@ creditsText = [
     ("Creation", ["yahu", "keys", "fih"]),
     ("menus", ["keys"]),
     ("Xavier", ["xavier "]),
-    ("Extra assets", ["SirSneakALot"])
+    ("play tester", ["SirSneakALot (Aiden HA)"])
 
 ]
 

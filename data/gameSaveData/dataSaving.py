@@ -5,52 +5,25 @@ savePath = "data/gameSaveData/save.json"
 
 def emptySave():
     return {
-        "playerData": {
-            "savePrep": None,
-            "weapon": [],
-            "layer": [1, 1],
-            "money": 0,
-            "inventory": []
+        "playerData"   : {
+            "savePrep" : None,
+            "weapon"   : [],
+            "layer"    : [1, 1],
+            "money"    : 0,
+            "inventory": [],
+            "hp"       : 6,
+            "MHP"      : 6
         },
 
-        "worldData": {
-            "layers": {},
+        "worldData"     : {
+            "layers"    : {},
             "difficulty": None
         },
 
-        "metaData": {
+        "metaData"        : {
             "visitedRooms": [(0, 0)]
         }
     }
-
-def saveData(playerSavePrep, currentLayerID, weapon, entrances, generatedMap, difficulty):
-    try:
-        if os.path.exists(savePath):
-            with open(savePath, "r") as file:
-                save                     = json.load(file)
-        else:
-            save                         = emptySave()
-        worldLayers                      = save["worldData"]["layers"]
-        worldID                          = str(currentLayerID[0])
-        floorID                          = str(currentLayerID[1])
-
-        if worldID not in worldLayers:
-            worldLayers[worldID]         = {}
-
-        worldLayers[worldID][floorID]    = generatedMap
-
-        save["playerData"]["savePrep"]   = playerSavePrep
-        save["playerData"]["weapon"]     = weapon
-        save["playerData"]["layer"]      = currentLayerID
-        save["metaData"]["visitedRooms"] = entrances
-        save["worldData"]["difficulty"]  = difficulty
-
-        with open(savePath, "w") as file:
-            json.dump(save, file, indent=4)
-        print("dataSaving: save successful")
-    except Exception as e:
-        print("dataSaving:", e)
-
 
 def readSave():
     """
@@ -97,6 +70,8 @@ def readSave():
             playerData["inventory"]
 
         )
+
+
         return (
             playerData["savePrep"], #0
             generatedMap,           #1
@@ -106,7 +81,9 @@ def readSave():
             save,                   #5
             difficulty,             #6
             playerData["money"],    #7
-            playerData["inventory"] #8
+            playerData["inventory"],#8
+            playerData["hp"],       #9
+            playerData["MHP"]       #10
         )
 
     except Exception as e:
@@ -143,10 +120,12 @@ def saveGameCall(currentLayerID, playerSavePrep, playerObj, worldCache, roomIDCo
         saveDat = {
             "playerData": {
                 "savePrep": playerSavePrep,
-                "weapon": playerObj.obtainedGuns,
+                "weapon": [gun.__class__.__name__ for gun in playerObj.obtainedGuns],
                 "layer": currentLayerID,
                 "money":playerObj.money,
                 "inventory": playerObj.inventory,
+                "hp"       : playerObj.hp,
+                "MHP"      : playerObj.maxHp
             },
 
             "worldData": {

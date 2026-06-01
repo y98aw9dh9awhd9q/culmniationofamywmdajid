@@ -2,7 +2,7 @@ import pygame
 import const
 
 class bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, targetX, targetY, screen, difficulty, crossingTime= 1, size=(10, 10), color=(255, 220, 50), damage=1, owner=None):
+    def __init__(self, x, y, targetX, targetY, screen, difficulty, crossingTime= 0.7, size=(10, 10), color=(255, 220, 50), damage=1, owner=None):
         super().__init__()
         self.damage     = damage
         self.owner      = owner #hit filtering purpose
@@ -25,7 +25,7 @@ class bullet(pygame.sprite.Sprite):
 
 
 
-        print(self.velocity)
+        #print(self.velocity)
 
     def update(self, deltaTime, screenW, screenH, wallRects=None, breakableData=None, onBreak=None):
         self.posX += self.velocity.x * deltaTime

@@ -9,7 +9,8 @@ import json
 playerDataPth = os.path.join(const.baseDir,f"data/playerUnlockData/playerData/playerData.json")
 
 enemyKillRequirements = {
-    "fodder" : 1
+    "fodder" : 1,
+    "triplet": 3
 }
 
 defaultDataToDump = {

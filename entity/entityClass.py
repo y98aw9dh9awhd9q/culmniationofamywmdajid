@@ -6,6 +6,7 @@ import const
 
 from entity.enemyLogic.AI.fodderAI import fodderAIClass
 from entity.enemyLogic.AI.tripletAI import tripletAIClass
+from entity.enemyLogic.AI.bossOne.bossOneAI import bossAIClass
 
 from data.gameSaveData.dataSaving import readSave
 
@@ -13,6 +14,7 @@ def aiMatcher(aiName, enemy,screen, difficulty):
     match aiName:
         case "fodder": return fodderAIClass(enemy, screen, difficulty)
         case "triplet":return tripletAIClass(enemy,screen, difficulty)
+        case "bossOne": return bossAIClass(enemy,screen,difficulty)
         case _ :return None
 
 
@@ -43,8 +45,12 @@ class enemyBuilder(pygame.sprite.Sprite):
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
-        if self.ai is not None and hasattr(self.ai, "bullets"):
-            self.ai.bullets.draw(screen)
+        if self.ai is not None:
+            if hasattr(self.ai, "draw"):
+                self.ai.draw(screen)
+
+            if hasattr(self.ai, "bullets"):
+                self.ai.bullets.draw(screen)
 
     def takeDamage(self, dmg):
         self.hp        -= dmg

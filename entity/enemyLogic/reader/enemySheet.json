@@ -1,4 +1,13 @@
 {
+  "6767": {
+    "bossOne": {
+      "hp": "50",
+      "atk": "2",
+      "weapon": "pistol#1",
+      "ai": "bossOne",
+      "imagePath": "bossOne.png"
+    }
+  },
   "0": {
     "fodder": {
       "hp": "3",
@@ -16,8 +25,13 @@
       "weapon": "pistol#1",
       "ai": "triplet",
       "imagePath": "triplet.png"
-
-
+    },
+    "fodder": {
+      "hp": "4",
+      "atk": "1",
+      "weapon": "pistol#1",
+      "ai": "fodder",
+      "imagePath": "fodder.png"
     }
 
   }

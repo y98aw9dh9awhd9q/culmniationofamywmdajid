@@ -14,9 +14,19 @@
       "image": "None",
       "description": "weapon good. 0.01 dmg, 1 volley, 50 second rechambering "
   },
-  "basic Pistol": {
+  "basicPistol": {
     "name": "basic pistol",
-    "image": "None",
+    "image": "assets/guns/basicPistol.png",
     "description": "basic pistol from the tutorial, 1 DMG, 0.25 firing cooldown"
+  },
+    "shotgun": {
+    "name": "basic shotgun",
+    "image": "assets/guns/basicShotgun.png",
+    "description": "the most basic shotgun. Shoots 3 pellets"
+  },
+      "burstPistol": {
+    "name": "burst pistol",
+    "image": "assets/guns/burstPistol.png",
+    "description": "shoots in bursts of three, except you dont see one of the bullets because the code was poorly done"
   }
 }
