@@ -3,7 +3,7 @@ import uuid
 
 chestLoot = {
     0: ["basicPistol"],
-    1: ["burstRifle", "shotgun"]
+    1: ["burstRifle", "shotgun", "HP1"]
 }
 
 class chest:
@@ -11,6 +11,7 @@ class chest:
         self.opened = False
         self.layerID = layerID
         self.uuid = uuid.uuid4()
+
 
     def generateChestLoot(self):
         layerID = self.layerID[0]

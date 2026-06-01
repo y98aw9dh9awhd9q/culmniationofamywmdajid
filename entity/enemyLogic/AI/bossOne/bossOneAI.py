@@ -123,7 +123,7 @@ class bossAIClass:
                     damage    =self.enemy.atk,
                     owner     ="enemy",
                     screen    =self.screen,
-                    difficulty=self.difficulty
+                    difficulty=0.5*self.difficulty
                 )
             )
 
@@ -155,7 +155,7 @@ class bossAIClass:
                 self.enemy.moveAndCollide(move.normalize() * 220 * dt, roomId)
             else:
                 d["phase"] = "aim"
-                d["timer"] = 1.5
+                d["timer"] = 1.5/self.difficulty
 
         elif d["phase"]   == "aim":
             d["timer"]    -= dt
@@ -171,7 +171,7 @@ class bossAIClass:
 
             if d["timer"] <= 0:
                 d["phase"] = "hold"
-                d["timer"] = 0.2
+                d["timer"] = 0.2/self.difficulty
 
         elif d["phase"]   == "hold":
             d["timer"]    -= dt
@@ -188,7 +188,7 @@ class bossAIClass:
 
             if d["timer"] <= 0:
                 d["phase"] = "fire"
-                d["timer"] = 0.35
+                d["timer"] = 0.35/self.difficulty
 
         elif d["phase"]   == "fire":
             d["timer"]    -= dt
@@ -219,12 +219,15 @@ class bossAIClass:
 
     def beamHitsPlayer(self, player):
         if self.state != "sniper":
+            print("boss aI: cut by wrong statae")
             return False
 
         if self.data.get("phase") != "fire":
+            print("boss AI: cut by wrong phase")
             return False
 
         if not self.beamActive:
+            print("boss AI: cut by beam !active")
             return False
 
         px, py  = player.rect.center
@@ -293,7 +296,7 @@ class bossAIClass:
                 damage    =self.enemy.atk,
                 owner     ="enemy",
                 screen    =self.screen,
-                difficulty=self.difficulty
+                difficulty=0.8*self.difficulty
             )
         )
 

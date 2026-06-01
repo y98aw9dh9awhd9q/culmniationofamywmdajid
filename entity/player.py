@@ -12,6 +12,8 @@ from entity.weapons.shotguns.basicShotgun import shotgunClass
 
 from data.playerUnlockData.playerData.playerDataManager import writeCompendiumEntry
 
+from gameHelpers.display.dialogueBox import drawDialogueBox
+
 class player(pygame.sprite.Sprite):
     immuFrameTime  = 0.5
     dodgeKey       = pygame.K_f
@@ -25,7 +27,7 @@ class player(pygame.sprite.Sprite):
     roomCols       = 15
     roomRows       = 9
 
-    def __init__(self, screenW, screenH, difficulty = None, size = (60,60), gun=None):
+    def __init__(self, screenW, screenH,screen, difficulty = None, size = (60,60), gun=None):
         super().__init__()
         self.size               = size
         self.screenW            = screenW
@@ -59,6 +61,7 @@ class player(pygame.sprite.Sprite):
         self.money              = 0
         self.inventory          = []
         self.openShop           = False
+        self.screen             = screen
 
     def respawn(self, screenW, screenH):
         self.screenW     = screenW
@@ -221,6 +224,12 @@ class player(pygame.sprite.Sprite):
                 chestObj = self.chestRegistry[chestKey]
                 loot = chestObj.openChest()
                 if loot is not None:
+                    drawDialogueBox(screen=self.screen,
+                                    text  =f"you got {loot}!",
+                                    clock = None,
+                                    typewrite=True
+                                    )
+
                     self.getWeapon(loot)
                     print(f"player: got {loot} from chest {chestKey}")
 

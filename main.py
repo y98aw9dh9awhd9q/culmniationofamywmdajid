@@ -73,7 +73,7 @@ layout, rowCount, colCount, blockW, blockH = display.spaceCalculator(screen, -1)
 
 spriteH, spriteW       = blockH*0.75, blockW*0.75
 spriteSize             = (spriteW,spriteH)
-playerObj              = player(*screen.get_size(), size=spriteSize)
+playerObj              = player(*screen.get_size(), size=spriteSize, screen = screen)
 mapGen                 = mapGenerator.mapGenerator()
 generatedMap           = None
 currentRoomPosY        = 0
