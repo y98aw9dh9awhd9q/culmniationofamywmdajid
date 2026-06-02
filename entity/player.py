@@ -9,6 +9,8 @@ from mapping.maps import getExitTiles, getWallRects, getElevatorTiles, getBreaka
 from entity.weapons.pistols.burstPistol import burstPistolClass
 from entity.weapons.pistols.basicPistol import basicPistolClass
 from entity.weapons.shotguns.basicShotgun import shotgunClass
+from entity.weapons.rifles.assaultRifle import assaultRifleClass
+
 
 from data.playerUnlockData.playerData.playerDataManager import writeCompendiumEntry
 
@@ -17,10 +19,11 @@ from gameHelpers.display.dialogueBox import drawDialogueBox
 class player(pygame.sprite.Sprite):
     immuFrameTime  = 0.5
     dodgeKey       = pygame.K_f
+    healAmount     = 1
 
     #these are tiles per second
-    gridPS          = 0.25
-    dodgeGridPS     = 2
+    gridPS         = 0.25
+    dodgeGridPS    = 2
 
 
     dodgeCooldown  = 0.5
@@ -199,11 +202,11 @@ class player(pygame.sprite.Sprite):
             self.eHeld = False
 
         if keyState[heal]:
-            healAmount = 1
+
             if not self.rHeld:
                 if "HP1" in self.inventory:
-                    if not self.hp + healAmount > self.maxHp:
-                        self.hp += healAmount
+                    if not self.hp + self.healAmount > self.maxHp:
+                        self.hp += self.healAmount
                         self.inventory.remove("HP1")
             self.rHeld = True
         else:
@@ -363,16 +366,23 @@ class player(pygame.sprite.Sprite):
         self.allowShoot = False
         self.obtainedGuns = []
 
-    def getWeapon(self, obtained):
+    def increaseHeal(self):
+        self.healAmount +=1
 
+    def getWeapon(self, obtained):
+        print(f"player obtained: {obtained}")
         gunMap = {
-            "basicPistol": basicPistolClass,
-            "burstPistol": burstPistolClass,
-            "shotgun"    : shotgunClass
+            "basicPistol"  : basicPistolClass,
+            "burstPistol"  : burstPistolClass,
+            "shotgun"      : shotgunClass,
+            "assaultRifle" : assaultRifleClass
         }
 
         gunClass = gunMap.get(obtained)
         writeCompendiumEntry("weapons", f"{obtained}")
+
+        if obtained in self.obtainedGuns:
+            return
 
         if gunClass is None:
             return

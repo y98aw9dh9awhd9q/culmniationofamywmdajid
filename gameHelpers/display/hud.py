@@ -70,6 +70,7 @@ def drawHearts(screen, playerObj):
                 path    = const.gunPths[gunObj.name]
                 gunImg  = loadGun(path, gunW, gunH)
 
+
                 screen.blit(gunImg, (x, y))
 
             except Exception as e:

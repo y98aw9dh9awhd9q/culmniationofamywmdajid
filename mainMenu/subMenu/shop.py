@@ -22,20 +22,74 @@ def loadImage(path: str) -> Surface | None: #"type safety -keys i think"
         return None
 
 
+shopItems ={
+    0:[
+    {
+        "id": "HP1",
+        "name": "healing potion",
+        "description": "heals you :) the heal will in crease with time. You get a tutorial discount!",
+        "price": 5,
+        "stock": 3,
+        "maxStock": 3,
+        "image": const.healingPot
+    }],
+
+    1: [
+    {
+        "id": "HP1",
+        "name": "healing potion",
+        "description": "heals you :) the heal will in crease with time",
+        "price": 15,
+        "stock": 3,
+        "maxStock": 3,
+        "image": const.healingPot
+    }
+
+    ],
+    2: [
+    {
+        "id": "HP1",
+        "name": "healing potion",
+        "description": "heals you :) the heal will in crease with time",
+        "price": 15,
+        "stock": 4,
+        "maxStock": 4,
+        "image": const.healingPot
+    },
+        {
+            "id": "shotgun",
+            "name": "shotgun",
+            "description": "heals you :) the heal will in crease with time",
+            "price": 50,
+            "stock": 1,
+            "maxStock": 1,
+            "image": const.gunPths["basicShotgun"]
+        },
+        {
+            "id": "assaultRifle",
+            "name": "assault rifle",
+            "description": "shoots bullets with low cooldown",
+            "price": 5,
+            "stock": 1,
+            "maxStock": 1,
+            "image": const.gunPths["assaultRifle"]
+        }
+    ]
+
+
+
+
+}
+
+
+
+
+
 class shop:
     def __init__(self):
-        self.items = [
-            {
-                "id": "HP1",
-                "name": "healing potion",
-                "description": "+1 HP",
-                "price": 5,
-                "stock": 3,
-                "maxStock": 3,
-                "image": const.healingPot
-            }
-        ]
-
+        global shotItems
+        self.layerID = 0
+        self.items = shopItems[self.layerID]
         for item in self.items:
             item["surf"] = loadImage(item["image"])
 
@@ -43,18 +97,11 @@ class shop:
         for item in self.items:
             item["stock"] = item["maxStock"]
 
-    def playerHasWeapon(self, player, weaponID):
-        for gun in player.obtainedGuns:
-            gunName = type(gun).__name__.lower() #dundur jumpscare
-
-            if weaponID == "basicPistol" and "basic" in gunName:
-                return True
-
-        return False
-
     def giveItem(self, player, item):
         match item["id"]:
             case "HP1": player.getItem("HP1")
+            case "shotgun": player.getWeapon("shotgun")
+            case "assaultRifle": player.getWeapon("assaultRifle")
 
     def buy(self, player, itemIndex):
         item = self.items[itemIndex]
@@ -72,8 +119,16 @@ class shop:
 
         return True, "purchased"
 
+    def updateStuff(self):
+        self.items = shopItems[self.layerID]
+
+
 
 shopInstance = shop()
+def updateShopInstance(layerID):
+    global shopInstance
+    shopInstance.layerID = layerID
+    shopInstance.updateStuff()
 
 
 def run(screen, clock, player):

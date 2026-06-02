@@ -4,7 +4,7 @@ import pygame
 
 class burstPistolClass(gun):
     def __init__(self):
-        super().__init__(0.6, "burstPistol")
+        super().__init__(0.9, "burstPistol")
 
         self.burstShotsRemaining = 0
         self.burstDelay          = 0.12

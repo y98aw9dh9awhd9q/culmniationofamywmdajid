@@ -88,5 +88,6 @@ gunPths = {
     "basicPistol": os.path.join(gunPaths, "basicPistol.png"),
     "burstPistol": os.path.join(gunPaths, "burstPistol.png"),
     "basicShotgun":os.path.join(gunPaths, "basicShotgun.png"),
+    "assaultRifle":os.path.join(gunPaths, "assaultRifle.png")
 
 }

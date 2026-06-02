@@ -574,6 +574,7 @@ while running:
                 playerObj.increaseMaxHP()
                 currentLayerID[0] += 1
                 currentLayerID[1]  = 1
+                if currentLayerID[0] % 2 != 0: playerObj.increaseHeal()
 
             if currentLayerID[0]   > 9:
                 currentLayerID[0]  = 9
@@ -760,6 +761,7 @@ while running:
 
     #shop logic
     if playerObj.openShop:
+        shop.updateShopInstance(layerID=currentLayerID[0])
         playerObj.openShop = False
         result = shop.run(screen,clock,playerObj)
         if result == "quit":

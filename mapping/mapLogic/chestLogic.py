@@ -3,7 +3,8 @@ import uuid
 
 chestLoot = {
     0: ["basicPistol"],
-    1: ["burstPistol", "shotgun", "HP1"]
+    1: ["burstPistol", "shotgun", "HP1"],
+    2: ["burstPistol", "shotgun", "HP1", "assaultRifle"]
 }
 
 class chest:
