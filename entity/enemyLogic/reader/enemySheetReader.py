@@ -3,7 +3,7 @@ import const
 import os
 import random
 
-def readLayers(layer):
+"""def readLayers(layer):
     with open(os.path.join(const.baseDir,"entity/enemyLogic/reader", "enemySheet.json")) as file:
         parsedData = json.load(file)
     result = {}
@@ -13,7 +13,13 @@ def readLayers(layer):
         if layerNumber <= layer:
             result.update(parsedData[currentLayer])
 
-    return result
+    return result"""
+
+def readLayers(layer):
+    with open(os.path.join(const.baseDir, "entity/enemyLogic/reader", "enemySheet.json")) as file:
+        parsedData = json.load(file)
+
+    return parsedData.get(str(layer), {})
 
 def getAvailableEnemies(layer):
     enemies = readLayers(layer)

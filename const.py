@@ -43,6 +43,9 @@ enemyPths = {
     "fodder": os.path.join(enemyDirs, "fodder.png"),
     "triplet": os.path.join(enemyDirs, "triplet.png"),
     "bossOne": os.path.join(enemyDirs, "bossOne.png"),
+    "machineGunner": os.path.join(enemyDirs, "machineGunner.png"),
+    "shotgunner": os.path.join(enemyDirs, "shotgunner.png"),
+    "sniper": os.path.join(enemyDirs, "sniper.png")
 
 }
 
