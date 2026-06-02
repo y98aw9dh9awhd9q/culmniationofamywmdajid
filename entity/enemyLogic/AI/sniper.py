@@ -17,9 +17,9 @@ class sniperAIClass:
     def update(self, dt, roomId, player):
         match self.state:
             case "reposition" : self.reposition(dt, roomId, player)
-            case "aim"        : self.aim(dt, player)
-            case "hold"       : self.hold(dt)
-            case "fore"       : self.firePhase(dt)
+            case "aim"        : self.aim(       dt,         player)
+            case "hold"       : self.hold(      dt                )
+            case "fore"       : self.firePhase( dt                )
 
     def reposition(self, dt, roomId, player):
         ex, ey  = self.enemy.rect.center
