@@ -175,8 +175,6 @@ else:
     else:
         playerObj.allowShoot = True
         playerObj.getWeapon("basicPistol")
-        playerObj.getWeapon("burstPistol")
-        playerObj.getWeapon("shotgun")
         mapGen.size = 3
         mapGen.setupMap(boss=False)
         asyncio.run(mapGen.prGenerateMap())
@@ -438,7 +436,6 @@ running = True
 
 while running:
 
-
     if len(enemyGroup) ==  0:
         #print("main: doors unlocked")
         playerObj.doorsLocked = False
@@ -539,7 +536,6 @@ while running:
         if currentLayerID[0] == 0:
             if currentLayerID[1] != 4:
                 currentLayerID[1] += 1
-                playerObj.increaseMaxHP()
                 generatedMap = tutorial.tutorialMatching[currentLayerID[1]]
             else:
                 #tutorial completee!==========================================
@@ -575,6 +571,7 @@ while running:
         else:
             currentLayerID[1]     += 1
             if currentLayerID[1]   > 4:
+                playerObj.increaseMaxHP()
                 currentLayerID[0] += 1
                 currentLayerID[1]  = 1
 
@@ -704,7 +701,20 @@ while running:
 
         if hasattr(enemy.ai, "beamHitsPlayer"):
             if enemy.ai.beamHitsPlayer(playerObj):
-                playerObj.takeDamage(4)
+                print("main: detected beam hits player")
+                playerObj.takeDamage(4*const.difficultyStats[difficulty]["multiplier"])
+                if playerObj.hp <= 0 and not gameOver:
+
+                    gameOver = True
+                    gameOverTimer = 30
+
+                    deleteCurrentProgress()
+                    enemyGroup.empty()
+
+                    for bulletSprite in playerObj.bullets:
+                        bulletSprite.kill()
+
+                    print("main: player died")
 
         for bullet in list(enemy.ai.bullets):
             if bullet.rect.colliderect(playerObj.rect):
@@ -742,7 +752,6 @@ while running:
         if newRoomID > 0:
             spawnEnemies(screen,newRoomID,currentLayerID[0],const.difficultyStats[difficulty]["enemyCount"])
         if newRoomID == -3:
-            print("main: boss spawn called")
             spawnEnemies(screen, currentRoomID, currentLayerID[0],
                          const.difficultyStats[f"{difficulty}"]["enemyCount"],
                          1,

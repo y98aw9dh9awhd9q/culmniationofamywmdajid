@@ -6,7 +6,7 @@ import const
 
 from entity.enemyLogic.AI.fodderAI import fodderAIClass
 from entity.enemyLogic.AI.tripletAI import tripletAIClass
-from entity.enemyLogic.AI.bossOne.bossOneAI import bossAIClass
+from entity.enemyLogic.AI.bossAI.bossOneAI import bossAIClass
 
 from data.gameSaveData.dataSaving import readSave
 
@@ -22,6 +22,7 @@ class enemyBuilder(pygame.sprite.Sprite):
     def __init__(self, enemyName, spawnPos, layer, screenW, screenH, gridH, gridW, difficulty):
         super().__init__()
         self.enemyName = enemyName
+        #print(enemyName)
         if isinstance(readSave(), bool):
             self.hp = int(reader.readLayers(layer)[enemyName]["hp"])
         else:
@@ -37,6 +38,7 @@ class enemyBuilder(pygame.sprite.Sprite):
         self.image     = pygame.transform.scale(self.image, (gridW * 0.75, gridH * 0.75))
         self.rect      = self.image.get_rect(topleft=(int(self.posX), int(self.posY)))
         aiName         = reader.readLayers(layer)[enemyName]["ai"]
+        print(aiName)
         self.ai        = aiMatcher(aiName, self, (self.screenW, self.screenH),difficulty)
 
     def update(self, roomId, player, deltaTime):

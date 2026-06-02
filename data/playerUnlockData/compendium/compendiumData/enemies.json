@@ -22,6 +22,12 @@
     "image": "assets/pictures/enemies/triplet.png",
     "description": "another weak enemy, fires in a burst of three uses triplet AI type",
     "unlockReq" : 2
+  },
+    "bossOne": {
+    "name": "(boss one name)",
+    "image": "assets/pictures/enemies/bossOne.png",
+    "description": "a stronger foe, has 3 attacks: sniper, machine gun, shotguns",
+    "unlockReq" : 2
   }
 }
 

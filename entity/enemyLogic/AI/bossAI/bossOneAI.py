@@ -219,15 +219,12 @@ class bossAIClass:
 
     def beamHitsPlayer(self, player):
         if self.state != "sniper":
-            print("boss aI: cut by wrong statae")
             return False
 
         if self.data.get("phase") != "fire":
-            print("boss AI: cut by wrong phase")
             return False
 
         if not self.beamActive:
-            print("boss AI: cut by beam !active")
             return False
 
         px, py  = player.rect.center
@@ -237,13 +234,17 @@ class bossAIClass:
         line    = pygame.Vector2(bx - ax, by - ay)
         point   = pygame.Vector2(px - ax, py - ay)
 
-        if line.length() == 0:
+        if line.length_squared() == 0:
             return False
 
-        t       = max(0, min(1, int(point.dot(line) / line.length_squared())))
+        t = max(0, min(1, point.dot(line) / line.length_squared()))
         closest = pygame.Vector2(ax, ay) + line * t
 
-        return pygame.Vector2(px, py).distance_to(closest) < 18
+        dist = pygame.Vector2(px, py).distance_to(closest)
+
+        print("beam dist:", dist)
+
+        return dist < 18
 
 
     def startMachinegun(self):

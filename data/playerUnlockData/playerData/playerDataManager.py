@@ -10,7 +10,8 @@ playerDataPth = os.path.join(const.baseDir,f"data/playerUnlockData/playerData/pl
 
 enemyKillRequirements = {
     "fodder" : 1,
-    "triplet": 3
+    "triplet": 3,
+    "bossOne": 1
 }
 
 defaultDataToDump = {

@@ -27,6 +27,8 @@ class player(pygame.sprite.Sprite):
     roomCols       = 15
     roomRows       = 9
 
+    gunList        = ["basicPistol","burstPistol","shotgun"]
+
     def __init__(self, screenW, screenH,screen, difficulty = None, size = (60,60), gun=None):
         super().__init__()
         self.size               = size
@@ -207,9 +209,7 @@ class player(pygame.sprite.Sprite):
         else:
             self.rHeld = False
 
-
-
-        #chest lpogic=================================================
+        #chest logic=================================================
         chestRectStuff = getChestRectsWithCoords(currentRoomId, self.screenW, self.screenH)
 
         for chestData in chestRectStuff:
@@ -223,14 +223,28 @@ class player(pygame.sprite.Sprite):
             if self.playerToucherHelper(chestData["rect"]) and keyState[interact]:
                 chestObj = self.chestRegistry[chestKey]
                 loot = chestObj.openChest()
-                if loot is not None:
-                    drawDialogueBox(screen=self.screen,
-                                    text  =f"you got {loot}!",
-                                    clock = None,
-                                    typewrite=True
-                                    )
 
-                    self.getWeapon(loot)
+                if loot is not None:
+
+                    if loot in self.gunList:
+
+                        ownedGunNames = [gun.__class__.__name__.replace("Class", "")
+                                         for gun in self.obtainedGuns]
+
+                        availableGuns = [gun for gun in self.gunList if gun not in ownedGunNames]
+
+                        if not availableGuns:
+                            loot = "HP1"
+
+                        else:
+                            while loot in self.gunList and loot not in availableGuns:
+                                loot = chestObj.openChest()
+
+                    if loot in self.gunList:
+                        self.getWeapon(loot)
+                    else:
+                        self.getItem(loot)
+
                     print(f"player: got {loot} from chest {chestKey}")
 
 

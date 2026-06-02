@@ -18,9 +18,7 @@ class bullet(pygame.sprite.Sprite):
         if direction.length() > 0:
             direction = direction.normalize()
         self.velocity = direction * (crossingTime*screen[0])
-        print(self.velocity)
         if owner != "player":
-            print("bullet: increasec vel", difficulty)
             self.velocity*=difficulty
 
 
