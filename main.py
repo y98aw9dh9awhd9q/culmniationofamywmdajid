@@ -684,6 +684,12 @@ while running:
     #bullet handler=====================================================================
     for bullet in list(playerObj.bullets):
         for enemy in list(enemyGroup):
+
+            if enemy.ai and hasattr(enemy.ai, "shieldBlocksBullet"):
+                if enemy.ai.shieldBlocksBullet(bullet):
+                    bullet.kill()
+                    break
+
             if bullet.rect.colliderect(enemy.rect):
                 enemy.takeDamage(bullet.damage)
                 bullet.kill()

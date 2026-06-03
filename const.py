@@ -14,6 +14,7 @@ bulletRed  = pygame.Color("#EE4B2B")
 blockSize  = 20
 darkgray   = (60,60,60)
 green      = (0,255,0)
+blue       = (0,0,255)
 
 roomCols   = 9
 roomRows   = 15
