@@ -4,8 +4,15 @@
       "hp": "50",
       "atk": "2",
       "weapon": "pistol#1",
-      "ai": "bossTwo",
+      "ai": "bossOne",
       "imagePath": "bossOne.png"
+    },
+      "bossTwo": {
+      "hp": "100",
+      "atk": "2",
+      "weapon": "pistol#1",
+      "ai": "bossTwo",
+      "imagePath": "bossTwo.png"
     }
   },
   "0": {
@@ -23,7 +30,7 @@
       "hp": "5",
       "atk": "2",
       "weapon": "pistol#1",
-      "ai": "triplet",
+      "ai": "bossOne",
       "imagePath": "triplet.png"
     },
     "fodder": {

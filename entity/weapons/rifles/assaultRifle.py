@@ -4,7 +4,7 @@ import pygame
 
 class assaultRifleClass(gun):
     def __init__(self):
-        super().__init__(0.2, "assaultRifle")
+        super().__init__(0.05, "assaultRifle")
 
     def shoot(self, player):
         mx, my = pygame.mouse.get_pos()

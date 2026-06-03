@@ -753,11 +753,27 @@ while running:
         if newRoomID > 0:
             spawnEnemies(screen,newRoomID,currentLayerID[0],const.difficultyStats[difficulty]["enemyCount"])
         if newRoomID == -3:
-            spawnEnemies(screen, currentRoomID, currentLayerID[0],
+            match currentLayerID[0]:
+                case 1:
+                    spawnEnemies(screen, currentRoomID, currentLayerID[0],
                          const.difficultyStats[f"{difficulty}"]["enemyCount"],
                          1,
                          enemySpawnBoss=True,
                          bossEnemy="bossOne")
+                case 2:
+                    spawnEnemies(screen, currentRoomID, currentLayerID[0],
+                         const.difficultyStats[f"{difficulty}"]["enemyCount"],
+                         1,
+                         enemySpawnBoss=True,
+                         bossEnemy="bossTwo")
+
+                case _:
+                    spawnEnemies(screen, currentRoomID, currentLayerID[0],
+                         const.difficultyStats[f"{difficulty}"]["enemyCount"],
+                         1,
+                         enemySpawnBoss=True,
+                         bossEnemy="bossOne")
+
 
     #shop logic
     if playerObj.openShop:

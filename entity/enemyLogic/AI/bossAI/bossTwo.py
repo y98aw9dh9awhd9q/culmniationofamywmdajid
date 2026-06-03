@@ -78,7 +78,7 @@ class bossTwoAIClass:
         self.enemy.moveAndCollide(move * 45 * dt, roomId)
 
         if self.data["cooldown"] <= 0:
-            self.data["cooldown"] = random.uniform(0.8, 1.3)
+            self.data["cooldown"] = random.uniform(0.1, 0.3)
             self.fireSpinner()
 
         if self.data["timer"]    <= 0:
@@ -88,7 +88,7 @@ class bossTwoAIClass:
         ex, ey      = self.enemy.rect.center
         base_offset = self.data["offset"]
 
-        for deg in range(0, 360, 30):
+        for deg in range(0, 360, 15):
 
             ang = math.radians(deg + base_offset)
             tx  = ex + math.cos(ang) * 120
@@ -99,7 +99,7 @@ class bossTwoAIClass:
                     ex, ey,
                     tx, ty,
                     screen     = self.screen,
-                    difficulty = 0.85 * self.difficulty,
+                    difficulty = 0.67 * self.difficulty,
                     owner      = "enemy",
                     damage     = self.enemy.atk,
                     color      = const.red
@@ -155,11 +155,11 @@ class bossTwoAIClass:
                     ex, ey,
                     tx, ty,
                     screen     = self.screen,
-                    difficulty = 0.75 * self.difficulty,
+                    difficulty = 0.67 * self.difficulty,
                     owner      = "enemy",
                     damage     = self.enemy.atk,
                     color      = (0, 255, 255),
-                    maxBounces = 2
+                    maxBounces = 5
                 )
             )
 
@@ -237,7 +237,7 @@ class bossTwoAIClass:
         self.data["shotCD"] -= dt
 
         if self.data["vCD"] <= 0:
-            self.data["vCD"] = 0.25
+            self.data["vCD"] = 0.2
             self.fireV()
 
         if self.data["shotCD"] <= 0:
