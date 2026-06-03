@@ -4,7 +4,7 @@
       "hp": "50",
       "atk": "2",
       "weapon": "pistol#1",
-      "ai": "bossOne",
+      "ai": "bossTwo",
       "imagePath": "bossOne.png"
     }
   },

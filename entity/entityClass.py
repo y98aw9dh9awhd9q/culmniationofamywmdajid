@@ -4,13 +4,14 @@ import mapping.maps
 import entity.enemyLogic.reader.enemySheetReader as reader
 import const
 
-from entity.enemyLogic.AI.fodderAI import fodderAIClass
-from entity.enemyLogic.AI.tripletAI import tripletAIClass
+from entity.enemyLogic.AI.fodderAI      import fodderAIClass
+from entity.enemyLogic.AI.tripletAI     import tripletAIClass
 from entity.enemyLogic.AI.machineGunner import machineGunnerAIClass
-from entity.enemyLogic.AI.shutgunner import shotgunnerAIClass
-from entity.enemyLogic.AI.sniper import sniperAIClass
+from entity.enemyLogic.AI.shutgunner    import shotgunnerAIClass
+from entity.enemyLogic.AI.sniper        import sniperAIClass
 
 from entity.enemyLogic.AI.bossAI.bossOneAI import bossAIClass
+from entity.enemyLogic.AI.bossAI.bossTwo   import bossTwoAIClass
 
 from data.gameSaveData.dataSaving import readSave
 
@@ -22,6 +23,7 @@ def aiMatcher(aiName, enemy,screen, difficulty):
         case "machineGunner": return machineGunnerAIClass(enemy,screen,difficulty)
         case "shotgunner" : return shotgunnerAIClass(enemy,screen,difficulty)
         case "sniper": return sniperAIClass(enemy, screen, difficulty)
+        case "bossTwo": return bossTwoAIClass(enemy,screen,difficulty)
         case _ :return None
 
 
