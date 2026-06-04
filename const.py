@@ -67,18 +67,18 @@ healingPot = os.path.join(UIElements, "healingPotion.png")
 
 enemySpawnAmount = {
     0: {
-        1: random.randint(0,0),
-        2: random.randint(0,0),
-        3: random.randint(0,0),
-        4: random.randint(0,0),
-        5: random.randint(0,0),
-        6: random.randint(0,0),
-        7: random.randint(0,0),
-        8: random.randint(0,0),
-        9: random.randint(0,0),
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 0,
+        9: 0,
     },
     0.25: {
-        1: random.randint(0,0),
+        1: 0,
         2: random.randint(0,1),
         3: random.randint(0,1),
         4: random.randint(0,2),
@@ -100,17 +100,6 @@ enemySpawnAmount = {
         9: random.randint(3,4),
     },
     1: {
-        1: random.randint(1,2),
-        2: random.randint(1,3),
-        3: random.randint(2,3),
-        4: random.randint(2,4),
-        5: random.randint(3,4),
-        6: random.randint(3,5),
-        7: random.randint(4,5),
-        8: random.randint(4,6),
-        9: random.randint(5,6),
-    },
-    1.25: {
         1: random.randint(2,4),
         2: random.randint(3,4),
         3: random.randint(3,5),
@@ -121,7 +110,7 @@ enemySpawnAmount = {
         8: random.randint(6,7),
         9: random.randint(6,9),
     },
-    1.5: {
+    1.25: {
         1: random.randint(3,6),
         2: random.randint(4,7),
         3: random.randint(5,8),
@@ -132,16 +121,27 @@ enemySpawnAmount = {
         8: random.randint(10,13),
         9: random.randint(11,14),
     },
-    1.75: {
-        1: random.randint(3,6),
-        2: random.randint(4,7),
-        3: random.randint(5,8),
-        4: random.randint(6,9),
-        5: random.randint(7,10),
-        6: random.randint(8,11),
-        7: random.randint(9,12),
-        8: random.randint(10,13),
-        9: random.randint(11,14),
+    1.5: {
+        1: random.randint(5,8),
+        2: random.randint(6,9),
+        3: random.randint(7,10),
+        4: random.randint(8,11),
+        5: random.randint(9,12),
+        6: random.randint(10,13),
+        7: random.randint(11,14),
+        8: random.randint(12,15),
+        9: random.randint(14,16),
+    },
+    2: {
+        1: random.randint(1,2),
+        2: random.randint(2,4),
+        3: random.randint(3,8),
+        4: random.randint(4,16),
+        5: random.randint(5,32),
+        6: random.randint(6,64),
+        7: random.randint(7,128),
+        8: random.randint(8,256),
+        9: random.randint(9,512),
     }
 }
 
