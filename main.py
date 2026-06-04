@@ -684,6 +684,12 @@ while running:
     #bullet handler=====================================================================
     for bullet in list(playerObj.bullets):
         for enemy in list(enemyGroup):
+
+            if enemy.ai and hasattr(enemy.ai, "shieldBlocksBullet"):
+                if enemy.ai.shieldBlocksBullet(bullet):
+                    bullet.kill()
+                    break
+
             if bullet.rect.colliderect(enemy.rect):
                 enemy.takeDamage(bullet.damage)
                 bullet.kill()
@@ -753,11 +759,34 @@ while running:
         if newRoomID > 0:
             spawnEnemies(screen,newRoomID,currentLayerID[0],const.difficultyStats[difficulty]["enemyCount"])
         if newRoomID == -3:
-            spawnEnemies(screen, currentRoomID, currentLayerID[0],
+            match currentLayerID[0]:
+                case 1:
+                    spawnEnemies(screen, currentRoomID, currentLayerID[0],
                          const.difficultyStats[f"{difficulty}"]["enemyCount"],
                          1,
                          enemySpawnBoss=True,
                          bossEnemy="bossOne")
+                case 2:
+                    spawnEnemies(screen, currentRoomID, currentLayerID[0],
+                         const.difficultyStats[f"{difficulty}"]["enemyCount"],
+                         1,
+                         enemySpawnBoss=True,
+                         bossEnemy="bossTwo")
+
+                case 3:
+                    spawnEnemies(screen, currentRoomID, currentLayerID[0],
+                         const.difficultyStats[f"{difficulty}"]["enemyCount"],
+                         1,
+                         enemySpawnBoss=True,
+                         bossEnemy="bossThree")
+
+                case _:
+                    spawnEnemies(screen, currentRoomID, currentLayerID[0],
+                         const.difficultyStats[f"{difficulty}"]["enemyCount"],
+                         1,
+                         enemySpawnBoss=True,
+                         bossEnemy="bossOne")
+
 
     #shop logic
     if playerObj.openShop:

@@ -1,5 +1,4 @@
 import pygame
-from pygame import Surface
 
 import const
 import mainMenu.theme as theme
@@ -10,7 +9,7 @@ from mainMenu.subMenu.settings import loadSettings
 imageSize = (67, 67)
 
 
-def loadImage(path: str) -> Surface | None: #"type safety -keys i think"
+def loadImage(path: str): #"type safety -keys i think"
     if path is None:
         return None
 

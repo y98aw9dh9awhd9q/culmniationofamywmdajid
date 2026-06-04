@@ -6,6 +6,20 @@
       "weapon": "pistol#1",
       "ai": "bossOne",
       "imagePath": "bossOne.png"
+    },
+      "bossTwo": {
+      "hp": "100",
+      "atk": "2",
+      "weapon": "pistol#1",
+      "ai": "bossTwo",
+      "imagePath": "bossTwo.png"
+    },
+    "bossThree": {
+      "hp": "150",
+      "atk": "2",
+      "weapon": "pistol#1",
+      "ai": "bossThree",
+      "imagePath": "bossThree.png"
     }
   },
   "0": {
