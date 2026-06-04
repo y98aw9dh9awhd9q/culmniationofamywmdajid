@@ -1,6 +1,7 @@
 import pygame
 import os
 import math
+import random
 
 black      = (0,0,0)
 white      = (255,255,255)
@@ -61,6 +62,86 @@ healingPot = os.path.join(UIElements, "healingPotion.png")
 
 # keyano is a poo poo head
 
+enemySpawnAmount = {
+    0: {
+        1: random.randint(0,0),
+        2: random.randint(0,0),
+        3: random.randint(0,0),
+        4: random.randint(0,0),
+        5: random.randint(0,0),
+        6: random.randint(0,0),
+        7: random.randint(0,0),
+        8: random.randint(0,0),
+        9: random.randint(0,0),
+    },
+    0.25: {
+        1: random.randint(0,0),
+        2: random.randint(0,1),
+        3: random.randint(0,1),
+        4: random.randint(0,2),
+        5: random.randint(0,2),
+        6: random.randint(0,3),
+        7: random.randint(0,3),
+        8: random.randint(1,3),
+        9: random.randint(1,3),
+    },
+    0.5: {
+        1: random.randint(0,1),
+        2: random.randint(0,2),
+        3: random.randint(1,2),
+        4: random.randint(1,2),
+        5: random.randint(1,3),
+        6: random.randint(1,3),
+        7: random.randint(2,3),
+        8: random.randint(2,3),
+        9: random.randint(3,4),
+    },
+    1: {
+        1: random.randint(1,2),
+        2: random.randint(1,3),
+        3: random.randint(2,3),
+        4: random.randint(2,4),
+        5: random.randint(3,4),
+        6: random.randint(3,5),
+        7: random.randint(4,5),
+        8: random.randint(4,6),
+        9: random.randint(5,6),
+    },
+    1.25: {
+        1: random.randint(2,4),
+        2: random.randint(3,4),
+        3: random.randint(3,5),
+        4: random.randint(4,5),
+        5: random.randint(4,6),
+        6: random.randint(5,6),
+        7: random.randint(5,7),
+        8: random.randint(6,7),
+        9: random.randint(6,9),
+    },
+    1.5: {
+        1: random.randint(3,6),
+        2: random.randint(4,7),
+        3: random.randint(5,8),
+        4: random.randint(6,9),
+        5: random.randint(7,10),
+        6: random.randint(8,11),
+        7: random.randint(9,12),
+        8: random.randint(10,13),
+        9: random.randint(11,14),
+    },
+    1.75: {
+        1: random.randint(3,6),
+        2: random.randint(4,7),
+        3: random.randint(5,8),
+        4: random.randint(6,9),
+        5: random.randint(7,10),
+        6: random.randint(8,11),
+        7: random.randint(9,12),
+        8: random.randint(10,13),
+        9: random.randint(11,14),
+    }
+}
+
 def enemySpawnCount(layerID, difficultyMultiplier):
     #S(L) = floor((10 - D)D * min(1, L / (12 - 4D)))+ceil(3*D)
     #D ∈ {0, 0.25, 0.5, 1, 1.25, 1.5, 2}
@@ -71,7 +152,7 @@ def enemySpawnCount(layerID, difficultyMultiplier):
 
 
 difficultyStats = {
-    "redacted": {"multiplier": 0.1,  "bulletSpeed": 0.1,  "dashFrames": 10000.0, "enemyCount": 0.0,  "enemyHp": 1.0},
+    "redacted": {"multiplier": 0.1,  "bulletSpeed": 0.1,  "dashFrames": 10000.0, "enemyCount": 0.1,  "enemyHp": 1.0},
     "ign"     : {"multiplier": 0.25, "bulletSpeed": 0.25, "dashFrames": 2.0,     "enemyCount": 0.25, "enemyHp": 1.0},
     "easy"    : {"multiplier": 0.5,  "bulletSpeed": 0.5,  "dashFrames": 1.5,     "enemyCount": 0.5,  "enemyHp": 1.0},
     "normal"  : {"multiplier": 1.0,  "bulletSpeed": 1.0,  "dashFrames": 1.25,    "enemyCount": 1.0,  "enemyHp": 1.0},
