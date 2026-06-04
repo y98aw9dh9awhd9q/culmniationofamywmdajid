@@ -13,6 +13,13 @@
       "weapon": "pistol#1",
       "ai": "bossTwo",
       "imagePath": "bossTwo.png"
+    },
+    "bossThree": {
+      "hp": "150",
+      "atk": "2",
+      "weapon": "pistol#1",
+      "ai": "bossThree",
+      "imagePath": "bossThree.png"
     }
   },
   "0": {
@@ -30,7 +37,7 @@
       "hp": "5",
       "atk": "2",
       "weapon": "pistol#1",
-      "ai": "bossOne",
+      "ai": "triplet",
       "imagePath": "triplet.png"
     },
     "fodder": {

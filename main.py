@@ -773,6 +773,13 @@ while running:
                          enemySpawnBoss=True,
                          bossEnemy="bossTwo")
 
+                case 3:
+                    spawnEnemies(screen, currentRoomID, currentLayerID[0],
+                         const.difficultyStats[f"{difficulty}"]["enemyCount"],
+                         1,
+                         enemySpawnBoss=True,
+                         bossEnemy="bossThree")
+
                 case _:
                     spawnEnemies(screen, currentRoomID, currentLayerID[0],
                          const.difficultyStats[f"{difficulty}"]["enemyCount"],

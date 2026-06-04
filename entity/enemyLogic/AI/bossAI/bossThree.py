@@ -131,11 +131,11 @@ class bossThreeAIClass:
 
         self.data["shotCD"]     = self.data.get("shotCD", 0.0) - dt
         if self.data["shotCD"] <= 0:
-            self.data["shotCD"] = 0.28 if self.phase == 1 else 0.18
+            self.data["shotCD"] = 0.35 if self.phase == 1 else 0.3
 
             self.bullets.add(
                 bullet(ex, ey, px, py, self.screen,
-                       difficulty=0.8 * self.difficulty,
+                       difficulty=0.6 * self.difficulty,
                        owner="enemy",
                        damage=self.enemy.atk,
                        color=const.cyan)
@@ -214,7 +214,7 @@ class bossThreeAIClass:
                 bullet(ex, ey, px, py, self.screen,
                        difficulty =0.45 * self.difficulty,
                        owner      ="enemy",
-                       damage     =self.enemy.atk * 1.8,
+                       damage     =self.enemy.atk,
                        color      =const.orange,
                        maxBounces = 0,
                        size       =(26, 26))
@@ -222,7 +222,7 @@ class bossThreeAIClass:
 
         self.data["fastCD"]     = self.data.get("fastCD", 0.0) - dt
         if self.data["fastCD"] <= 0:
-            self.data["fastCD"] = 0.25 if self.phase == 1 else 0.2
+            self.data["fastCD"] = 0.3 if self.phase == 1 else 0.25
 
             count = 2 if self.phase == 1 else 3
             for _ in range(count):
