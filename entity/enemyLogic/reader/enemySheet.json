@@ -101,7 +101,36 @@
       "ai": "triplet",
       "imagePath": "triplet.png"
     }
-  }
-
+  },
+    "4": {
+      "machineGunner": {
+        "hp": "8",
+        "atk": "2",
+        "weapon": "pistol#1",
+        "ai": "machineGunner",
+        "imagePath": "machineGunner.png"
+      },
+      "sniper": {
+        "hp": "10",
+        "atk": "1",
+        "weapon": "pistol#1",
+        "ai": "sniper",
+        "imagePath": "sniper.png"
+      },
+      "shotgunner": {
+        "hp": "7",
+        "atk": "1",
+        "weapon": "pistol#1",
+        "ai": "shotgunner",
+        "imagePath": "shotgunner.png"
+      },
+      "bouncyShotgunner": {
+        "hp": "8",
+        "atk": "2",
+        "weapon": "pistol#1",
+        "ai": "bouncyShotgunner",
+        "imagePath": "bouncyShotgunner.png"
+      }
+    }
 
 }

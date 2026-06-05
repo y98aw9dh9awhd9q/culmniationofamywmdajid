@@ -8,8 +8,12 @@ from mapping.maps import getExitTiles, getWallRects, getElevatorTiles, getBreaka
 
 from entity.weapons.pistols.burstPistol import burstPistolClass
 from entity.weapons.pistols.basicPistol import basicPistolClass
+from entity.weapons.pistols.bounceBurst import bounceBurstClass
+
 from entity.weapons.shotguns.basicShotgun import shotgunClass
+
 from entity.weapons.rifles.assaultRifle import assaultRifleClass
+from entity.weapons.rifles.machineGun import machineGunClass
 
 
 from data.playerUnlockData.playerData.playerDataManager import writeCompendiumEntry
@@ -375,7 +379,9 @@ class player(pygame.sprite.Sprite):
             "basicPistol"  : basicPistolClass,
             "burstPistol"  : burstPistolClass,
             "shotgun"      : shotgunClass,
-            "assaultRifle" : assaultRifleClass
+            "assaultRifle" : assaultRifleClass,
+            "machineGun"   : machineGunClass,
+            "bounceBurst"  : bounceBurstClass
         }
 
         gunClass = gunMap.get(obtained)

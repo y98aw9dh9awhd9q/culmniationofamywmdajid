@@ -2,11 +2,12 @@ import pygame
 import random
 import math
 
+import const
 from entity.weapons.bullet import bullet
 from mapping.maps import getWallRects, getBreakableRectsWithCoords, breakTile
 
 
-class shotgunnerAIClass:
+class bouncyShotgunnerAIClass:
     shootCooldown = 2
     moveInterval = 1.0
     moveSpeed = 90
@@ -69,7 +70,7 @@ class shotgunnerAIClass:
         ex, ey       = self.enemy.rect.center
         px, py       = player.rect.center
         baseAngle    = pygame.Vector2(px - ex, py - ey).angle_to((1, 0))
-        spread       = [-50, -25, 0, 25, 50]
+        spread       = [-50, 0, 50]
 
         for s in spread:
             ang = math.radians(-(baseAngle + s))
@@ -79,10 +80,11 @@ class shotgunnerAIClass:
             self.bullets.add(bullet(
                 ex, ey,
                 tx, ty,
-                size       = (8, 8),
-                color      = (255, 80, 80),
+                size       = (10, 10),
+                color      = const.blue,
                 damage     = self.enemy.atk,
                 owner      = "enemy",
                 screen     = self.screen,
-                difficulty = 0.6 * self.difficulty
+                difficulty = 0.6 * self.difficulty,
+                maxBounces = 5
             ))

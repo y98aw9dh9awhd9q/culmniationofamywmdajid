@@ -15,7 +15,8 @@ class machineGunnerAIClass:
         self.bullets    = pygame.sprite.Group()
         self.cooldown   = 0
         self.shots      = 35
-        self.reload     = 0
+        self.reload     = 5
+        self.reloadLog  = 5
         self.dir        = pygame.Vector2(
             random.uniform(-1, 1),
             random.uniform(-1, 1)
@@ -59,6 +60,7 @@ class machineGunnerAIClass:
             self.reload    -= dt
             if self.reload <= 0:
                 self.shots  = 50
+                self.reload = self.reloadLog
             return
 
         self.cooldown   -= dt

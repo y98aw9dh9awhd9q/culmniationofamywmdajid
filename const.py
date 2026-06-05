@@ -49,7 +49,8 @@ enemyPths = {
     "shotgunner": os.path.join(enemyDirs, "shotgunner.png"),
     "sniper": os.path.join(enemyDirs, "sniper.png"),
     "bossTwo": os.path.join(enemyDirs, "bossTwo.png"),
-    "bossThree": os.path.join(enemyDirs, "bossThree.png")
+    "bossThree": os.path.join(enemyDirs, "bossThree.png"),
+    "bouncyShotgunner" : os.path.join(enemyDirs, "bouncyShotgunner.png")
 
 }
 
@@ -65,93 +66,96 @@ healingPot = os.path.join(UIElements, "healingPotion.png")
 
 # keyano is a poo poo head
 
-enemySpawnAmount = {
-    0: {
-        1: 0,
-        2: 0,
-        3: 0,
-        4: 0,
-        5: 0,
-        6: 0,
-        7: 0,
-        8: 0,
-        9: 0,
-    },
-    0.25: {
-        1: 0,
-        2: random.randint(0,1),
-        3: random.randint(0,1),
-        4: random.randint(0,2),
-        5: random.randint(0,2),
-        6: random.randint(0,3),
-        7: random.randint(0,3),
-        8: random.randint(1,3),
-        9: random.randint(1,3),
-    },
-    0.5: {
-        1: random.randint(0,1),
-        2: random.randint(0,2),
-        3: random.randint(1,2),
-        4: random.randint(1,2),
-        5: random.randint(1,3),
-        6: random.randint(1,3),
-        7: random.randint(2,3),
-        8: random.randint(2,3),
-        9: random.randint(3,4),
-    },
-    1: {
-        1: random.randint(2,4),
-        2: random.randint(3,4),
-        3: random.randint(3,5),
-        4: random.randint(4,5),
-        5: random.randint(4,6),
-        6: random.randint(5,6),
-        7: random.randint(5,7),
-        8: random.randint(6,7),
-        9: random.randint(6,9),
-    },
-    1.25: {
-        1: random.randint(3,6),
-        2: random.randint(4,7),
-        3: random.randint(5,8),
-        4: random.randint(6,9),
-        5: random.randint(7,10),
-        6: random.randint(8,11),
-        7: random.randint(9,12),
-        8: random.randint(10,13),
-        9: random.randint(11,14),
-    },
-    1.5: {
-        1: random.randint(5,8),
-        2: random.randint(6,9),
-        3: random.randint(7,10),
-        4: random.randint(8,11),
-        5: random.randint(9,12),
-        6: random.randint(10,13),
-        7: random.randint(11,14),
-        8: random.randint(12,15),
-        9: random.randint(14,16),
-    },
-    2: {
-        1: random.randint(1,2),
-        2: random.randint(2,4),
-        3: random.randint(3,8),
-        4: random.randint(4,16),
-        5: random.randint(5,32),
-        6: random.randint(6,64),
-        7: random.randint(7,128),
-        8: random.randint(8,256),
-        9: random.randint(9,512),
-    }
-}
+
 
 def enemySpawnCount(layerID, difficultyMultiplier):
+    enemySpawnAmount = {
+        0: {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+            6: 0,
+            7: 0,
+            8: 0,
+            9: 0,
+        },
+        0.25: {
+            1: 0,
+            2: random.randint(0, 1),
+            3: random.randint(0, 1),
+            4: random.randint(0, 2),
+            5: random.randint(0, 2),
+            6: random.randint(0, 3),
+            7: random.randint(0, 3),
+            8: random.randint(1, 3),
+            9: random.randint(1, 3),
+        },
+        0.5: {
+            1: random.randint(0, 1),
+            2: random.randint(0, 2),
+            3: random.randint(1, 2),
+            4: random.randint(1, 2),
+            5: random.randint(1, 3),
+            6: random.randint(1, 3),
+            7: random.randint(2, 3),
+            8: random.randint(2, 3),
+            9: random.randint(3, 4),
+        },
+        1: {
+            1: random.randint(2, 4),
+            2: random.randint(3, 4),
+            3: random.randint(3, 5),
+            4: random.randint(4, 5),
+            5: random.randint(4, 6),
+            6: random.randint(5, 6),
+            7: random.randint(5, 7),
+            8: random.randint(6, 7),
+            9: random.randint(6, 9),
+        },
+        1.25: {
+            1: random.randint(3, 6),
+            2: random.randint(4, 7),
+            3: random.randint(5, 8),
+            4: random.randint(6, 9),
+            5: random.randint(7, 10),
+            6: random.randint(8, 11),
+            7: random.randint(9, 12),
+            8: random.randint(10, 13),
+            9: random.randint(11, 14),
+        },
+        1.5: {
+            1: random.randint(5, 8),
+            2: random.randint(6, 9),
+            3: random.randint(7, 10),
+            4: random.randint(8, 11),
+            5: random.randint(9, 12),
+            6: random.randint(10, 13),
+            7: random.randint(11, 14),
+            8: random.randint(12, 15),
+            9: random.randint(14, 16),
+        },
+        2: {
+            1: random.randint(1, 2),
+            2: random.randint(2, 4),
+            3: random.randint(3, 8),
+            4: random.randint(4, 16),
+            5: random.randint(5, 32),
+            6: random.randint(6, 64),
+            7: random.randint(7, 128),
+            8: random.randint(8, 256),
+            9: random.randint(9, 512),
+        }
+    }
     #S(L) = floor((10 - D)D * min(1, L / (12 - 4D)))+ceil(3*D)
     #D ∈ {0, 0.25, 0.5, 1, 1.25, 1.5, 2}
     #S(L)=\operatorname{floor}((10-D)D*\min(1,L/(12-4D)))+\operatorname{ceil}\left(3\cdot D\right)\left\{0<L\ \le9\right\}
-    return (math.floor((10-difficultyMultiplier) *
+    """    return (math.floor((10-difficultyMultiplier) *
                       difficultyMultiplier*min(1,layerID/(12-4 * difficultyMultiplier)))
-            + math.ceil(3*difficultyMultiplier))
+            + math.ceil(3*difficultyMultiplier))"""
+    return enemySpawnAmount[difficultyMultiplier][layerID]
+
 
 
 difficultyStats = {
@@ -175,6 +179,8 @@ gunPths = {
     "basicPistol": os.path.join(gunPaths, "basicPistol.png"),
     "burstPistol": os.path.join(gunPaths, "burstPistol.png"),
     "basicShotgun":os.path.join(gunPaths, "basicShotgun.png"),
-    "assaultRifle":os.path.join(gunPaths, "assaultRifle.png")
+    "assaultRifle":os.path.join(gunPaths, "assaultRifle.png"),
+    "bounceBurst" : os.path.join(gunPaths, "bounceBurst.png"),
+    "machineGun"  : os.path.join(gunPaths, "machineGun.png")
 
 }

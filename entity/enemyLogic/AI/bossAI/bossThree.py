@@ -41,6 +41,7 @@ class bossThreeAIClass:
         self.beamLength = max(enemy.screenW, enemy.screenH) * 2
         self.beamLines  = []
         self.shotCount  = 0
+        self.circleOFF  = 0
 
         self.data = {
             "telegraphTimer": 0.0,
@@ -81,7 +82,7 @@ class bossThreeAIClass:
     def startPhaseTwo(self):
         self.phase              = 2
         self.shields            = []
-        self.beamSpeed          = 0.55
+        self.beamSpeed          = 0.25
         self.state              = "beamSpinner"
         self.shotCount          = 0
         self.data["stateTimer"] = 0.0
@@ -143,11 +144,12 @@ class bossThreeAIClass:
 
         self.data["ringCD"] = self.data.get("ringCD", 0.0) - dt
         if self.data["ringCD"] <= 0:
-            self.data["ringCD"] = 1.35 if self.phase == 1 else 1.1
+            self.data["ringCD"] = 0.7 if self.phase == 1 else 0.6
+            self.circleOFF += 10
 
             baseOffset = random.uniform(0, 360)
-            for deg in range(0, 360, 60):
-                ang = math.radians(deg + baseOffset)
+            for deg in range(0, 360, 45):
+                ang = math.radians(deg + baseOffset + self.circleOFF)
                 tx  = ex + math.cos(ang) * 140
                 ty  = ey + math.sin(ang) * 140
 
@@ -222,18 +224,18 @@ class bossThreeAIClass:
 
         self.data["fastCD"]     = self.data.get("fastCD", 0.0) - dt
         if self.data["fastCD"] <= 0:
-            self.data["fastCD"] = 0.3 if self.phase == 1 else 0.25
+            self.data["fastCD"] = 0.6 if self.phase == 1 else 0.5
 
             count = 2 if self.phase == 1 else 3
             for _ in range(count):
-                offset = random.uniform(-28, 28)
+                offset = random.uniform(-60, 60)
                 ang    = math.atan2(py - ey, px - ex) + math.radians(offset)
                 tx     = ex + math.cos(ang) * 160
                 ty     = ey + math.sin(ang) * 160
 
                 self.bullets.add(
                     bullet(ex, ey, tx, ty, self.screen,
-                           difficulty = 0.95 * self.difficulty,
+                           difficulty = 0.6 * self.difficulty,
                            owner      ="enemy",
                            damage     = self.enemy.atk,
                            color      = const.yellow)

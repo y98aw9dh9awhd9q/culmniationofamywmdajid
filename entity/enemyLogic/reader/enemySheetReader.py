@@ -23,6 +23,7 @@ def readLayers(layer):
 
 def getAvailableEnemies(layer):
     enemies = readLayers(layer)
+    print(list(enemies.keys()))
     return list(enemies.keys())
 
 def getRandomEnemy(layer):

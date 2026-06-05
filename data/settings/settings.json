@@ -2,8 +2,8 @@
   "fpsCap": 60,
   "displayMode": "borderless",
   "resolution": [
-    1280,
-    720
+    900,
+    600
   ],
   "tutorial": true,
   "keybinds": {
