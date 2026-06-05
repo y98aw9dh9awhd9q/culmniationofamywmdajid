@@ -11,6 +11,7 @@ from entity.weapons.pistols.basicPistol import basicPistolClass
 from entity.weapons.pistols.bounceBurst import bounceBurstClass
 
 from entity.weapons.shotguns.basicShotgun import shotgunClass
+from entity.weapons.shotguns.shotgun import bShotgunClass
 
 from entity.weapons.rifles.assaultRifle import assaultRifleClass
 from entity.weapons.rifles.machineGun import machineGunClass
@@ -381,7 +382,8 @@ class player(pygame.sprite.Sprite):
             "shotgun"      : shotgunClass,
             "assaultRifle" : assaultRifleClass,
             "machineGun"   : machineGunClass,
-            "bounceBurst"  : bounceBurstClass
+            "bounceBurst"  : bounceBurstClass,
+            "bShotgun"     : bShotgunClass,
         }
 
         gunClass = gunMap.get(obtained)

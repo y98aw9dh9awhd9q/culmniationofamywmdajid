@@ -181,6 +181,7 @@ gunPths = {
     "basicShotgun":os.path.join(gunPaths, "basicShotgun.png"),
     "assaultRifle":os.path.join(gunPaths, "assaultRifle.png"),
     "bounceBurst" : os.path.join(gunPaths, "bounceBurst.png"),
-    "machineGun"  : os.path.join(gunPaths, "machineGun.png")
+    "machineGun"  : os.path.join(gunPaths, "machineGun.png"),
+    "bShotgun"    : os.path.join(gunPaths, "shotgun.png")
 
 }

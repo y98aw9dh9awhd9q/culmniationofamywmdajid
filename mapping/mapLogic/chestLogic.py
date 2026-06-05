@@ -5,7 +5,7 @@ chestLoot = {
     0: ["basicPistol"],
     1: ["burstPistol", "shotgun", "HP1"],
     2: ["burstPistol", "shotgun", "HP1", "assaultRifle"],
-    3: ["HP1", "assaultRifle"]
+    3: ["HP1", "assaultRifle","bShotgun"]
 }
 
 class chest:

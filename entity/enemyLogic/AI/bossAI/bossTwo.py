@@ -88,7 +88,7 @@ class bossTwoAIClass:
         ex, ey      = self.enemy.rect.center
         base_offset = self.data["offset"]
 
-        for deg in range(0, 360, 15):
+        for deg in range(0, 360, 45):
 
             ang = math.radians(deg + base_offset)
             tx  = ex + math.cos(ang) * 120
@@ -159,7 +159,7 @@ class bossTwoAIClass:
                     owner      = "enemy",
                     damage     = self.enemy.atk,
                     color      = (0, 255, 255),
-                    maxBounces = 5
+                    maxBounces = 1
                 )
             )
 
