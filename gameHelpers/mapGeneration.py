@@ -2,6 +2,7 @@ import pygame
 import math
 import asyncio
 import json
+import time
 from gameHelpers.SHUTDOWN import fullShutdown
 import const
 from mainMenu.subMenu.settings import loadSettings
@@ -261,10 +262,12 @@ async def generateEntireWorld(mapGen, screen, font, worldCache,difficulty):
     if not worldCache:
         worldCache = {}
 
-    totalFloors = 9 * 4
+    totalFloors = 6 * 4
     completed   = 0
 
-    for layer in range(1, 10):
+
+    for layer in range(1, 7):
+
         worldCache[str(layer)] = {}
 
         for floor in range(1, 5):
@@ -281,35 +284,87 @@ async def generateEntireWorld(mapGen, screen, font, worldCache,difficulty):
             floorText = f"generating: {layer}-{floor}"
             print(floorText)
 
-            mapGen.size = min(3 + (layer - 1), 9)
-            mapGen.setupMap(boss=(floor == 4))
+            success = False
 
-            generationTask = asyncio.create_task(mapGen.prGenerateMap())
+            while not success:
+                try:
+                    mapGen.shutdown()
+                except:
+                    pass
 
-            while not generationTask.done():
-                combinedProgress = (completed + mapGen.progress) / totalFloors
-                loadingBar(screen, font, combinedProgress, floorText)
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        fullShutdown()
-                await asyncio.sleep(0)
 
-            generated = await generationTask
-            mapGen.printMap()
+                mapGen.size = min(3 + (layer - 1), 9)
+                mapGen.setupMap(boss=(floor == 4))
 
-            worldCache[str(layer)][str(floor)] = generated
-            completed += 1
+                generationTask = asyncio.create_task(
+                    mapGen.prGenerateMap()
+                )
 
-            saveStructure = {
-                "playerData": {"savePrep": None, "weapon": ["pistol#1"], "layer": [1,1]},
-                "worldData":  {"layers": worldCache, "difficulty":difficulty},
-                "metaData":   {"visitedRooms": [[0,0]]}
-            }
-            with open("data/gameSaveData/save.json","w") as f:
-                json.dump(saveStructure, f, indent=4)
-            print(f"saved to save {layer}-{floor}")
+
+                startTime = time.time()
+
+                while not generationTask.done():
+
+                    elapsed = time.time() - startTime
+
+                    if elapsed > 5:
+                        print(f"generation timeout on {layer}-{floor} -> restarting generator")
+
+                        generationTask.cancel()
+
+                        try:
+                            mapGen.shutdown()
+                        except:
+                            pass
+
+                        await asyncio.sleep(0.25)
+
+
+                        break
+                    if generationTask.done():
+                        combinedProgress = completed / totalFloors
+                    else:
+                        combinedProgress = (completed + max(0.0, min(1.0, mapGen.progress))) / totalFloors
+                    loadingBar(screen, font, combinedProgress, floorText)
+
+
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            fullShutdown()
+                    await asyncio.sleep(0)
+
+                else:
+
+
+                    generated = await generationTask
+                    mapGen.printMap()
+                    if generated is None:
+                        continue
+                    worldCache[str(layer)][str(floor)] = generated
+                    completed += 1
+                    saveStructure = {
+                        "playerData": {
+                            "savePrep": None,
+                            "weapon": ["pistol#1", "machineGunClass","assaultRifleClass"],
+                            "layer": [1, 1]
+                        },
+                        "worldData": {
+                            "layers": worldCache,
+                            "difficulty": difficulty
+                        },
+                        "metaData": {
+                            "visitedRooms": [[0, 0]]
+                        }
+                    }
+
+                    with open("data/gameSaveData/save.json", "w") as f:
+                        json.dump(saveStructure, f, indent=4)
+
+                    print(f"saved to save {layer}-{floor}")
+                    success = True
 
     holdFrames = loadSettings()["fpsCap"]
+
     for _ in range(holdFrames):
         loadingBar(screen, font, 1.0, "completed!")
         for event in pygame.event.get():

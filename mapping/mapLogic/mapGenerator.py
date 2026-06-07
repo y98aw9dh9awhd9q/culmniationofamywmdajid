@@ -493,7 +493,7 @@ class mapGenerator:
                     for r in range(self.size):
                         for c in range(self.size):
                             if self.map[r][c] == 0:
-                                self.map[r][c] = -10
+                                self.map[r][c] = -67
 
                 self.result = self.map
             self.progress = 1.0

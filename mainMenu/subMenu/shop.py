@@ -1,4 +1,5 @@
 import pygame
+import copy
 
 import const
 import mainMenu.theme as theme
@@ -86,9 +87,9 @@ shopItems ={
 
 class shop:
     def __init__(self):
-        global shotItems
+        global shopItems
         self.layerID = 0
-        self.items = shopItems[self.layerID]
+        self.items = copy.deepcopy(shopItems[self.layerID])
         for item in self.items:
             item["surf"] = loadImage(item["image"])
 
@@ -119,7 +120,10 @@ class shop:
         return True, "purchased"
 
     def updateStuff(self):
-        self.items = shopItems[self.layerID]
+        self.items = copy.deepcopy(shopItems[self.layerID])
+
+        for item in self.items:
+            item["surf"] = loadImage(item["image"])
 
 
 
@@ -146,10 +150,11 @@ def run(screen, clock, player):
         print("shop:", e)
         shopKeeperSurf = None
 
-    loadedItems = []
+    loadedItems = shopInstance.items
 
-    for item in shopInstance.items:
-        loadedItems.append({**item,"surf": loadImage(item["image"])})
+    for item in loadedItems:
+        if "surf" not in item:
+            item["surf"] = loadImage(item["image"])
 
     entryH              = 90
     keeperSectionTop    = 60

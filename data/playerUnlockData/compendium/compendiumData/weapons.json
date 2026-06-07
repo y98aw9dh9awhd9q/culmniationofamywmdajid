@@ -28,5 +28,26 @@
     "name": "burst pistol",
     "image": "assets/guns/burstPistol.png",
     "description": "shoots in bursts of three, except you dont see one of the bullets because the code was poorly done"
-  }
+  },
+     "assaultRifle": {
+       "name": "assault Rifle",
+       "image": "assets/guns/assaultRifle.png",
+       "description": "really low cooldown for many many bullets. pew pew"
+     },
+        "machineGun": {
+          "name": "machine gun",
+          "image": "assets/guns/machineGun.png",
+          "description": "shoots many many bullets, high cooldown"
+        },
+        "bounceBurst": {
+          "name": "bounce burst",
+          "image": "assets/guns/bounceBurst.png",
+          "description": "shoots a burst of three bouncy bullets which bounces three times"
+        },
+
+        "bShotgun": {
+          "name": "shotgun",
+          "image": "assets/guns/shotgun.png",
+          "description": "a better shotgun, shoots more pellets"
+        }
 }

@@ -35,7 +35,13 @@ class player(pygame.sprite.Sprite):
     roomCols       = 15
     roomRows       = 9
 
-    gunList        = ["basicPistol","burstPistol","shotgun"]
+    gunList        = ["basicPistol",
+                      "burstPistol",
+                      "shotgun",
+                      "machineGun",
+                      "assaultRifle",
+                      "bouncyBurst",
+                      "bShotgun"]
 
     def __init__(self, screenW, screenH,screen, difficulty = None, size = (60,60), gun=None):
         super().__init__()
@@ -92,6 +98,9 @@ class player(pygame.sprite.Sprite):
 
     def shoot(self):
         if not self.allowShoot or self.gun is None:
+            return
+
+        if self.shootTimer > 0:
             return
 
         self.gun.shoot(self)
@@ -404,7 +413,7 @@ class player(pygame.sprite.Sprite):
             self.gun = newGun
 
         self.allowShoot = True
-        self.shootCooldown = self.gun.cooldown
+
 
     def nextGun(self):
         if not self.obtainedGuns:
@@ -415,7 +424,7 @@ class player(pygame.sprite.Sprite):
                                ) % len(self.obtainedGuns)
 
         self.gun = self.obtainedGuns[self.currentGunIndex]
-        self.shootCooldown = self.gun.cooldown
+
 
     def previousGun(self):
         if not self.obtainedGuns:
@@ -424,7 +433,7 @@ class player(pygame.sprite.Sprite):
         self.currentGunIndex = (self.currentGunIndex - 1) % len(self.obtainedGuns)
 
         self.gun = self.obtainedGuns[self.currentGunIndex]
-        self.shootCooldown = self.gun.cooldown
+
 
     def getItem(self,item):
         self.inventory.append(item)
