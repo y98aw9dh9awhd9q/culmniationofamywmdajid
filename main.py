@@ -100,7 +100,7 @@ musicManager.registerTrack("combat","assets/music/sanctuary.mp3")
 #musicManager.registerTrack("shop","assets/music/shop.mp3") NYI
 
 musicManager.registerTrack("bossBossOne","assets/music/antiHeroSwaft.mp3")
-musicManager.registerTrack("bossBossTwo","assets/music/SIOSwaft.mp3")
+musicManager.registerTrack("bossBossTwo","assets/music/ROTJD.mp3")
 musicManager.registerTrack("bossBossThree","assets/music/slimeGob.mp3")
 musicManager.registerTrack("bossBossFour","assets/music/farowl.mp3")
 

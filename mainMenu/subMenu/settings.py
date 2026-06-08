@@ -25,8 +25,11 @@ defaultSettings = {
         "heal"    : pygame.K_r
     },
 }
-
+import random
 volume = list(range(101))
+
+random.shuffle(volume)
+
 
 fpsOptions         = (0.67, 1, 30, 60, 67,  120, 144, 240)
 resolutionOptions  = [
