@@ -11,6 +11,7 @@ defaultSettings = {
     "displayMode" : "windowed",
     "resolution"  : [900, 600],
     "tutorial"    : True,
+    "volume"      : 67,
     "keybinds"    : {
         "up"      : pygame.K_w,
         "down"    : pygame.K_s,
@@ -24,6 +25,8 @@ defaultSettings = {
         "heal"    : pygame.K_r
     },
 }
+
+volume = list(range(101))
 
 fpsOptions         = (0.67, 1, 30, 60, 67,  120, 144, 240)
 resolutionOptions  = [
@@ -99,6 +102,7 @@ def run(screen, clock, font):
         ("fps cap"      , "fpsCap"      , "cycle" , fpsOptions         ),
         ("resolution"   , "resolution"  , "cycle" , resolutionOptions  ),
         ("display mode" , "displayMode" , "cycle" , displayModeOptions ),
+        ("volume"       , "volume"      , "cycle" , volume             )
     ]
 
     #shown keybind actions

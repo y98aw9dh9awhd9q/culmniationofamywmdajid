@@ -131,6 +131,8 @@ tutorialFinished = False
 worldGenerated   = False
 worldGenerating  = False
 
+pygame.mixer.music.set_volume(loadedSettings["volume"])
+
 if saveDataRead:
     print("main: loading save")
     (
@@ -514,6 +516,7 @@ while running:
                 playerObj.screenW = screen.get_width()
                 playerObj.updateSpeed()
                 display.setAssets(screen)
+                pygame.mixer.music.set_volume(settings.loadSettings()["volume"])
                 if result == "quit":
                     running = False
             elif pauseResult == "quit":
