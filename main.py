@@ -36,10 +36,11 @@ from   mainMenu.subMenu.shop import shopInstance
 import mainMenu.subMenu.shop as shop
 
 
-from   gameHelpers.roomDirHelper import getMatchingEntrance, mapDelta, roomIDer,placePlayerAtDoor
-from   gameHelpers.mapGeneration import generateEntireWorld
-from   gameHelpers.display.hud   import drawHud, drawGameOver
+from   gameHelpers.roomDirHelper   import getMatchingEntrance, mapDelta, roomIDer,placePlayerAtDoor
+from   gameHelpers.mapGeneration   import generateEntireWorld
+from   gameHelpers.display.hud     import drawHud, drawGameOver
 from   gameHelpers.display.display import spaceCalculator
+from   gameHelpers.musMan          import musManager
 
 from data.playerUnlockData.playerData.playerDataManager import writeCompendiumEntry
 import gameHelpers.display.enemySpawnIndicator as spawner
@@ -49,6 +50,7 @@ from data.playerUnlockData.playerData.playerDataManager import addEnemyKill
 #pre boot initialization =========================
 print(" main: ",settings.loadSettings())
 pygame.init()
+pygame.mixer.init()
 screen = pygame.display.set_mode(settings.loadSettings()["resolution"])
 clock  = pygame.time.Clock()
 font   = pygame.font.SysFont(None, 28)
@@ -90,6 +92,16 @@ gameOverTimer          = 0.0
 newRoomID              = 0
 
 print(settings.loadSettings)
+
+musicManager = musManager()
+
+musicManager.registerTrack("combat","assets/music/sanctuary.mp3")
+
+#musicManager.registerTrack("shop","assets/music/shop.mp3") NYI
+
+musicManager.registerTrack("bossBossOne","assets/music/antiHeroSwaft.mp3")
+musicManager.registerTrack("bossBossTwo","assets/music/SIOSwaft.mp3")
+musicManager.registerTrack("bossBossThree","assets/music/ROTJD.mp3")
 
 #current floor logic===========================
 
@@ -207,8 +219,6 @@ else:
             worldGenerated  = True
             worldGenerating = False
 
-
-
 def deleteCurrentProgress():
     global worldCache
     global generatedMap
@@ -260,6 +270,7 @@ def resetRun():
 
     deleteCurrentProgress()
     dataSaving.deleteSave()
+    musicManager.reset()
 
     enemyGroup.empty()
     resetAllRooms()
@@ -766,12 +777,14 @@ while running:
                          1,
                          enemySpawnBoss=True,
                          bossEnemy="bossOne")
+                    musicManager.startBoss("BossOne")
                 case 2:
                     spawnEnemies(screen, currentRoomID, currentLayerID[0],
                          const.difficultyStats[f"{difficulty}"]["enemyCount"],
                          1,
                          enemySpawnBoss=True,
                          bossEnemy="bossTwo")
+                    musicManager.startBoss("BossTwo")
 
                 case 3:
                     spawnEnemies(screen, currentRoomID, currentLayerID[0],
@@ -779,6 +792,7 @@ while running:
                          1,
                          enemySpawnBoss=True,
                          bossEnemy="bossThree")
+                    musicManager.startBoss("BossThree")
 
                 case _:
                     spawnEnemies(screen, currentRoomID, currentLayerID[0],
@@ -796,6 +810,14 @@ while running:
         if result == "quit":
             running = False
         continue
+
+    if currentRoomID == -3 & len(enemyGroup) == 0: musicManager.stopBoss()
+
+    if newRoomID != -3 and len(enemyGroup) > 0:
+        musicManager.startCombat()
+    else: musicManager.stopCombat()
+
+
 
     pygame.display.flip()
 
