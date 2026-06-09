@@ -4,6 +4,36 @@
         "image":       "assets/achievements/nagraAI.png",
         "description": "you completed the tutorial!",
         "unlockReq"  : 15
-    }
+    },
+  "bossOne": {
+    "name" : "boss one",
+    "image": "assets/achievements/83ec0052-a3cc-4f4d-88c7-4353fde5aa8c.png",
+    "description" : "congrats! you beat the first boss!"
+  },
+  "bossTwo": {
+    "name" : "boss two",
+    "image": "assets/achievements/fatgra.png",
+    "description" : "congrats! you beat the second boss!"
+  },
+  "bossThree": {
+    "name" : "boss Three",
+    "image": "assets/achievements/figra.png",
+    "description" : "congrats! you beat the third boss!"
+  },
+  "bossFour": {
+    "name" : "boss Four",
+    "image": "assets/achievements/nagrapharoh.png",
+    "description" : "congrats! you beat the fourth boss!"
+  },
+  "bossFive": {
+    "name" : "boss five",
+    "image": "assets/achievements/nagrapowerwater.png",
+    "description" : "congrats! you beat the fifth boss!"
+  },
+  "bossSix": {
+    "name" : "boss sIX",
+    "image": "assets/achievements/codegra.png",
+    "description" : "congrats! you beat the sixth and final boss!"
+  }
 }
 

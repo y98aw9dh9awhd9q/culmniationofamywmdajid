@@ -19,6 +19,7 @@ class bossTwoAIClass:
         self.beamStart  = (0, 0)
         self.beamEnd    = (0, 0)
         self.phaseName  = "poo poo head"
+        self.maxHp      = enemy.hp
 
     def update(self, deltaTime, roomId, player):
         self.player = player

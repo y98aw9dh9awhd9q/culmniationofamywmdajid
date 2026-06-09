@@ -6,6 +6,7 @@ The Amazing Digital Dungeon!
 This is a game inspired by games such as but not limited to:
 Enter The Gungeon,
 Soul Knight,
+most importantly: touhou, and calamity mod,
 etc.
 
 This game features a tutorial and interactive menus. The main gameplay is going through 9 layers
@@ -581,6 +582,13 @@ while running:
         roomIDer(0, 0, roomIDCompendium, True)
         currentRoomPosX = 0
         currentRoomPosY = 0
+
+        match currentLayerID[0]:
+            case 2: writeCompendiumEntry("achievements", "bossOne")
+            case 3: writeCompendiumEntry("achievements", "bossTwo")
+            case 4: writeCompendiumEntry("achievements", "bossThree")
+            case 5: writeCompendiumEntry("achievements", "bossFour")
+            case 6: writeCompendiumEntry("achievements", "bossFive")
 
         #tutorial ELEVATOR LOGIC=========================================================
         if currentLayerID[0] == 0:

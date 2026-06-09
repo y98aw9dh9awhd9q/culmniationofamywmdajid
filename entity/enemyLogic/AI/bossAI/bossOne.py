@@ -30,6 +30,7 @@ class bossOneAIClass:
         self.beamEnd    = (0, 0)
         self.beamAngle  = 0
         self.phaseName  = "Ruver" #this is a play on the name rust rover
+        self.maxHp      = enemy.hp
 
     def update(self, deltaTime, roomId, player):
         self.player = player

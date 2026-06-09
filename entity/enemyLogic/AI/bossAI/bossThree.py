@@ -43,6 +43,7 @@ class bossThreeAIClass:
         self.shotCount  = 0
         self.circleOFF  = 0
         self.phaseName  = "the mind of deceit"
+        self.maxHp      = enemy.hp
 
         self.data = {
             "telegraphTimer": 0.0,

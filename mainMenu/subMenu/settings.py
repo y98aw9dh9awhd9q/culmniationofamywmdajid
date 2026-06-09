@@ -8,7 +8,7 @@ settingsFile = "data/settings/settings.json"
 
 defaultSettings = {
     "fpsCap"      : 60,
-    "displayMode" : "windowed",
+    "displayMode" : "borderless",
     "resolution"  : [900, 600],
     "tutorial"    : True,
     "volume"      : 1,
@@ -22,7 +22,7 @@ defaultSettings = {
         "interact": pygame.K_RETURN,
         "nextGun" : pygame.K_e,
         "prevGun" : pygame.K_q,
-        "heal"    : pygame.K_r
+        "heal"    : pygame.K_SHIFT
     },
 }
 import random
