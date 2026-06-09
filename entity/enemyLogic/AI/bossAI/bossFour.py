@@ -150,9 +150,11 @@ class bossFourAIClass:
 
     def updateMovement(self, dt, roomId):
         if self.moveTimer  <= 0:
+            marginX = int(const.scaleValue(120, self.screen[0], self.screen[1]))
+            marginY = int(const.scaleValue(120, self.screen[0], self.screen[1]))
             self.moveTarget = pygame.Vector2(
-                random.randint(120, self.enemy.screenW - 120),
-                random.randint(120, self.enemy.screenH - 120),
+                random.randint(marginX, self.enemy.screenW - marginX),
+                random.randint(marginY, self.enemy.screenH - marginY),
             )
             self.moveTimer = random.uniform(0.5, 1.0)
 
@@ -246,15 +248,16 @@ class bossFourAIClass:
     def startBrick(self):
         start = pygame.Vector2(self.enemy.rect.center)
 
+        scaledRect = const.scaleSize((92, 62), self.screen[0], self.screen[1])
         self.data = {
-            "timer"       : 4.5,
-            "pos"         : start,
-            "rect"        : pygame.Rect(0, 0, 92, 62),
-            "velocity"    : pygame.Vector2(0, 0),
-            "state"       : "aim",
-            "pauseTimer"  : 0.0,
-            "burstsFired" : 0,
-            "burstTotal"  : 3 if self.phase == 1 else 6,
+            "timer": 4.5,
+            "pos": start,
+            "rect": pygame.Rect(0, 0, scaledRect[0], scaledRect[1]),
+            "velocity": pygame.Vector2(0, 0),
+            "state": "aim",
+            "pauseTimer": 0.0,
+            "burstsFired": 0,
+            "burstTotal": 3 if self.phase == 1 else 6,
         }
         self.data["rect"].center = start
 
@@ -268,7 +271,8 @@ class bossFourAIClass:
             if direction.length() == 0:
                 direction = pygame.Vector2(1, 0)
 
-            self.data["velocity"] = direction.normalize() * 680
+            speedFactor = const.getScreenScaleFactor(self.screen[0], self.screen[1])
+            self.data["velocity"] = direction.normalize() * (680 * speedFactor)
             self.spawnAftonCircle()
             self.data["burstsFired"] += 1
             self.data["state"] = "dash"
@@ -366,8 +370,9 @@ class bossFourAIClass:
 
     def startCalamitas(self):
         spots = 9 if self.phase == 1 else 14
+        margin = int(const.scaleValue(90, self.screen[0], self.screen[1]))
         self.warnPoints = [
-            (random.randint(90, self.enemy.screenW - 90), random.randint(90, self.enemy.screenH - 90))
+            (random.randint(margin, self.enemy.screenW - margin), random.randint(margin, self.enemy.screenH - margin))
             for _ in range(spots)
         ]
         self.data = {"timer": 0.9, "fired": False}
@@ -378,7 +383,7 @@ class bossFourAIClass:
             for idx, (x, y) in enumerate(self.warnPoints):
                 if idx % 3 == 0:
                     base = self.aimAngle((x, y), player.rect.center) if self.phase == 2 else (
-                        random.uniform(0, math.tau))  #oh my god tau????!!!!!!!!!!
+                        random.uniform(0, math.tau))
                     for offset in (-32, -16, 0, 16, 32):
                         self.addBulletAtAngle(
                             x, y,
@@ -445,16 +450,19 @@ class bossFourAIClass:
             self.enemy.kill()
 
     def beamHitsPlayer(self, player):
+        sniperThreshold = const.scaleValue(11, self.screen[0], self.screen[1])
+        desperationThreshold = const.scaleValue(9, self.screen[0], self.screen[1])
+
         if self.sniperBeamActive and self.sniperBeam is not None:
             start, angle = self.sniperBeam
-            if self.distanceToBeam(player.rect.center, start, angle) <= 11:
+            if self.distanceToBeam(player.rect.center, start, angle) <= sniperThreshold:
                 return True
 
         if not self.desperation or self.desperationTimer < 15:
             return False
 
         for start, angleDeg in self.lasers:
-            if self.distanceToBeam(player.rect.center, start, math.radians(angleDeg)) <= 9:
+            if self.distanceToBeam(player.rect.center, start, math.radians(angleDeg)) <= desperationThreshold:
                 return True
         return False
 
@@ -469,26 +477,31 @@ class bossFourAIClass:
 
         if self.warnPoints:
             surf = pygame.Surface((self.enemy.screenW, self.enemy.screenH), pygame.SRCALPHA)
+            warnRadius = int(const.scaleValue(14, self.screen[0], self.screen[1]))
+            warnWidth = max(1, int(const.scaleValue(2, self.screen[0], self.screen[1])))
             for x, y in self.warnPoints:
-                pygame.draw.circle(surf, (*const.blue[:3], 140), (x, y), 14, 2)
+                pygame.draw.circle(surf, (*const.blue[:3], 140), (x, y), warnRadius, warnWidth)
             screen.blit(surf, (0, 0))
 
         if self.state == "brick" and self.data:
             x, y = self.data["pos"]
-            pygame.draw.rect(screen, (120, 0, 170), pygame.Rect(x - 38, y - 26, 76, 52))
+            brickSize = const.scaleSize((76, 52), self.screen[0], self.screen[1])
+            pygame.draw.rect(screen, (120, 0, 170), pygame.Rect(x - brickSize[0]//2, y - brickSize[1]//2, brickSize[0], brickSize[1]))
 
         if self.sniperBeam is not None:
             start, angle = self.sniperBeam
             end = (start[0] + math.cos(angle) * 3000, start[1] + math.sin(angle) * 3000)
             color = (255, 0, 0, 220) if self.sniperBeamActive else (255, 40, 40, 90)
-            width = 9 if self.sniperBeamActive else 3
-            pygame.draw.line(screen, color, start, end, width)
+            beamWidth = int(const.scaleValue(9 if self.sniperBeamActive else 3, self.screen[0], self.screen[1]))
+            beamWidth = max(1, beamWidth)
+            pygame.draw.line(screen, color, start, end, beamWidth)
 
         if self.desperation and self.desperationTimer >= 15:
             surf = pygame.Surface((self.enemy.screenW, self.enemy.screenH), pygame.SRCALPHA)
+            laserWidth = max(1, int(const.scaleValue(10, self.screen[0], self.screen[1])))
             for start, angleDeg in self.lasers:
                 angle = math.radians(angleDeg)
                 end1 = (start[0] + math.cos(angle) * 3000, start[1] + math.sin(angle) * 3000)
                 end2 = (start[0] - math.cos(angle) * 3000, start[1] - math.sin(angle) * 3000)
-                pygame.draw.line(surf, (255, 0, 0, 160), end1, end2, 10)
+                pygame.draw.line(surf, (255, 0, 0, 160), end1, end2, laserWidth)
             screen.blit(surf, (0, 0))

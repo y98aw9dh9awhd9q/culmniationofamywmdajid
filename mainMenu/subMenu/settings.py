@@ -26,7 +26,7 @@ defaultSettings = {
     },
 }
 import random
-volume = list(range(101))
+volume = list(range(1, 101))
 
 random.shuffle(volume)
 
@@ -71,12 +71,23 @@ def applySettings(cfg):
     if mode == "fullscreen":
         return pygame.display.set_mode((w, h), pygame.FULLSCREEN)
     elif mode == "borderless":
-        #Window.move(0,0)
         pygame.display.set_window_position((0,0))
-
         return pygame.display.set_mode((0,0), pygame.NOFRAME)
     else:
         return pygame.display.set_mode((w, h))
+
+
+def mapVolumeToPygame(vol):
+    try:
+        v = int(vol)
+    except Exception:
+        return 1.0
+    v = max(1, min(100, v))
+    if v >= 100:
+        return 0.0
+    if v <= 1:
+        return 1.0
+    return (100 - v) / 99.0
 
 def keyName(val):
     if isinstance(val, int) and 1 <= val <= 5:

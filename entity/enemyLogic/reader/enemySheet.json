@@ -25,9 +25,16 @@
       "hp": "200",
       "atk": "1",
       "weapon": "pistol#1",
-      "ai": "bossFour",
+      "ai": "bossFive",
       "imagePath": "farag.png"
-    }
+    },
+      "bossFive": {
+        "hp": "300",
+        "atk": "3",
+        "weapon": "pistol#1",
+        "ai": "bossFive",
+        "imagePath": "eyeOfRah.png"
+      }
   },
   "0": {
     "fodder": {
@@ -139,5 +146,7 @@
         "imagePath": "bouncyShotgunner.png"
       }
     }
+
+
 
 }

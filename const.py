@@ -2,42 +2,53 @@ import pygame
 import os
 import random
 
-black      = (0,0,0)
-white      = (255,255,255)
-brown      = pygame.Color("#7A5901")
-red        = (255,0,0)
-cyan       = (0,255,255)
-yellow     = (255,255,0)
-purple     = (255,0,255)
-orange     = pygame.Color("#FFA500")
-bulletRed  = pygame.Color("#EE4B2B")
-blockSize  = 20
-darkgray   = (60,60,60)
-green      = (0,255,0)
-blue       = (0,0,255)
+black        = (0, 0, 0)
+white        = (255, 255, 255)
+brown        = pygame.Color("#7A5901")
+red          = (255, 0, 0)
+cyan         = (0, 255, 255)
+yellow       = (255, 255, 0)
+purple       = (255, 0, 255)
+orange       = pygame.Color("#FFA500")
+bulletRed    = pygame.Color("#EE4B2B")
+blockSize    = 20
+darkgray     = (60, 60, 60)
+green        = (0, 255, 0)
+blue         = (0, 0, 255)
 
-roomCols   = 9
-roomRows   = 15
+roomCols     = 9
+roomRows     = 15
 
+baseResolution = (900, 600)
 
-baseDir    = os.path.dirname(os.path.abspath(__file__))
-playerDir  = os.path.join(baseDir, "assets", "pictures", "entities", "player.png")
-bulletDir  = os.path.join(baseDir, "assets", "pictures", "entities", "bullet.png")
+def getScreenScaleFactor(screenWidth, screenHeight):
+    scaleX = screenWidth / baseResolution[0]
+    scaleY = screenHeight / baseResolution[1]
+    return min(scaleX, scaleY)
 
-mapDirs    = os.path.join(baseDir, "assets","maps")
-chest      = os.path.join(mapDirs, "chest.png")
-elevator   = os.path.join(mapDirs, "elevator.png")
-wall       = os.path.join(mapDirs, "wall.png")
-doorO      = os.path.join(mapDirs, "doorOpen.png")
-doorL      = os.path.join(mapDirs, "doorLocked.png")
-box        = os.path.join(mapDirs, "box.png")
-shopImg    = os.path.join(mapDirs, "shop.png")
+def scaleValue(value, screenWidth, screenHeight):
+    return value * getScreenScaleFactor(screenWidth, screenHeight)
 
-caineDir  = os.path.join(baseDir, "assets","caine")
+def scaleSize(size, screenWidth, screenHeight):
+    scale = getScreenScaleFactor(screenWidth, screenHeight)
+    return (int(size[0] * scale), int(size[1] * scale))
 
+baseDir      = os.path.dirname(os.path.abspath(__file__))
+playerDir    = os.path.join(baseDir, "assets", "pictures", "entities", "player.png")
+bulletDir    = os.path.join(baseDir, "assets", "pictures", "entities", "bullet.png")
 
+mapDirs      = os.path.join(baseDir, "assets", "maps")
+chest        = os.path.join(mapDirs, "chest.png")
+elevator     = os.path.join(mapDirs, "elevator.png")
+wall         = os.path.join(mapDirs, "wall.png")
+doorO        = os.path.join(mapDirs, "doorOpen.png")
+doorL        = os.path.join(mapDirs, "doorLocked.png")
+box          = os.path.join(mapDirs, "box.png")
+shopImg      = os.path.join(mapDirs, "shop.png")
 
-enemyDirs = os.path.join(baseDir,"assets","pictures","enemies")
+caineDir     = os.path.join(baseDir, "assets", "caine")
+
+enemyDirs    = os.path.join(baseDir, "assets", "pictures", "enemies")
 
 
 enemyPths = {
@@ -52,6 +63,7 @@ enemyPths = {
     "bouncyShotgunner" : os.path.join(enemyDirs, "bouncyShotgunner.png"),
     "bossFour": os.path.join(enemyDirs, "farag.png"),
     "bossFourPhaseTwo": os.path.join(enemyDirs, "pharoh.png"),
+    "bossFive": os.path.join(enemyDirs, "eyeOfRah.png"),
 }
 
 

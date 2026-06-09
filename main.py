@@ -103,6 +103,7 @@ musicManager.registerTrack("bossBossOne","assets/music/antiHeroSwaft.mp3")
 musicManager.registerTrack("bossBossTwo","assets/music/ROTJD.mp3")
 musicManager.registerTrack("bossBossThree","assets/music/slimeGob.mp3")
 musicManager.registerTrack("bossBossFour","assets/music/farowl.mp3")
+musicManager.registerTrack("bossBossFive","assets/music/farowl.mp3")
 
 #current floor logic===========================
 
@@ -132,7 +133,7 @@ tutorialFinished = False
 worldGenerated   = False
 worldGenerating  = False
 
-pygame.mixer.music.set_volume(loadedSettings["volume"])
+pygame.mixer.music.set_volume(settings.mapVolumeToPygame(loadedSettings["volume"]))
 
 if saveDataRead:
     print("main: loading save")
@@ -551,7 +552,7 @@ while running:
                 playerObj.screenW = screen.get_width()
                 playerObj.updateSpeed()
                 display.setAssets(screen)
-                pygame.mixer.music.set_volume(settings.loadSettings()["volume"])
+                pygame.mixer.music.set_volume(settings.mapVolumeToPygame(settings.loadSettings()["volume"]))
                 if result == "quit":
                     running = False
             elif pauseResult == "quit":
@@ -841,12 +842,21 @@ while running:
                          bossEnemy="bossFour")
                     musicManager.startBoss("BossFour")
 
+                case 5:
+                    spawnEnemies(screen, currentRoomID, currentLayerID[0],
+                         const.difficultyStats[f"{difficulty}"]["enemyCount"],
+                         1,
+                         enemySpawnBoss=True,
+                         bossEnemy="bossFive")
+                    musicManager.startBoss("BossFive")
+
                 case _:
                     spawnEnemies(screen, currentRoomID, currentLayerID[0],
                          const.difficultyStats[f"{difficulty}"]["enemyCount"],
                          1,
                          enemySpawnBoss=True,
                          bossEnemy="bossOne")
+
 
 
     #shop logic
