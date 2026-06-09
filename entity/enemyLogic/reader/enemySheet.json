@@ -20,6 +20,13 @@
       "weapon": "pistol#1",
       "ai": "bossThree",
       "imagePath": "bossThree.png"
+    },
+    "bossFour": {
+      "hp": "200",
+      "atk": "1",
+      "weapon": "pistol#1",
+      "ai": "bossFour",
+      "imagePath": "farag.png"
     }
   },
   "0": {

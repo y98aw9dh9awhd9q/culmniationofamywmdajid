@@ -13,7 +13,8 @@ from entity.enemyLogic.AI.bouncyShotgunner import bouncyShotgunnerAIClass
 
 from entity.enemyLogic.AI.bossAI.bossOneAI import bossAIClass
 from entity.enemyLogic.AI.bossAI.bossTwo   import bossTwoAIClass
-from entity.enemyLogic.AI.bossAI.bossThree   import bossThreeAIClass
+from entity.enemyLogic.AI.bossAI.bossThree import bossThreeAIClass
+from entity.enemyLogic.AI.bossAI.bossFour  import bossFourAIClass
 
 from data.gameSaveData.dataSaving import readSave
 
@@ -28,6 +29,7 @@ def aiMatcher(aiName, enemy,screen, difficulty):
         case "bossTwo": return bossTwoAIClass(enemy,screen,difficulty)
         case "bossThree": return bossThreeAIClass(enemy,screen,difficulty)
         case "bouncyShotgunner": return bouncyShotgunnerAIClass(enemy,screen,difficulty)
+        case "bossFour" : return bossFourAIClass(enemy,screen,difficulty)
         case _ :return None
 
 
@@ -68,6 +70,7 @@ class enemyBuilder(pygame.sprite.Sprite):
                 self.ai.bullets.draw(screen)
 
     def takeDamage(self, dmg):
+        if self.ai is not None and getattr(self.ai, "desperation", False): return
         self.hp        -= dmg
 
     def isDead(self):

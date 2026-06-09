@@ -444,6 +444,40 @@ def spawnEnemies(screen, roomId, layerId, difficulty,
     spawnIndicators[:] = [indicator for indicator in spawnIndicators if not indicator.done]
 
 
+def drawBossBar(screen, enemies, font):
+    boss = next((enemy for enemy in enemies if enemy.enemyName.lower().startswith("boss")), None)
+    if boss is None:
+        return
+
+    ai   = boss.ai
+    winW = screen.get_width()
+    barW = int(winW * 0.58)
+    barH = 18
+    x    = (winW - barW) // 2
+    y    = 18
+
+    label         = boss.enemyName
+    if ai is not None and getattr(ai, "desperation", False):
+        maxTime   = getattr(ai, "desperationDuration", 30.0)
+        remaining = max(0.0, getattr(ai, "desperationTimer", 0.0))
+        fillRatio = remaining / maxTime if maxTime > 0 else 0
+        label     = f"{boss.enemyName} desperation {remaining:.1f}s"
+        fillColor = (255, 80, 40)
+    else:
+        maxHp     = getattr(ai, "maxHp", boss.hp) if ai is not None else boss.hp
+        fillRatio = boss.hp / maxHp if maxHp > 0 else 0
+        fillColor = (210, 35, 55)
+
+    fillRatio     = max(0.0, min(1.0, fillRatio))
+    pygame.draw.rect(screen, (25, 20, 20), (x, y, barW, barH))
+    pygame.draw.rect(screen, fillColor, (x, y, int(barW * fillRatio), barH))
+    pygame.draw.rect(screen, const.white, (x, y, barW, barH), 2)
+
+    text          = font.render(label, True, const.white)
+    textRect      = text.get_rect(center=(winW // 2, y + barH + 13))
+    screen.blit(text, textRect)
+
+
 #main loop====================================
 
 running = True
@@ -742,7 +776,7 @@ while running:
             if bullet.rect.colliderect(playerObj.rect):
                 print("main: detected player hit")
 
-                playerObj.takeDamage()
+                playerObj.takeDamage(bullet.damage)
                 if playerObj.hp <= 0 and not gameOver:
 
                     gameOver = True
@@ -761,6 +795,7 @@ while running:
     enemyGroup.update(generatedMap[currentRoomPosY][currentRoomPosX], playerObj, deltaTime)
     for enemy in enemyGroup:
         enemy.draw(screen)
+    drawBossBar(screen, enemyGroup, font)
 
     #tutorial special case enemy spawns
     if currentLayerID[0] == 0:
@@ -797,6 +832,14 @@ while running:
                          enemySpawnBoss=True,
                          bossEnemy="bossThree")
                     musicManager.startBoss("BossThree")
+
+                case 4:
+                    spawnEnemies(screen, currentRoomID, currentLayerID[0],
+                         const.difficultyStats[f"{difficulty}"]["enemyCount"],
+                         1,
+                         enemySpawnBoss=True,
+                         bossEnemy="bossFour")
+                    musicManager.startBoss("BossFour")
 
                 case _:
                     spawnEnemies(screen, currentRoomID, currentLayerID[0],

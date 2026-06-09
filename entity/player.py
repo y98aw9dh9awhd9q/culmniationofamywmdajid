@@ -19,7 +19,7 @@ from entity.weapons.rifles.machineGun import machineGunClass
 
 from data.playerUnlockData.playerData.playerDataManager import writeCompendiumEntry
 
-from gameHelpers.display.dialogueBox import drawDialogueBox
+#from gameHelpers.display.dialogueBox import drawDialogueBox
 
 class player(pygame.sprite.Sprite):
     immuFrameTime  = 0.5
@@ -78,6 +78,7 @@ class player(pygame.sprite.Sprite):
         self.inventory          = []
         self.openShop           = False
         self.screen             = screen
+        self.invertedControlsTimer = 0.0
 
     def respawn(self, screenW, screenH):
         self.screenW     = screenW
@@ -157,6 +158,9 @@ class player(pygame.sprite.Sprite):
         if self.dodgeCooldownTimer > 0:
             self.dodgeCooldownTimer -= deltaTime
 
+        if self.invertedControlsTimer > 0:
+            self.invertedControlsTimer -= deltaTime
+
         shootBtn = keybinds["shoot"] if keybinds else 1
         if shootBtn <= 3:
             if pygame.mouse.get_pressed()[shootBtn - 1] and self.shootTimer <= 0:
@@ -196,7 +200,9 @@ class player(pygame.sprite.Sprite):
         if keyState[upKey]    or keyState[pygame.K_UP]:    dy -= 1
         if keyState[downKey]  or keyState[pygame.K_DOWN]:  dy += 1
 
-
+        if self.invertedControlsTimer > 0:
+            dx *= -1
+            dy *= -1
 
         if keyState[dodgeKey] and not self.dodging and self.dodgeCooldownTimer <= 0:
             self.startDodge(dx, dy)

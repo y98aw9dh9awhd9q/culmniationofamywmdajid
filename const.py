@@ -1,6 +1,5 @@
 import pygame
 import os
-import math
 import random
 
 black      = (0,0,0)
@@ -50,8 +49,9 @@ enemyPths = {
     "sniper": os.path.join(enemyDirs, "sniper.png"),
     "bossTwo": os.path.join(enemyDirs, "bossTwo.png"),
     "bossThree": os.path.join(enemyDirs, "bossThree.png"),
-    "bouncyShotgunner" : os.path.join(enemyDirs, "bouncyShotgunner.png")
-
+    "bouncyShotgunner" : os.path.join(enemyDirs, "bouncyShotgunner.png"),
+    "bossFour": os.path.join(enemyDirs, "farag.png"),
+    "bossFourPhaseTwo": os.path.join(enemyDirs, "pharoh.png"),
 }
 
 
