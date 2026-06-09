@@ -11,7 +11,7 @@ class machineGunClass(gun):
         self.burstTimer          = 0
         self.targetX             = 0
         self.targetY             = 0
-        self.reloadCooldown      = 15.0
+        self.reloadCooldown      = 1.0
         self.reloadTimer         = 0.0
 
     def shoot(self, player):

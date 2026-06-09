@@ -1,3 +1,5 @@
+from operator import index
+
 import pygame
 
 from mapping.mapLogic.chestLogic import chest
@@ -79,6 +81,7 @@ class player(pygame.sprite.Sprite):
         self.openShop           = False
         self.screen             = screen
         self.invertedControlsTimer = 0.0
+        self.ownedGunNames         = None
 
     def respawn(self, screenW, screenH):
         self.screenW     = screenW
@@ -146,6 +149,14 @@ class player(pygame.sprite.Sprite):
     def update(self, deltaTime, currentRoomId, currentLayerID, currentRoomPosX=0, currentRoomPosY=0, keybinds=None):
         if self.gun is not None and hasattr(self.gun, "update"):
             self.gun.update(self, deltaTime)
+
+        prObtainedGunList  = [self.obtainedGuns[x].__class__.__name__ for x in range(len(self.obtainedGuns))]
+
+        if "machineGunClass" in prObtainedGunList:
+            self.obtainedGuns[prObtainedGunList.index("machineGunClass")].update(self, deltaTime)
+
+
+
 
         #print(self.inventory)
 
@@ -251,10 +262,12 @@ class player(pygame.sprite.Sprite):
 
                     if loot in self.gunList:
 
-                        ownedGunNames = [gun.__class__.__name__.replace("Class", "")
+                        self.ownedGunNames = [gun.__class__.__name__.replace("Class", "")
                                          for gun in self.obtainedGuns]
 
-                        availableGuns = [gun for gun in self.gunList if gun not in ownedGunNames]
+
+
+                        availableGuns = [gun for gun in self.gunList if gun not in self.ownedGunNames]
 
                         if not availableGuns:
                             loot = "HP1"
@@ -269,8 +282,6 @@ class player(pygame.sprite.Sprite):
                         self.getItem(loot)
 
                     print(f"player: got {loot} from chest {chestKey}")
-
-
 
         #man this looks really familiar
         shopRectSuff = getShopRects(currentRoomId, self.screenW, self.screenH)

@@ -18,6 +18,7 @@ class bossTwoAIClass:
         self.beamActive = False
         self.beamStart  = (0, 0)
         self.beamEnd    = (0, 0)
+        self.phaseName  = "poo poo head"
 
     def update(self, deltaTime, roomId, player):
         self.player = player

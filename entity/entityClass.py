@@ -11,7 +11,7 @@ from entity.enemyLogic.AI.shutgunner    import shotgunnerAIClass
 from entity.enemyLogic.AI.sniper        import sniperAIClass
 from entity.enemyLogic.AI.bouncyShotgunner import bouncyShotgunnerAIClass
 
-from entity.enemyLogic.AI.bossAI.bossOneAI import bossAIClass
+from entity.enemyLogic.AI.bossAI.bossOne import bossOneAIClass
 from entity.enemyLogic.AI.bossAI.bossTwo   import bossTwoAIClass
 from entity.enemyLogic.AI.bossAI.bossThree import bossThreeAIClass
 from entity.enemyLogic.AI.bossAI.bossFour  import bossFourAIClass
@@ -23,7 +23,7 @@ def aiMatcher(aiName, enemy,screen, difficulty):
     match aiName:
         case "fodder": return fodderAIClass(enemy, screen, difficulty)
         case "triplet":return tripletAIClass(enemy,screen, difficulty)
-        case "bossOne": return bossAIClass(enemy,screen,difficulty)
+        case "bossOne": return bossOneAIClass(enemy,screen,difficulty)
         case "machineGunner": return machineGunnerAIClass(enemy,screen,difficulty)
         case "shotgunner" : return shotgunnerAIClass(enemy,screen,difficulty)
         case "sniper": return sniperAIClass(enemy, screen, difficulty)

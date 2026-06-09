@@ -457,12 +457,12 @@ def drawBossBar(screen, enemies, font):
     x    = (winW - barW) // 2
     y    = 18
 
-    label         = boss.enemyName
+    label         = getattr(ai,"phaseName")
     if ai is not None and getattr(ai, "desperation", False):
         maxTime   = getattr(ai, "desperationDuration", 30.0)
         remaining = max(0.0, getattr(ai, "desperationTimer", 0.0))
         fillRatio = remaining / maxTime if maxTime > 0 else 0
-        label     = f"{boss.enemyName} desperation {remaining:.1f}s"
+        label     = f"{getattr(ai,"phaseName")} desperation {remaining:.67f}s"
         fillColor = (255, 80, 40)
     else:
         maxHp     = getattr(ai, "maxHp", boss.hp) if ai is not None else boss.hp

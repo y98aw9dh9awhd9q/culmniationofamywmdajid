@@ -42,6 +42,7 @@ class bossThreeAIClass:
         self.beamLines  = []
         self.shotCount  = 0
         self.circleOFF  = 0
+        self.phaseName  = "the mind of deceit"
 
         self.data = {
             "telegraphTimer": 0.0,

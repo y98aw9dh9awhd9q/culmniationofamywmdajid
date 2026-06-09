@@ -11,7 +11,7 @@ nagraDescription = ("2x bullets | 0.5x dash i-frames | 2x enemies + hp\n\n\n"
                     "Nagra mode, ONLY FOR THE STRONGEST NAGRAS. ")
 
 difficultyDesc = {
-    "redacted": "0.1x bullets | infinite dash i-frames | barely any enemies",
+    "redacted": "COMPLETELY BROKEN DO NOT USE",
     "ign": "0.25x bullets | 2x dash i-frames | 0.25x enemies",
     "easy": "0.5x bullets | 1.5x dash i-frames | 0.5x enemies",
     "normal": normalDescription,

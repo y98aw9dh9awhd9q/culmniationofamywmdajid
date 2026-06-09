@@ -56,6 +56,7 @@ class lanceProjectile(pygame.sprite.Sprite):
         self.life = 4.0
         self.phase = phase
 
+
     def update(self, dt, screenW, screenH, wallRects=None, breakableData=None, onBreak=None):
         self.life -= dt
         self.pos += self.velocity * dt
@@ -107,16 +108,28 @@ class bossFiveAIClass:
         self.desperationTimer    = 0.0
         self.moveTarget          = pygame.Vector2(enemy.rect.center)
         self.moveTimer           = 0.0
+        self.phaseTwoImage       = None
+        self.phaseThreeImage     = None
+        self.phaseName           = "Rah"
 
     def update(self, dt, roomId, player):
         self.player = player
 
-        if not self.desperation and self.enemy.hp <= self.maxHp * 0.12:
+        if not self.desperation and self.enemy.hp <= self.maxHp * 0.05:
             self.startDesperation()
         elif self.phase == 1 and self.enemy.hp <= self.maxHp * 0.66:
             self.phase = 2
         elif self.phase == 2 and self.enemy.hp <= self.maxHp * 0.33:
             self.phase = 3
+        print(self.phase)
+
+        match self.phase:
+            case 2:
+                self.usePhaseTwoImage()
+                self.phaseName = "EYE OF RAH"
+            case 3:
+                self.usePhaseThreeImage()
+                self.phaseName = "EYE OF RAH UNLEASHED"
 
         ex, ey = self.enemy.rect.center
 
@@ -144,7 +157,7 @@ class bossFiveAIClass:
             self.eyeLaser['start'] = (ex, ey)
             self.eyeLaser['targetAngle'] = self.aimAngle((ex, ey), self.player.rect.center)
 
-            aimByPhase = {1: 0.7, 2: 1.1, 3: 1.6}
+            aimByPhase = {1: 1, 2: 1.5, 3: 2}
             self.eyeLaser['aimInterp'] = aimByPhase.get(self.phase, 0.7)
 
             self.eyeLaser['stageTimer'] -= dt
@@ -247,7 +260,7 @@ class bossFiveAIClass:
             if self.phase >= 2:
                 self.queue += ["beamDance", "powerOfRah", "lanceOfRah", "barrage", "wallsOfRah"]
             if self.phase >= 3:
-                self.queue += ["wallsOfRah", "barrage", "circleShot", "wallsOfRah"]
+                self.queue += ["beamDance","powerOfRah","wallsOfRah", "barrage", "circleShot", "wallsOfRah"]
             random.shuffle(self.queue)
 
         if self.state is None and self.queue:
@@ -672,3 +685,22 @@ class bossFiveAIClass:
                 end = (start[0] + math.cos(angle) * 3000, start[1] + math.sin(angle) * 3000)
                 pygame.draw.line(surf, color, start, end, beamWidth)
             screen.blit(surf, (0,0))
+
+
+    def usePhaseTwoImage(self):
+        if self.phaseTwoImage is None:
+            self.phaseTwoImage = pygame.image.load(const.enemyPths["bossFiveTwo"]).convert_alpha()
+        center                 = self.enemy.rect.center
+        self.enemy.image       = pygame.transform.scale(self.phaseTwoImage, self.enemy.image.get_size())
+        self.enemy.rect        = self.enemy.image.get_rect(center=center)
+        self.enemy.posX        = float(self.enemy.rect.x)
+        self.enemy.posY        = float(self.enemy.rect.y)
+
+    def usePhaseThreeImage(self):
+        if self.phaseThreeImage is None:
+            self.phaseThreeImage = pygame.image.load(const.enemyPths["bossFiveThree"]).convert_alpha()
+        center                 = self.enemy.rect.center
+        self.enemy.image       = pygame.transform.scale(self.phaseTwoImage, self.enemy.image.get_size())
+        self.enemy.rect        = self.enemy.image.get_rect(center=center)
+        self.enemy.posX        = float(self.enemy.rect.x)
+        self.enemy.posY        = float(self.enemy.rect.y)

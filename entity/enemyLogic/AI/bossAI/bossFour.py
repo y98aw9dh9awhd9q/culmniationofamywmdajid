@@ -105,6 +105,7 @@ class bossFourAIClass:
         self.desperationDuration = 30.0
         self.desperationTimer    = 0
         self.phaseTwoImage       = None
+        self.phaseName           = "Pharo"
 
     def update(self, dt, roomId, player):
         self.player = player
@@ -114,6 +115,7 @@ class bossFourAIClass:
         elif self.phase == 1 and self.enemy.hp <= self.maxHp * 0.5:
             self.phase   = 2
             self.usePhaseTwoImage()
+            self.phaseName = "Pharo Emenator Of Rah"
 
         if self.desperation:
             self.updateDesperation(dt, player)
