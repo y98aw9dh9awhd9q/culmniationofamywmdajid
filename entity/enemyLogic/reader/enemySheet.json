@@ -155,28 +155,28 @@
     },
     "5": {
       "machineGunner": {
-        "hp": "12",
+        "hp": "10",
         "atk": "2",
         "weapon": "pistol#1",
         "ai": "machineGunner",
         "imagePath": "machineGunner.png"
       },
       "sniper": {
-        "hp": "15",
+        "hp": "13",
         "atk": "1",
         "weapon": "pistol#1",
         "ai": "sniper",
         "imagePath": "sniper.png"
       },
       "shotgunner": {
-        "hp": "10",
+        "hp": "8",
         "atk": "1",
         "weapon": "pistol#1",
         "ai": "shotgunner",
         "imagePath": "shotgunner.png"
       },
       "bouncyShotgunner": {
-        "hp": "15",
+        "hp": "10",
         "atk": "2",
         "weapon": "pistol#1",
         "ai": "bouncyShotgunner",
@@ -185,14 +185,14 @@
     },
     "6": {
       "machineGunner": {
-        "hp": "16",
+        "hp": "12",
         "atk": "2",
         "weapon": "pistol#1",
         "ai": "machineGunner",
         "imagePath": "machineGunner.png"
       },
       "sniper": {
-        "hp": "20",
+        "hp": "14",
         "atk": "1",
         "weapon": "pistol#1",
         "ai": "sniper",
@@ -206,14 +206,7 @@
         "imagePath": "shotgunner.png"
       },
       "bouncyShotgunner": {
-        "hp": "18",
-        "atk": "2",
-        "weapon": "pistol#1",
-        "ai": "bouncyShotgunner",
-        "imagePath": "bouncyShotgunner.png"
-      },
-      "gunBouncer": {
-        "hp": "16",
+        "hp": "14",
         "atk": "2",
         "weapon": "pistol#1",
         "ai": "bouncyShotgunner",
