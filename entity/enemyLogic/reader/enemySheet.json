@@ -23,21 +23,21 @@
     },
     "bossFour": {
       "hp": "200",
-      "atk": "1",
+      "atk": "3",
       "weapon": "pistol#1",
       "ai": "bossFour",
       "imagePath": "farag.png"
     },
       "bossFive": {
         "hp": "300",
-        "atk": "1",
+        "atk": "4",
         "weapon": "pistol#1",
         "ai": "bossFive",
         "imagePath": "eyeOfRah.png"
       },
       "bossSix": {
-        "hp": "500",
-        "atk": "1",
+        "hp": "670",
+        "atk": "5",
         "weapon": "pistol#1",
         "ai": "bossSix",
         "imagePath": "nagRAHPhaseOne.png"
