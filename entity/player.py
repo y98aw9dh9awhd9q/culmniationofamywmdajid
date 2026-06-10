@@ -42,7 +42,7 @@ class player(pygame.sprite.Sprite):
                       "shotgun",
                       "machineGun",
                       "assaultRifle",
-                      "bouncyBurst",
+                      "bounceBurst",
                       "bShotgun"]
 
     def __init__(self, screenW, screenH,screen, difficulty = None, size = (60,60), gun=None):
@@ -415,10 +415,10 @@ class player(pygame.sprite.Sprite):
         gunClass = gunMap.get(obtained)
         writeCompendiumEntry("weapons", f"{obtained}")
 
-        if obtained in self.obtainedGuns:
+        if gunClass is None:
             return
 
-        if gunClass is None:
+        if any(isinstance(g, gunClass) for g in self.obtainedGuns):
             return
 
         newGun = gunClass()

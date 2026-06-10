@@ -601,6 +601,29 @@ while running:
                         for _ in range(1000):
                             playerObj.getItem("HP1")
 
+                    case "teleportToBoss":
+                        currentLayerID[1] = 4
+                        generatedMap = worldCache[str(currentLayerID[0])][str(currentLayerID[1])]
+                        mapSize = len(generatedMap)
+                        currentRoomPosY = mapSize - 1
+                        currentRoomPosX = mapSize - 2
+                        newRoomID = -3
+                        playerObj.doorsLocked = True
+                        doorRect = getMatchingEntrance(-3, 3, winW, winH, (winW // 2, winH // 2))
+                        if doorRect:
+                            placePlayerAtDoor(playerObj, doorRect, 3)
+                        playerObj.syncPos()
+                        spawnEffectsStarted = False
+                        roomIDer(currentRoomPosX, currentRoomPosY, roomIDCompendium)
+                        playerSavePrep = (
+                            newRoomID, currentRoomPosX, currentRoomPosY, playerObj.rect.center
+                        )
+                        enemyGroup.empty()
+                        for bulletSprite in playerObj.bullets:
+                            bulletSprite.kill()
+                        dataSaving.saveGameCall(currentLayerID, playerSavePrep, playerObj, worldCache, roomIDCompendium, difficulty)
+                        menuResult = None
+
 
 
 
@@ -837,7 +860,7 @@ while running:
         if hasattr(enemy.ai, "beamHitsPlayer"):
             if enemy.ai.beamHitsPlayer(playerObj):
                 print("main: detected beam hits player")
-                playerObj.takeDamage(4*const.difficultyStats[difficulty]["multiplier"])
+                playerObj.takeDamage(enemy.atk)
                 if playerObj.hp <= 0 and not gameOver:
 
                     gameOver = True

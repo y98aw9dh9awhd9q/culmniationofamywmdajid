@@ -102,6 +102,7 @@ def run(screen, clock, font):
                                 case "infiniteHp": return "infiniteHp", screen
                                 case "allGuns"   : return "allGuns", screen
                                 case "infiniteHeals":return "infiniteHeals", screen
+                                case "teleportToBoss": return "teleportToBoss", screen
                             buttons = buildButtons()
 
 

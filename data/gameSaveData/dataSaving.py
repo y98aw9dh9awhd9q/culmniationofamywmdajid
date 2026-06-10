@@ -1,7 +1,20 @@
 import json
 import os
+import base64
 
 savePath = "data/gameSaveData/save.json"
+
+def encodeSaveData(data):
+    jsonStr  = json.dumps(data)
+    b64Bytes = base64.b64encode(jsonStr.encode("utf-8"))
+    xorBytes = bytes(b ^ 10 for b in b64Bytes)
+    return base64.b32encode(xorBytes).decode("utf-8")
+
+def decodeSaveData(encodedStr):
+    encodedStr = encodedStr.strip()
+    xorBytes   = base64.b32decode(encodedStr)
+    b64Bytes   = bytes(b ^ 10 for b in xorBytes)
+    return json.loads(base64.b64decode(b64Bytes).decode("utf-8"))
 
 def emptySave():
     return {
@@ -41,11 +54,15 @@ def readSave():
         return False
     try:
         with open(savePath, "r") as file:
-            save = json.load(file)
-
-    except Exception as e:
-        print("dataSaving load error:", e)
-        return False
+            raw = file.read()
+        save = decodeSaveData(raw)
+    except Exception:
+        try:
+            with open(savePath, "r") as file:
+                save = json.load(file)
+        except Exception as e:
+            print("dataSaving load error:", e)
+            return False
     try:
         playerData     = save["playerData"]
         worldData      = save["worldData"]
@@ -137,26 +154,22 @@ def saveGameCall(currentLayerID, playerSavePrep, playerObj, worldCache, roomIDCo
                 "visitedRooms": roomIDCompendium
             }
         }
-        with open(
-            "data/gameSaveData/save.json",
-            "w"
-        ) as file:
-            json.dump(
-                saveDat,
-                file,
-                indent=4
-            )
+        encoded = encodeSaveData(saveDat)
+        with open(savePath, "w") as file:
+            file.write(encoded)
         print("datasavomngg: saved")
     except Exception as e:
         print("dataSaving: save error:", e)
 
 def setHP():
-    data = None
-    with open(savePath, "r") as file:
-        data = json.load(file)
-
+    try:
+        with open(savePath, "r") as file:
+            raw = file.read()
+        data = decodeSaveData(raw)
         data["playerData"]["hp"] = 6767
         data["playerData"]["MHP"] = 6767
-
-    with open(savePath, 'w') as file:
-        json.dump(data, file, indent=4)
+        encoded = encodeSaveData(data)
+        with open(savePath, "w") as file:
+            file.write(encoded)
+    except Exception as e:
+        print("dataSaving: setHP error:", e)

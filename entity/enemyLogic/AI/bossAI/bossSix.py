@@ -888,13 +888,16 @@ class bossSixAIClass:
                 hitWall = True
                 break
 
-        if self.data["state"] == "dash" and hitWall:
-            if self.data["burstsFired"] >= self.data["burstTotal"]:
-                self.endState()
-                return
-            self.data["velocity"] = pygame.Vector2(0, 0)
-            self.data["pauseTimer"] = 0.18
-            self.data["state"] = "pause"
+        if self.data["state"] == "dash":
+            if self.data["rect"].colliderect(player.rect):
+                player.takeDamage(max(1, player.maxHp // 2))
+            if hitWall:
+                if self.data["burstsFired"] >= self.data["burstTotal"]:
+                    self.endState()
+                    return
+                self.data["velocity"] = pygame.Vector2(0, 0)
+                self.data["pauseTimer"] = 0.18
+                self.data["state"] = "pause"
 
         if self.data["state"] == "pause":
             self.data["pauseTimer"] -= dt
@@ -1295,9 +1298,7 @@ class bossSixAIClass:
             self.enemy.kill()
 
     def beamHitsPlayer(self, player):
-        if not self.desperation:
-            return False
-        if self.desperationStage == 1:
+        if self.desperation and self.desperationStage == 1:
             d         = self.desperationData
             threshold = const.scaleValue(10, self.screen[0], self.screen[1])
             for bs in d.get("beamSpinners", []):

@@ -39,6 +39,13 @@ infiniteHeals = [
     pygame.K_a, pygame.K_a,
 ]
 
+teleportToBoss = [
+    pygame.K_UP, pygame.K_UP,
+    pygame.K_DOWN, pygame.K_DOWN,
+    pygame.K_LEFT, pygame.K_RIGHT,
+    pygame.K_b, pygame.K_b,
+]
+
 
 
 
@@ -70,6 +77,10 @@ def run(screen, clock):
         if inputBuffer == infiniteHeals:
             inputBuffer.clear()
             return "infiniteHeals"
+
+        if inputBuffer == teleportToBoss:
+            inputBuffer.clear()
+            return "teleportToBoss"
 
 
 

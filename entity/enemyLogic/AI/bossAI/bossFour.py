@@ -312,14 +312,16 @@ class bossFourAIClass:
                 hitWall = True
                 break
 
-        if self.data["state"] == "dash" and hitWall:
-            if self.data["burstsFired"] >= self.data["burstTotal"]:
-                self.endState()
-                return
-
-            self.data["velocity"]   = pygame.Vector2(0, 0)
-            self.data["pauseTimer"] = 0.18
-            self.data["state"]      = "pause"
+        if self.data["state"] == "dash":
+            if self.data["rect"].colliderect(player.rect):
+                player.takeDamage(max(1, player.maxHp // 2))
+            if hitWall:
+                if self.data["burstsFired"] >= self.data["burstTotal"]:
+                    self.endState()
+                    return
+                self.data["velocity"]   = pygame.Vector2(0, 0)
+                self.data["pauseTimer"] = 0.18
+                self.data["state"]      = "pause"
 
         if self.data["state"]          == "pause":
             self.data["pauseTimer"]    -= dt

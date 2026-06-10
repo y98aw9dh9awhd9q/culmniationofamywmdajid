@@ -44,6 +44,11 @@
           "image": "assets/guns/bounceBurst.png",
           "description": "shoots a burst of three bouncy bullets which bounces three times"
         },
+        "bouncyBurst": {
+          "name": "bounce burst",
+          "image": "assets/guns/bounceBurst.png",
+          "description": "shoots a burst of three bouncy bullets which bounces three times"
+        },
 
         "bShotgun": {
           "name": "shotgun",

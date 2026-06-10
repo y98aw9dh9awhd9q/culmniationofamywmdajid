@@ -1,11 +1,11 @@
 import pygame
 import math
 import asyncio
-import json
 import time
 from gameHelpers.SHUTDOWN import fullShutdown
 import const
 from mainMenu.subMenu.settings import loadSettings
+from data.gameSaveData.dataSaving import encodeSaveData
 
 cyan          = (0x74, 0xd9, 0xf7)
 gridCol       = (180, 180, 180)
@@ -358,7 +358,7 @@ async def generateEntireWorld(mapGen, screen, font, worldCache,difficulty):
                     }
 
                     with open("data/gameSaveData/save.json", "w") as f:
-                        json.dump(saveStructure, f, indent=4)
+                        f.write(encodeSaveData(saveStructure))
 
                     print(f"saved to save {layer}-{floor}")
                     success = True
