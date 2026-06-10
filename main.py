@@ -243,11 +243,15 @@ else:
         tutorialFinished    = True
         worldGenerated      = False
 
+
+
         if not tutorialFlag:
             worldGenerating = True
             asyncio.run(generateEntireWorld(mapGen, screen, font, worldCache, difficulty))
             worldGenerated  = True
             worldGenerating = False
+
+        dataSaving.saveGameCall(currentLayerID, playerSavePrep, playerObj, worldCache, roomIDCompendium, difficulty)
 
 def deleteCurrentProgress():
     global worldCache
@@ -582,8 +586,20 @@ while running:
                 if type(menuResult) == tuple:
                     resetRun()
 
-                if menuResult == "quit":
-                    running = False
+                match menuResult:
+                    case "quit": running = False
+                    case "infiniteHp":
+                        playerObj.hp = 6767
+                        playerObj.maxHp = 6767
+                        menuResult = None
+                    case "allGuns":
+                        for gun in playerObj.gunList:
+                            playerObj.getWeapon(gun)
+                        menuResult = None
+
+                    case "infiniteHeals":
+                        for _ in range(1000):
+                            playerObj.getItem("HP1")
 
 
 

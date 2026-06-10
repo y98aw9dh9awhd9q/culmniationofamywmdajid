@@ -96,12 +96,14 @@ def run(screen, clock, font):
 
                         if label == "credits":
                             result = credits.run(screen, clock)
-                            if result == "quit":
-                                return "quit", screen
-                            if result == "konami":
-
-                                konamiEntered = True
+                            match result:
+                                case "quit": return "quit", screen
+                                case "konami": konamiEntered = True
+                                case "infiniteHp": return "infiniteHp", screen
+                                case "allGuns"   : return "allGuns", screen
+                                case "infiniteHeals":return "infiniteHeals", screen
                             buttons = buildButtons()
+
 
                         if label == "compendium":
                             result = compendium.run(screen, clock,konamiEntered)

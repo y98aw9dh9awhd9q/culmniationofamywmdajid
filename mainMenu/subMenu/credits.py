@@ -1,11 +1,13 @@
 import pygame
 import mainMenu.theme as theme
+import data.gameSaveData.dataSaving as saveData
 
 creditsText = [
     ("Creation", ["yahu", "keys", "fih"]),
     ("menus", ["keys"]),
     ("Xavier", ["xavier "]),
-    ("play tester", ["SirSneakALot (Aiden HA)"])
+    ("play tester & extra assets", ["SirSneakALot (Aiden Ha)"]),
+    ("music creation", ["keyahno arcarkey"])
 
 ]
 
@@ -14,6 +16,27 @@ konamiCode = [
     pygame.K_DOWN, pygame.K_DOWN,
     pygame.K_LEFT, pygame.K_RIGHT,
     pygame.K_b, pygame.K_a,
+]
+
+infiniteHp = [
+    pygame.K_UP, pygame.K_UP,
+    pygame.K_DOWN, pygame.K_DOWN,
+    pygame.K_LEFT, pygame.K_RIGHT,
+    pygame.K_a, pygame.K_b,
+]
+
+allGuns = [
+    pygame.K_DOWN, pygame.K_DOWN,
+    pygame.K_UP, pygame.K_UP,
+    pygame.K_LEFT, pygame.K_RIGHT,
+    pygame.K_b, pygame.K_a,
+]
+
+infiniteHeals = [
+    pygame.K_UP, pygame.K_UP,
+    pygame.K_DOWN, pygame.K_DOWN,
+    pygame.K_LEFT, pygame.K_RIGHT,
+    pygame.K_a, pygame.K_a,
 ]
 
 
@@ -32,6 +55,23 @@ def run(screen, clock):
         if inputBuffer == konamiCode:
             inputBuffer.clear()
             return "konami"
+
+
+        if inputBuffer == infiniteHp:
+            inputBuffer.clear()
+            if saveData.readSave():
+                saveData.setHP()
+            return "infiniteHp"
+
+        if inputBuffer == allGuns:
+            inputBuffer.clear()
+            return "allGuns"
+
+        if inputBuffer == infiniteHeals:
+            inputBuffer.clear()
+            return "infiniteHeals"
+
+
 
         clock.tick(60)
         for event in pygame.event.get():

@@ -149,3 +149,14 @@ def saveGameCall(currentLayerID, playerSavePrep, playerObj, worldCache, roomIDCo
         print("datasavomngg: saved")
     except Exception as e:
         print("dataSaving: save error:", e)
+
+def setHP():
+    data = None
+    with open(savePath, "r") as file:
+        data = json.load(file)
+
+        data["playerData"]["hp"] = 6767
+        data["playerData"]["MHP"] = 6767
+
+    with open(savePath, 'w') as file:
+        json.dump(data, file, indent=4)
