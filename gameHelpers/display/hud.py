@@ -201,6 +201,19 @@ def drawMinimap(screen, generatedMap, currentRoomPosY, currentRoomPosX, roomIdCo
             borderColor = theme.borderColor if isCurrent else const.darkgray
             pygame.draw.rect(screen, borderColor, (x, y, cellSize, cellSize), 1, border_radius=2)
 
+def drawWinScreen(screen):
+    winW, winH   = screen.get_size()
+    screen.fill((0, 0, 0))
+    fontSize     = max(72, int(winH * 0.14))
+    font         = pygame.font.SysFont(None, fontSize)
+    textSurf     = font.render("you win!!!", True, const.green)
+    screen.blit(textSurf, (winW // 2 - textSurf.get_width() // 2,
+                            winH // 2 - textSurf.get_height() // 2))
+    smallFont    = pygame.font.SysFont(None, fontSize // 3)
+    subSurf      = smallFont.render("you beat me! I WILL BE BACK", True, const.green)
+    screen.blit(subSurf, (winW // 2 - subSurf.get_width() // 2,
+                           winH // 2 + textSurf.get_height() // 2 + 20))
+
 def drawGameOver(screen, deathMessage="GAME OVER"):
     winW, winH   = screen.get_size()
     BG           = pygame.image.load(const.loseSceren).convert()

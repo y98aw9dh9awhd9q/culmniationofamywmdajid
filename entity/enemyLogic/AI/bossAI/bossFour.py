@@ -5,6 +5,8 @@ import const
 from entity.weapons.bullet import bullet
 from mapping.maps import getWallRects, getBreakableRectsWithCoords, breakTile
 
+from gameHelpers.animatedGif import animatedGif
+
 class delayedAimBullet(bullet):
     def __init__(self, x, y, targetX, targetY, screen, difficulty, delay, **kwargs):
         super().__init__(x, y, targetX, targetY, screen, difficulty, **kwargs)
@@ -104,11 +106,21 @@ class bossFourAIClass:
         self.desperation         = False
         self.desperationDuration = 30.0
         self.desperationTimer    = 0
-        self.phaseTwoImage       = None
         self.phaseName           = "Pharo"
+        targetSize               = self.enemy.image.get_size()
+        self.phaseTwoGif         = animatedGif(const.enemyPths["bossFourPhaseTwo"], targetSize)
+        self.phaseThreeGif       = animatedGif(const.enemyPths["bossFourPhaseThree"], targetSize)
+        self.activeGif           = None
 
     def update(self, dt, roomId, player):
         self.player = player
+
+        if self.activeGif is not None:
+            center = self.enemy.rect.center
+            self.enemy.image = self.activeGif.blitReady()
+            self.enemy.rect = self.enemy.image.get_rect(center=center)
+            self.enemy.posX = float(self.enemy.rect.x)
+            self.enemy.posY = float(self.enemy.rect.y)
 
         if not self.desperation and self.enemy.hp <= self.maxHp * 0.15:
             self.startDesperation(player)
@@ -166,13 +178,22 @@ class bossFourAIClass:
             self.enemy.moveAndCollide(direction.normalize() * 310 * dt, roomId)
 
     def usePhaseTwoImage(self):
-        if self.phaseTwoImage is None:
-            self.phaseTwoImage = pygame.image.load(const.enemyPths["bossFourPhaseTwo"]).convert_alpha()
-        center                 = self.enemy.rect.center
-        self.enemy.image       = pygame.transform.scale(self.phaseTwoImage, self.enemy.image.get_size())
-        self.enemy.rect        = self.enemy.image.get_rect(center=center)
-        self.enemy.posX        = float(self.enemy.rect.x)
-        self.enemy.posY        = float(self.enemy.rect.y)
+        self.activeGif = self.phaseTwoGif
+        self.activeGif.reset()
+        center           = self.enemy.rect.center
+        self.enemy.image = self.activeGif.blitReady()
+        self.enemy.rect  = self.enemy.image.get_rect(center=center)
+        self.enemy.posX  = float(self.enemy.rect.x)
+        self.enemy.posY  = float(self.enemy.rect.y)
+
+    def usePhaseThreeImage(self):
+        self.activeGif = self.phaseThreeGif
+        self.activeGif.reset()
+        center           = self.enemy.rect.center
+        self.enemy.image = self.activeGif.blitReady()
+        self.enemy.rect  = self.enemy.image.get_rect(center=center)
+        self.enemy.posX  = float(self.enemy.rect.x)
+        self.enemy.posY  = float(self.enemy.rect.y)
 
     def updateQueue(self):
         if self.state is None and not self.queue:
@@ -404,6 +425,7 @@ class bossFourAIClass:
 
     def startDesperation(self, player):
         self.desperation       = True
+        self.usePhaseThreeImage()
         self.desperationTimer  = self.desperationDuration
         self.state             = None
         self.queue.clear()

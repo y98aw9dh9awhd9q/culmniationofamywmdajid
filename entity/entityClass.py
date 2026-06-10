@@ -16,6 +16,7 @@ from entity.enemyLogic.AI.bossAI.bossTwo   import bossTwoAIClass
 from entity.enemyLogic.AI.bossAI.bossThree import bossThreeAIClass
 from entity.enemyLogic.AI.bossAI.bossFour  import bossFourAIClass
 from entity.enemyLogic.AI.bossAI.bossFive  import bossFiveAIClass
+from entity.enemyLogic.AI.bossAI.bossSix   import bossSixAIClass
 
 from data.gameSaveData.dataSaving import readSave
 
@@ -32,6 +33,7 @@ def aiMatcher(aiName, enemy,screen, difficulty):
         case "bouncyShotgunner": return bouncyShotgunnerAIClass(enemy,screen,difficulty)
         case "bossFour" : return bossFourAIClass(enemy,screen,difficulty)
         case "bossFive" : return bossFiveAIClass(enemy,screen,difficulty)
+        case "bossSix"  : return bossSixAIClass(enemy,screen,difficulty)
         case _ :return None
 
 

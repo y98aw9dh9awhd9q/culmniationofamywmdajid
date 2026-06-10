@@ -22,7 +22,7 @@ defaultSettings = {
         "interact": pygame.K_RETURN,
         "nextGun" : pygame.K_e,
         "prevGun" : pygame.K_q,
-        "heal"    : pygame.K_SHIFT
+        "heal"    : pygame.K_LSHIFT
     },
 }
 import random

@@ -34,6 +34,13 @@
         "weapon": "pistol#1",
         "ai": "bossFive",
         "imagePath": "eyeOfRah.png"
+      },
+      "bossSix": {
+        "hp": "500",
+        "atk": "1",
+        "weapon": "pistol#1",
+        "ai": "bossSix",
+        "imagePath": "nagRAHPhaseOne.png"
       }
   },
   "0": {
@@ -170,6 +177,43 @@
       },
       "bouncyShotgunner": {
         "hp": "15",
+        "atk": "2",
+        "weapon": "pistol#1",
+        "ai": "bouncyShotgunner",
+        "imagePath": "bouncyShotgunner.png"
+      }
+    },
+    "6": {
+      "machineGunner": {
+        "hp": "16",
+        "atk": "2",
+        "weapon": "pistol#1",
+        "ai": "machineGunner",
+        "imagePath": "machineGunner.png"
+      },
+      "sniper": {
+        "hp": "20",
+        "atk": "1",
+        "weapon": "pistol#1",
+        "ai": "sniper",
+        "imagePath": "sniper.png"
+      },
+      "shotgunner": {
+        "hp": "14",
+        "atk": "1",
+        "weapon": "pistol#1",
+        "ai": "shotgunner",
+        "imagePath": "shotgunner.png"
+      },
+      "bouncyShotgunner": {
+        "hp": "18",
+        "atk": "2",
+        "weapon": "pistol#1",
+        "ai": "bouncyShotgunner",
+        "imagePath": "bouncyShotgunner.png"
+      },
+      "gunBouncer": {
+        "hp": "16",
         "atk": "2",
         "weapon": "pistol#1",
         "ai": "bouncyShotgunner",

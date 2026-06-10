@@ -62,10 +62,14 @@ enemyPths = {
     "bossThree": os.path.join(enemyDirs, "bossThree.png"),
     "bouncyShotgunner" : os.path.join(enemyDirs, "bouncyShotgunner.png"),
     "bossFour": os.path.join(enemyDirs, "farag.png"),
-    "bossFourPhaseTwo": os.path.join(enemyDirs, "pharoh.png"),
+    "bossFourPhaseTwo": os.path.join(enemyDirs, "faragPhaseTwo.gif"),
+    "bossFourPhaseThree": os.path.join(enemyDirs, "faragDesperation.gif"),
     "bossFive": os.path.join(enemyDirs, "eyeOfRah1.png"),
     "bossFiveTwo":os.path.join(enemyDirs, "eyeOfRah2.png"),
     "bossFiveThree":os.path.join(enemyDirs, "eyeOfRah3.png"),
+    "bossSix": os.path.join(enemyDirs, "nagRAHPhaseOne.png"),
+    "bossSixTwo": os.path.join(enemyDirs, "nagRAHPhaseTwo.png"),
+    "bossSixThree": os.path.join(enemyDirs, "nagRAHPhaseThree.jpg"),
 }
 
 

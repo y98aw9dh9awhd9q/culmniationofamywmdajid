@@ -39,7 +39,7 @@ import mainMenu.subMenu.shop as shop
 
 from   gameHelpers.roomDirHelper   import getMatchingEntrance, mapDelta, roomIDer,placePlayerAtDoor
 from   gameHelpers.mapGeneration   import generateEntireWorld
-from   gameHelpers.display.hud     import drawHud, drawGameOver
+from   gameHelpers.display.hud     import drawHud, drawGameOver, drawWinScreen
 from   gameHelpers.display.display import spaceCalculator
 from   gameHelpers.musMan          import musManager
 
@@ -57,6 +57,28 @@ clock  = pygame.time.Clock()
 font   = pygame.font.SysFont(None, 28)
 settings.applySettings(settings.loadSettings())
 display.setAssets(screen)
+from gameHelpers.animatedGif import preload
+gifPaths = [const.enemyPths["bossFourPhaseTwo"], const.enemyPths["bossFourPhaseThree"]]
+for i, path in enumerate(gifPaths):
+    for event in pygame.event.get():
+        pass
+    screen.fill(const.black)
+    w, h      = screen.get_size()
+    barWidth  = int(w * 0.6)
+    barHeight = 34
+    bx        = (w - barWidth) // 2
+    by        = h - barHeight - 24
+    progress  = (i + 1) / len(gifPaths)
+    pygame.draw.rect(screen, (50, 50, 50), (bx, by, barWidth, barHeight), border_radius=6)
+    fillW = int(barWidth * progress)
+    if fillW > 0:
+        pygame.draw.rect(screen, (0, 200, 0), (bx, by, fillW, barHeight), border_radius=6)
+    title = font.render("Loading assets...", True, const.white)
+    perc  = font.render(f"{int(progress * 100)}%", True, const.white)
+    screen.blit(title, (bx, by - 46))
+    screen.blit(perc,  (bx, by - 82))
+    pygame.display.flip()
+    preload(path)
 #menu=============================================
 import gameHelpers.menus
 
@@ -90,6 +112,8 @@ worldGenerating        = False
 roomIDCompendium       = [(0, 0)]
 gameOver               = False
 gameOverTimer          = 0.0
+gameWin                = False
+gameWinTimer           = 0.0
 newRoomID              = 0
 
 print(settings.loadSettings)
@@ -105,6 +129,7 @@ musicManager.registerTrack("bossBossTwo","assets/music/ROTJD.mp3")
 musicManager.registerTrack("bossBossThree","assets/music/slimeGob.mp3")
 musicManager.registerTrack("bossBossFour","assets/music/farowl.mp3")
 musicManager.registerTrack("bossBossFive","assets/music/farowl.mp3")
+musicManager.registerTrack("bossBossSix","assets/music/farowl.mp3")
 
 #current floor logic===========================
 
@@ -266,6 +291,8 @@ def resetRun():
     global deathCount
     global gameOver
     global gameOverTimer
+    global gameWin
+    global gameWinTimer
     global currentLayerID
     global difficulty
     global tutorialFlag
@@ -298,6 +325,8 @@ def resetRun():
     playerSavePrep        = None
     gameOver              = False
     gameOverTimer         = 0
+    gameWin               = False
+    gameWinTimer          = 0
     deathCount            = 0
     roomIDCompendium      = [(0, 0)]
     playerObj.hp          = playerObj.maxHp
@@ -521,6 +550,23 @@ while running:
             resetRun()
 
         continue
+
+    if gameWin:
+        screen.fill((0, 0, 0))
+        drawWinScreen(screen)
+        gameWinTimer -= deltaTime
+        pygame.display.flip()
+
+        for event in events:
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN and event.key == loadedSettings["keybinds"]["interact"]:
+                gameWinTimer = 0
+
+        if gameWinTimer <= 0:
+            resetRun()
+
+        continue
     #event handler====================================
     for event in events:
         if event.type == pygame.QUIT:
@@ -573,6 +619,13 @@ while running:
 
     #elevator=================================
     if playerObj.touchingElevator(currentRoomID):
+        if currentLayerID == [6, 4]:
+            dataSaving.deleteSave()
+            gameWin      = True
+            gameWinTimer = 8
+            musicManager.stopAll()
+            continue
+
         resetAllRooms()
         shopInstance.resetStock()
         dataSaving.saveGameCall(currentLayerID, playerSavePrep, playerObj, worldCache, roomIDCompendium, difficulty)
@@ -589,6 +642,7 @@ while running:
             case 4: writeCompendiumEntry("achievements", "bossThree")
             case 5: writeCompendiumEntry("achievements", "bossFour")
             case 6: writeCompendiumEntry("achievements", "bossFive")
+            case 7: writeCompendiumEntry("achievements", "bossSix")
 
         #tutorial ELEVATOR LOGIC=========================================================
         if currentLayerID[0] == 0:
@@ -857,6 +911,14 @@ while running:
                          enemySpawnBoss=True,
                          bossEnemy="bossFive")
                     musicManager.startBoss("BossFive")
+
+                case 6:
+                    spawnEnemies(screen, currentRoomID, currentLayerID[0],
+                         const.difficultyStats[f"{difficulty}"]["enemyCount"],
+                         1,
+                         enemySpawnBoss=True,
+                         bossEnemy="bossSix")
+                    musicManager.startBoss("BossSix")
 
                 case _:
                     spawnEnemies(screen, currentRoomID, currentLayerID[0],
