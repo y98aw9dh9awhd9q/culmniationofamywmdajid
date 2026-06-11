@@ -82,14 +82,14 @@ def runTutorial(screen, clock, currentLayerID, currentRoomID, playerObj):
             if tutorialDialogueSecondOn:
                 playerObj.doorsLocked = True
                 finishedDial = drawDialogueBox(screen, tutorialDialogueSecond, clock, typewrite=True,
-                                               image=os.path.join(const.caineDir, "caineFirst.png"))
+                                               image=os.path.join(const.caineDir, "broadCaster.png"))
                 if finishedDial:
                     tutorialDialogueSecondOn = False
                     playerObj.doorsLocked = False
 
             if len(playerObj.obtainedGuns) > 0 and tutorialGotGunOn:
                 finishedDial = drawDialogueBox(screen, "WOWZERS ! YOU GOT A GUN!!!!!", clock, typewrite=True,
-                                               image=os.path.join(const.caineDir, "bubbleFirst.png"))
+                                               image=const.enemyPths["bossSix"])
                 if finishedDial:
                     tutorialGotGunOn = False
 

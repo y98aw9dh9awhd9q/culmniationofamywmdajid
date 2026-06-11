@@ -37,18 +37,18 @@ baseDir      = os.path.dirname(os.path.abspath(__file__))
 playerDir    = os.path.join(baseDir, "assets", "pictures", "entities", "player.png")
 bulletDir    = os.path.join(baseDir, "assets", "pictures", "entities", "bullet.png")
 
-mapDirs      = os.path.join(baseDir, "assets", "maps")
-chest        = os.path.join(mapDirs, "chest.png")
-elevator     = os.path.join(mapDirs, "elevator.png")
-wall         = os.path.join(mapDirs, "wall.png")
-doorO        = os.path.join(mapDirs, "doorOpen.png")
-doorL        = os.path.join(mapDirs, "doorLocked.png")
-box          = os.path.join(mapDirs, "box.png")
-shopImg      = os.path.join(mapDirs, "shop.png")
+mapDirs        = os.path.join(baseDir, "assets", "maps")
+chest          = os.path.join(mapDirs, "chest.png")
+elevator       = os.path.join(mapDirs, "elevator.png")
+wall           = os.path.join(mapDirs, "wall.png")
+doorO          = os.path.join(mapDirs, "doorOpen.png")
+doorL          = os.path.join(mapDirs, "doorLocked.png")
+box            = os.path.join(mapDirs, "box.png")
+shopImg        = os.path.join(mapDirs, "shop.png")
 
-caineDir     = os.path.join(baseDir, "assets", "caine")
+caineDir = os.path.join(baseDir, "assets", "caine")
 
-enemyDirs    = os.path.join(baseDir, "assets", "pictures", "enemies")
+enemyDirs      = os.path.join(baseDir, "assets", "pictures", "enemies")
 
 
 enemyPths = {
