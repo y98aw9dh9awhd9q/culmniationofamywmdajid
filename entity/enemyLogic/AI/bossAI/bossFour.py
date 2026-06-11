@@ -314,7 +314,7 @@ class bossFourAIClass:
 
         if self.data["state"] == "dash":
             if self.data["rect"].colliderect(player.rect):
-                player.takeDamage(max(1, player.maxHp // 2))
+                player.takeDamage(max(1, player.maxHp // 6))
             if hitWall:
                 if self.data["burstsFired"] >= self.data["burstTotal"]:
                     self.endState()
