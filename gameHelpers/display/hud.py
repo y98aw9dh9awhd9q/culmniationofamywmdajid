@@ -95,7 +95,7 @@ def drawMoney(screen, playerObj):
     iconSize   = max(18, int(heartSize * 0.9))
     moneyImg   = loadMoney(const.money, iconSize)
     font       = pygame.font.SysFont(const.fontTextBasic, max(16, int(iconSize * 0.9)))
-    moneyText  = font.render(f"Mex$₿$₱£€¥₹ #{playerObj.money}# ¢₽₩₴R$Ξ₺", True, const.white)
+    moneyText  = font.render(f"${playerObj.money}", True, const.white)
     x          = margin
     y          = gunY + gunH + max(6, int(heartSize * 0.25))
 
