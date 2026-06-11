@@ -74,8 +74,120 @@ shopItems ={
             "maxStock": 1,
             "image": const.gunPths["assaultRifle"]
         }
-    ]
-
+    ],
+    3: [
+    {
+        "id": "HP1",
+        "name": "healing potion",
+        "description": "heals you :) the heal will in crease with time",
+        "price": 15,
+        "stock": 4,
+        "maxStock": 4,
+        "image": const.healingPot
+    },
+        {
+            "id": "shotgun",
+            "name": "shotgun",
+            "description": "heals you :) the heal will in crease with time",
+            "price": 50,
+            "stock": 1,
+            "maxStock": 1,
+            "image": const.gunPths["basicShotgun"]
+        },
+        {
+            "id": "assaultRifle",
+            "name": "assault rifle",
+            "description": "shoots bullets with low cooldown",
+            "price": 5,
+            "stock": 1,
+            "maxStock": 1,
+            "image": const.gunPths["assaultRifle"]
+        }
+    ],
+        4: [
+    {
+        "id": "HP1",
+        "name": "healing potion",
+        "description": "heals you :) the heal will in crease with time",
+        "price": 15,
+        "stock": 4,
+        "maxStock": 4,
+        "image": const.healingPot
+    },
+        {
+            "id": "shotgun",
+            "name": "shotgun",
+            "description": "heals you :) the heal will in crease with time",
+            "price": 50,
+            "stock": 1,
+            "maxStock": 1,
+            "image": const.gunPths["basicShotgun"]
+        },
+        {
+            "id": "assaultRifle",
+            "name": "assault rifle",
+            "description": "shoots bullets with low cooldown",
+            "price": 5,
+            "stock": 1,
+            "maxStock": 1,
+            "image": const.gunPths["assaultRifle"]
+        }],
+        5: [
+    {
+        "id": "HP1",
+        "name": "healing potion",
+        "description": "heals you :) the heal will in crease with time",
+        "price": 15,
+        "stock": 4,
+        "maxStock": 4,
+        "image": const.healingPot
+    },
+        {
+            "id": "shotgun",
+            "name": "shotgun",
+            "description": "heals you :) the heal will in crease with time",
+            "price": 50,
+            "stock": 1,
+            "maxStock": 1,
+            "image": const.gunPths["basicShotgun"]
+        },
+        {
+            "id": "assaultRifle",
+            "name": "assault rifle",
+            "description": "shoots bullets with low cooldown",
+            "price": 5,
+            "stock": 1,
+            "maxStock": 1,
+            "image": const.gunPths["assaultRifle"]
+        }],
+6: [
+    {
+        "id": "HP1",
+        "name": "healing potion",
+        "description": "heals you :) the heal will in crease with time",
+        "price": 15,
+        "stock": 4,
+        "maxStock": 4,
+        "image": const.healingPot
+    },
+        {
+            "id": "shotgun",
+            "name": "shotgun",
+            "description": "heals you :) the heal will in crease with time",
+            "price": 50,
+            "stock": 1,
+            "maxStock": 1,
+            "image": const.gunPths["basicShotgun"]
+        },
+        {
+            "id": "assaultRifle",
+            "name": "assault rifle",
+            "description": "shoots bullets with low cooldown",
+            "price": 5,
+            "stock": 1,
+            "maxStock": 1,
+            "image": const.gunPths["assaultRifle"]
+        }]
 
 
 

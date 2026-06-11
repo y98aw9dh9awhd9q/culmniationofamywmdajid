@@ -71,7 +71,7 @@ def runTutorial(screen, clock, currentLayerID, currentRoomID, playerObj):
     if currentRoomID == 12 and currentLayerID == [0, 1]:
         if tutorialDialogueFirstOn:
             finishedDial = drawDialogueBox(screen, tutorialDialogueFirst, clock, typewrite=True,
-                                           image=os.path.join(const.caineDir, "caineFirst.png"))
+                                           image=os.path.join(const.caineDir, "broadCaster.png"))
             if finishedDial:
                 tutorialDialogueFirstOn = False
                 playerObj.doorsLocked = False

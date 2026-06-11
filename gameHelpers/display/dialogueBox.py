@@ -8,6 +8,7 @@ skipCD          = 300
 lastSkipPress   = 0
 
 def drawDialogueBox(screen, text, clock, image=None, typewrite=True):
+
     if not hasattr(drawDialogueBox, "charIndex"):
         drawDialogueBox.charIndex = 0
 
@@ -46,6 +47,7 @@ def drawDialogueBox(screen, text, clock, image=None, typewrite=True):
 
         scaledImg = pygame.transform.scale(pygame.image.load(image).convert_alpha(),(imgSize, imgSize))
         screen.blit(scaledImg,imgRect)
+        image = None
 
 
 
