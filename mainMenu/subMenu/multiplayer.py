@@ -1,4 +1,6 @@
 import pygame
+
+import const
 import mainMenu.theme as theme
 from mainMenu.subMenu.settings import loadSettings
 
@@ -57,17 +59,21 @@ def run(screen, clock):
                     continue
 
                 if activeInput     == "ip":
+                    pygame.key.set_repeat(500, 50)
                     if event.key   == pygame.K_BACKSPACE:
                         ipInput     = ipInput[:-1]
                     elif event.key == pygame.K_RETURN:
+                        pygame.key.set_repeat()
                         activeInput = None
                     else:
                         ipInput    += event.unicode
                 elif activeInput   == "port":
+                    pygame.key.set_repeat(500, 50)
                     if event.key   == pygame.K_BACKSPACE:
                         portInput   = portInput[:-1]
                     elif event.key == pygame.K_RETURN:
                         activeInput = None
+                        pygame.key.set_repeat()
                     else:
                         if event.unicode.isdigit():
                             portInput += event.unicode
@@ -115,18 +121,18 @@ def run(screen, clock):
         ipLabel  = inputFont.render("your IP address:", True, theme.textSecondary)
         screen.blit(ipLabel, (winW // 2 - ipLabel.get_width() // 2, lblY))
 
-        ipColor  = theme.accent if activeInput == "ip" else theme.bgMid
-        pygame.draw.rect(screen, theme.borderColor, ipRect, 2, border_radius=5)
-        pygame.draw.rect(screen, ipColor, ipRect.inflate(-4, -4), border_radius=4)
+        borderColor  = const.red if activeInput == "ip" else theme.borderColor
+        pygame.draw.rect(screen, borderColor, ipRect, 2, border_radius=5)
+        pygame.draw.rect(screen, theme.bgMid, ipRect.inflate(-4, -4), border_radius=4)
         ipSurf   = inputFont.render(ipInput, True, theme.textPrimary)
         screen.blit(ipSurf, (ipRect.x + 8, ipRect.centery - ipSurf.get_height() // 2))
 
         portLabel = inputFont.render("port:", True, theme.textSecondary)
         screen.blit(portLabel, (winW // 2 - portLabel.get_width() // 2, ipRect.bottom + 10))
 
-        portColor = theme.accent if activeInput == "port" else theme.bgMid
-        pygame.draw.rect(screen, theme.borderColor, portRect, 2, border_radius=5)
-        pygame.draw.rect(screen, portColor, portRect.inflate(-4, -4), border_radius=4)
+        borderColorP  = const.red if activeInput == "port" else theme.borderColor
+        pygame.draw.rect(screen, borderColorP, portRect, 2, border_radius=5)
+        pygame.draw.rect(screen, theme.bgMid, portRect.inflate(-4, -4), border_radius=4)
         portSurf  = inputFont.render(portInput, True, theme.textPrimary)
         screen.blit(portSurf, (portRect.x + 8, portRect.centery - portSurf.get_height() // 2))
 
