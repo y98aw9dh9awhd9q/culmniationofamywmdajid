@@ -26,6 +26,8 @@ class bullet(pygame.sprite.Sprite):
             direction = direction.normalize()
         self.velocity = direction * (crossingTime * screen[0])
         if owner != "player":
+            if isinstance(difficulty, str):
+                difficulty = const.difficultyStats[difficulty]["bulletSpeed"]
             self.velocity *= difficulty
 
     def update(self, deltaTime, screenW, screenH, wallRects=None, breakableData=None, onBreak=None):

@@ -246,7 +246,7 @@ def updateShopInstance(layerID):
     shopInstance.updateStuff()
 
 
-def run(screen, clock, player):
+def run(screen, clock, player, onBuy=None):
     titleFont  = pygame.font.SysFont(None, 48)
     nameFont   = pygame.font.SysFont(None, 30)
     descFont   = pygame.font.SysFont(None, 24)
@@ -297,6 +297,8 @@ def run(screen, clock, player):
 
                     if buyRect.collidepoint(mx, my):
                         shopInstance.buy(player, i)
+                        if onBuy:
+                            onBuy(i)
 
         screen.fill(theme.bgDark)
 

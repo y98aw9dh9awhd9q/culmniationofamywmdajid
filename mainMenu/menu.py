@@ -4,6 +4,7 @@ import data.gameSaveData.dataSaving
 import mainMenu.subMenu.credits as credits
 import mainMenu.subMenu.compendium as compendium
 import mainMenu.subMenu.settings as settings
+import mainMenu.subMenu.multiplayer as multiplayer
 import mainMenu.theme as theme
 from mapping.maps import roomRegistery
 import mainMenu.subMenu.difficultySelecter as difficultySelect
@@ -31,7 +32,7 @@ def run(screen, clock, font):
         labels     = []
         if hasSave:
             labels.append("continue")
-        labels += ["new game", "compendium", "settings", "credits", "exit"]
+        labels += ["new game", "multiplayer", "compendium", "settings", "credits", "exit"]
 
         #sizes based on window size
         bW          = int(winW * 0.25)
@@ -89,6 +90,16 @@ def run(screen, clock, font):
                             data.gameSaveData.dataSaving.deleteSave()
                             print(f"menu: new game difficulty:{picked}")
                             return picked, screen
+
+                        if label == "multiplayer":
+                            result, ip, port = multiplayer.run(screen, clock)
+                            if result == "quit":
+                                return "quit", screen
+                            if result == "back":
+                                buttons = buildButtons()
+                                hasSave = bool(data.gameSaveData.dataSaving.readSave())
+                                continue
+                            return ("multiplayer", result, ip, port), screen
 
                         if label == "continue":
                             print("menu: continue")

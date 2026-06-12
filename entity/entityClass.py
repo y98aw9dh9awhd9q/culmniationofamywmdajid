@@ -46,6 +46,7 @@ class enemyBuilder(pygame.sprite.Sprite):
             self.hp = int(reader.readLayers(layer)[enemyName]["hp"])
         else:
             self.hp        = int(reader.readLayers(layer)[enemyName]["hp"]) * const.difficultyStats[readSave()[6]]["enemyHp"]
+        self.maxHp     = self.hp
         self.atk       = int(reader.readLayers(layer)[enemyName]["atk"])
         self.weapon    = reader.readLayers(layer)[enemyName]["weapon"]
         self.screenW   = screenW
